@@ -1,0 +1,121 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/layoutbg"
+    tools:context=".AALifeNetActivity" >
+
+    <RelativeLayout
+        android:id="@+id/titlezone"
+        style="@style/MyTitleLayout"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/titlelayoutbg" >
+
+        <ImageView
+            android:id="@+id/titleloginimage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/desc_user"
+            android:src="@drawable/ic_navibtnuser" />
+
+        <TextView
+            style="@style/MyTitleText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/titleloginimage"
+            android:text="@string/title_text_login" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/loginzone"
+        style="@style/MyBoxLayout"
+        android:layout_below="@+id/titlezone"
+        android:background="@drawable/boxlayoutbg"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            style="@style/MyEditTextLayout"
+            android:background="@android:color/transparent" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/label_username" />
+
+            <EditText
+                android:id="@+id/usernameedit"
+                style="@style/MyEditText"
+                android:imeOptions="actionNext"
+                android:inputType="textNoSuggestions" >
+            </EditText>
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/MyEditTextLayout"
+            android:background="@android:color/transparent" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/label_userpass" />
+
+            <EditText
+                android:id="@+id/userpassedit"
+                style="@style/MyEditText"
+                android:imeOptions="actionDone"
+                android:inputType="textPassword" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@android:color/transparent" >
+
+            <Button
+                android:id="@+id/loginbtn"
+                style="@style/MyButton"
+                android:text="@string/btn_login" />
+
+            <Button
+                android:id="@+id/registerbtn"
+                style="@style/MyButton"
+                android:text="@string/btn_register" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/navizone"
+        style="@style/MyNaviLayout"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/navilayoutbg" >
+
+        <ImageButton
+            android:id="@+id/exitbtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_navibtnexit_s"
+            android:contentDescription="@string/desc_exit" />
+
+        <ImageButton
+            android:id="@+id/aboutbtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@drawable/ic_navibtnabout"
+            android:contentDescription="@string/desc_user" />
+
+        <ImageButton
+            android:id="@+id/webbtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/ic_navibtnweb_s"
+            android:contentDescription="@string/desc_web" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

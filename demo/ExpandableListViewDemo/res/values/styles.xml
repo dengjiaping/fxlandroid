@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="myStyle" parent="@android:style/Widget" />
+   
+    <!-- 字体颜色大小的设置 -->
+    <!-- ================================================================================================================= -->
+    <style name="myStyle.WhiteSmallText" parent="@style/myStyle">
+        <item name="android:textSize">12.0dip</item>
+        <item name="android:textColor">#ffffffff</item>
+    </style>
+
+    <style name="myStyle.WhiteNormalText" parent="@style/myStyle">
+        <item name="android:textSize">14.0dip</item>
+        <item name="android:textColor">#ffffffff</item>
+    </style>
+
+    <style name="myStyle.WhiteBigText" parent="@style/myStyle">
+        <item name="android:textSize">16.0dip</item>
+        <item name="android:textColor">#ffffffff</item>
+    </style>
+
+    <style name="myStyle.WhiteHugeText" parent="@style/myStyle">
+        <item name="android:textSize">20.0dip</item>
+        <item name="android:textColor">#ffffffff</item>
+    </style>
+
+    <style name="myStyle.WhiteContentTitleText" parent="@style/myStyle">
+        <item name="android:textSize">18.0dip</item>
+        <item name="android:textColor">#ffffffff</item>
+    </style>
+
+    <style name="myStyle.WhiteSuperHugeText" parent="@style/myStyle">
+        <item name="android:textSize">24.0dip</item>
+        <item name="android:textColor">#ffffffff</item>
+    </style>
+
+    <style name="myStyle.BlackSmallText" parent="@style/myStyle">
+        <item name="android:textSize">12.0dip</item>
+        <item name="android:textColor">#ff000000</item>
+    </style>
+
+    <style name="myStyle.BlackNormalText" parent="@style/myStyle">
+        <item name="android:textSize">14.0dip</item>
+        <item name="android:textColor">#ff000000</item>
+    </style>
+
+    <style name="myStyle.BlackBigText" parent="@style/myStyle">
+        <item name="android:textSize">16.0dip</item>
+        <item name="android:textColor">#ff000000</item>
+    </style>
+
+    <style name="myStyle.BlackHugeText" parent="@style/myStyle">
+        <item name="android:textSize">20.0dip</item>
+        <item name="android:textColor">#ff000000</item>
+    </style>
+
+    <style name="myStyle.BlackSuperHugeText" parent="@style/myStyle">
+        <item name="android:textSize">24.0dip</item>
+        <item name="android:textColor">#ff000000</item>
+    </style>
+
+    <style name="myStyle.BlackContentTitleText" parent="@style/myStyle">
+        <item name="android:textSize">18.0dip</item>
+        <item name="android:textColor">#ff000000</item>
+    </style>
+
+    <style name="myStyle.GraySmallText" parent="@style/myStyle">
+        <item name="android:textSize">12.0dip</item>
+        <item name="android:textColor">#ff7f8081</item>
+    </style>
+
+    <style name="myStyle.GrayNormalText" parent="@style/myStyle">
+        <item name="android:textSize">14.0dip</item>
+        <item name="android:textColor">#ff7f8081</item>
+    </style>
+
+    <style name="myStyle.GrayBigText" parent="@style/myStyle">
+        <item name="android:textSize">16.0dip</item>
+        <item name="android:textColor">#ff7f8081</item>
+    </style>
+
+    <style name="myStyle.GrayHugeText" parent="@style/myStyle">
+        <item name="android:textSize">20.0dip</item>
+        <item name="android:textColor">#ff7f8081</item>
+    </style>
+
+    <style name="myStyle.GraySuperHugeText" parent="@style/myStyle">
+        <item name="android:textSize">24.0dip</item>
+        <item name="android:textColor">#ff7f8081</item>
+    </style>
+
+    <style name="myStyle.GrayContentTitleText" parent="@style/myStyle">
+        <item name="android:textSize">18.0dip</item>
+        <item name="android:textColor">#ff7f8081</item>
+    </style>
+
+    <style name="myStyle.DeepGraySmallText" parent="@style/myStyle">
+        <item name="android:textSize">12.0dip</item>
+        <item name="android:textColor">#ff666666</item>
+    </style>
+
+    <style name="myStyle.DeepGrayNormalText" parent="@style/myStyle">
+        <item name="android:textSize">14.0dip</item>
+        <item name="android:textColor">#ff666666</item>
+    </style>
+
+    <style name="myStyle.DeepGrayBigText" parent="@style/myStyle">
+        <item name="android:textSize">16.0dip</item>
+        <item name="android:textColor">#ff666666</item>
+    </style>
+
+    <style name="myStyle.DeepGrayHugeText" parent="@style/myStyle">
+        <item name="android:textSize">20.0dip</item>
+        <item name="android:textColor">#ff666666</item>
+    </style>
+
+    <style name="myStyle.DeepGraySuperHugeText" parent="@style/myStyle">
+        <item name="android:textSize">24.0dip</item>
+        <item name="android:textColor">#ff666666</item>
+    </style>
+
+    <style name="myStyle.DeepGrayContentTitleText" parent="@style/myStyle">
+        <item name="android:textSize">18.0dip</item>
+        <item name="android:textColor">#ff666666</item>
+    </style>
+
+    <style name="myStyle.OrangeSmallText" parent="@style/myStyle">
+        <item name="android:textSize">12.0dip</item>
+        <item name="android:textColor">#fff7941d</item>
+    </style>
+
+    <style name="myStyle.OrangeNormalText" parent="@style/myStyle">
+        <item name="android:textSize">14.0dip</item>
+        <item name="android:textColor">#fff7941d</item>
+    </style>
+
+    <style name="myStyle.OrangeBigText" parent="@style/myStyle">
+        <item name="android:textSize">16.0dip</item>
+        <item name="android:textColor">#fff7941d</item>
+    </style>
+
+    <style name="myStyle.OrangeHugeText" parent="@style/myStyle">
+        <item name="android:textSize">20.0dip</item>
+        <item name="android:textColor">#fff7941d</item>
+    </style>
+
+    <style name="myStyle.OrangeContentTitleText" parent="@style/myStyle">
+        <item name="android:textSize">18.0dip</item>
+        <item name="android:textColor">#fff7941d</item>
+    </style>
+
+    <style name="myStyle.OrangeSuperHugeText" parent="@style/myStyle">
+        <item name="android:textSize">24.0dip</item>
+        <item name="android:textColor">#ffff7800</item>
+    </style>
+
+    <style name="myStyle.BlueSmallText" parent="@style/myStyle">
+        <item name="android:textSize">12.0dip</item>
+        <item name="android:textColor">#ff0da6df</item>
+    </style>
+
+    <style name="myStyle.BlueNormalText" parent="@style/myStyle">
+        <item name="android:textSize">14.0dip</item>
+        <item name="android:textColor">#ff0da6df</item>
+    </style>
+
+    <style name="myStyle.BlueBigText" parent="@style/myStyle">
+        <item name="android:textSize">16.0dip</item>
+        <item name="android:textColor">#ff0da6df</item>
+    </style>
+
+    <style name="myStyle.BlueHugeText" parent="@style/myStyle">
+        <item name="android:textSize">20.0dip</item>
+        <item name="android:textColor">#ff0da6df</item>
+    </style>
+
+    <style name="myStyle.BlueContentTitleText" parent="@style/myStyle">
+        <item name="android:textSize">18.0dip</item>
+        <item name="android:textColor">#ff0da6df</item>
+    </style>
+
+    <style name="myStyle.RedSmallText" parent="@style/myStyle">
+        <item name="android:textSize">12.0dip</item>
+        <item name="android:textColor">#ffff0000</item>
+    </style>
+
+    <style name="myStyle.RedNormalText" parent="@style/myStyle">
+        <item name="android:textSize">14.0dip</item>
+        <item name="android:textColor">#ffff0000</item>
+    </style>
+
+    <style name="myStyle.RedBigText" parent="@style/myStyle">
+        <item name="android:textSize">16.0dip</item>
+        <item name="android:textColor">#ffff0000</item>
+    </style>
+
+    <style name="myStyle.RedHugeText" parent="@style/myStyle">
+        <item name="android:textSize">20.0dip</item>
+        <item name="android:textColor">#ffff0000</item>
+    </style>
+
+    <style name="myStyle.RedContentTitleText" parent="@style/myStyle">
+        <item name="android:textSize">18.0dip</item>
+        <item name="android:textColor">#ffff0000</item>
+    </style>
+
+    <style name="myStyle.GreenSmallText" parent="@style/myStyle">
+        <item name="android:textSize">12.0dip</item>
+        <item name="android:textColor">#ff1dc6a8</item>
+    </style>
+
+    <style name="myStyle.GreenNormalText" parent="@style/myStyle">
+        <item name="android:textSize">14.0dip</item>
+        <item name="android:textColor">#ff1dc6a8</item>
+    </style>
+
+    <style name="myStyle.GreenBigText" parent="@style/myStyle">
+        <item name="android:textSize">16.0dip</item>
+        <item name="android:textColor">#ff1dc6a8</item>
+    </style>
+
+    <style name="myStyle.GreenHugeText" parent="@style/myStyle">
+        <item name="android:textSize">20.0dip</item>
+        <item name="android:textColor">#ff1dc6a8</item>
+    </style>
+
+    <style name="myStyle.GreenContentTitleText" parent="@style/myStyle">
+        <item name="android:textSize">18.0dip</item>
+        <item name="android:textColor">#ff1dc6a8</item>
+    </style>
+
+    <style name="myStyle.CustomDayText" parent="@style/myStyle">
+        <item name="android:textSize">28.0dip</item>
+        <item name="android:textColor">#ff000000</item>
+    </style>
+
+    <style name="myStyle.UsercenterBigText" parent="@style/myStyle">
+        <item name="android:textSize">20.0dip</item>
+        <item name="android:textColor">#ff636466</item>
+    </style>
+
+    <style name="myStyle.TTSBigText" parent="@style/myStyle">
+        <item name="android:textSize">20.0dip</item>
+        <item name="android:textColor">#ff636466</item>
+    </style>
+
+    <style name="myStyle.PanelHandleText" parent="@style/myStyle">
+        <item name="android:textSize">14.0dip</item>
+        <item name="android:textColor">#ff747474</item>
+    </style>
+    <!-- ================================================================================================================= -->
+
+</resources>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/MySpinLayout"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/cattypeidtext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/txt_cattypeid"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/cattypenametext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="7dp"
+        android:text="@string/txt_cattypename"
+        android:textColor="@android:color/black" />
+
+</LinearLayout>

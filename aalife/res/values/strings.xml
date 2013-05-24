@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">AA生活记账</string>
+    <string name="app_widget">未更新</string>
+    <string name="widget_month">月</string>
+    <string name="menu_update">升级</string>
+    <string name="menu_password">密码</string>
+    <string name="menu_theme1">主题一</string>
+    <string name="menu_theme2">主题二</string>
+    <string name="menu_backup">备份</string>
+    <string name="menu_restore">恢复</string>
+    <string name="menu_warn">预警</string>
+    <string name="menu_about">关于</string>
+    <string name="menu_exit">退出</string>
+    <string name="title_activity_aalife">AA生活记账</string>
+    <string name="title_activity_day">每日消费</string>
+    <string name="title_activity_month">每月消费</string>
+    <string name="title_activity_add">添加消费</string>
+    <string name="title_activity_edit">编辑消费</string>
+    <string name="title_activity_tongji">消费统计</string>
+    <string name="title_activity_rank">消费排行</string>
+    <string name="txt_view_category">消费类别：</string>
+    <string name="txt_view_itemname">商品名称：</string>
+    <string name="txt_view_itemprice">商品价格：</string>
+    <string name="txt_view_itembuydate">购买日期：</string>
+    <string name="txt_id">编号</string>
+    <string name="txt_rank">排名</string>
+    <string name="txt_month">月份</string>
+    <string name="txt_monthprice">总消费</string>
+    <string name="txt_itemname">名称</string>
+    <string name="txt_category">类别</string>
+    <string name="txt_itemprice">价格</string>
+    <string name="txt_itembuydate">日期</string>
+    <string name="txt_count">计数</string>
+    <string name="txt_monthdot">∨</string>
+    <string name="txt_monthsubdot">></string>
+    <string name="txt_monthsubitemdot">-</string>
+    <string name="txt_nodata">没有消费记录。</string>
+    <string name="btn_submit">添加继续</string>
+    <string name="btn_submitback">添加返回</string>
+    <string name="btn_edit">完成编辑</string>
+    <string name="img_desc_selectday">选择日期</string>
+    <string name="img_desc_back">返回</string>
+    <string name="img_desc_add">添加</string>
+    <string name="img_desc_calc">计算器</string>
+    <string name="txt_setting_exit">您确定要退出且备份吗？</string>
+    <string name="txt_setting_warn">请输入日预警消费金额：</string>
+    <string name="txt_setting_warnmonth">请输入月预警消费金额：</string>
+    <string name="txt_setting_catname">请输入类别名称：</string>
+    <string name="txt_setting_about">AA生活记账 v2.9.1\n\nAA生活记账，记录您每天的生活消费。AA生活记账，操作方便，记账贴心，生活必备。\n\n** 特别感谢：cindy\n\n作者：fxlmail@gmail.com\n官网：http://www.fxlweb.com</string>
+    <string name="uri_update">http://www.fxlweb.com/app/AALife.apk</string>
+    <string name="txt_tongji_info">点击类别名称可修改类别。</string>
+    <string name="txt_rank_info">试一下左右滑动更改视图。</string>
+    <string name="txt_warn_info">本月您已消费 ￥%1$s 元，您设置的每月预警消费金额是 ￥%2$s 元。要理性消费哦！</string>
+
+    <string name="pass_0">0</string>
+    <string name="pass_1">1</string>
+    <string name="pass_2">2</string>
+    <string name="pass_3">3</string>
+    <string name="pass_4">4</string>
+    <string name="pass_5">5</string>
+    <string name="pass_6">6</string>
+    <string name="pass_7">7</string>
+    <string name="pass_8">8</string>
+    <string name="pass_9">9</string>
+    <string name="pass_ok">√</string>
+    <string name="pass_del">×</string>
+    <string name="pass_hint">请输入密码</string>
+    <string name="calc_jia">+</string>
+    <string name="calc_jian">-</string>
+    <string name="calc_chen">×</string>
+    <string name="calc_chu">÷</string>
+    <string name="calc_den">=</string>
+    <string name="calc_dian">.</string>
+    <string name="calc_clear">c</string>
+    <string name="calc_back">←</string>
+    
+</resources>

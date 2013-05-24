@@ -1,0 +1,32 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainlayout"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" >
+
+    <LinearLayout
+        android:id="@+id/contentlayout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/menulayout"
+        android:layout_alignParentTop="true"
+        android:orientation="vertical" >
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/menulayout"
+        style="@style/MenuLayout"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical" >
+
+        <GridView
+            android:id="@+id/gridviewbar"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:fadingEdge="vertical"
+            android:fadingEdgeLength="5dp"
+            android:numColumns="5" >
+        </GridView>
+    </LinearLayout>
+
+</RelativeLayout>

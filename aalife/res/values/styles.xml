@@ -1,0 +1,72 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="AppTheme" parent="android:Theme.Light">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="MenuLayout">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">48dp</item>
+    </style>
+
+    <style name="TitleLayout">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">48dp</item>
+    </style>
+
+    <style name="ListLayout">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">32dp</item>
+        <item name="android:minHeight">32dp</item>
+    </style>
+
+    <style name="TotalLayout" parent="@style/ListLayout">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="AddLayout">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">44dp</item>
+    </style>
+
+    <style name="ListButtonLayout">
+        <item name="android:layout_width">32dp</item>
+        <item name="android:layout_height">32dp</item>
+    </style>
+
+    <style name="TitleTextSize">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="ListTitleTextSize">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="ButtonTextSize" parent="AddLayout">
+        <item name="android:textSize">16sp</item>
+    </style>
+    
+    <style name="PassButtonLayout">
+        <item name="android:layout_width">66dp</item>
+        <item name="android:layout_height">44dp</item>
+    </style>
+    
+    <style name="CalcButtonLayout">
+        <item name="android:layout_width">55dp</item>
+        <item name="android:layout_height">44dp</item>
+    </style>
+    
+    <style name="AppWidgetLayout">
+        <item name="android:layout_width">72dp</item>
+        <item name="android:layout_height">72dp</item>
+    </style>
+    
+    <style name="AppWidgetTextSize">
+        <item name="android:textSize">14sp</item>
+    </style>
+    
+    <style name="AppWidgetMonth">
+        <item name="android:textSize">10sp</item>
+    </style>
+
+</resources>

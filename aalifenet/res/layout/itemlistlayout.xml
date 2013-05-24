@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/MyListItemLayout"
+    android:orientation="horizontal" >
+
+    <TextView
+        android:id="@+id/itemidtext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/txt_itemid"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/idtext"
+        android:layout_width="56dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="@string/txt_id" />
+
+    <TextView
+        android:id="@+id/catnametext"
+        android:layout_width="96dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/txt_catname" />
+
+    <TextView
+        android:id="@+id/cattypeidtext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/txt_cattypeid"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/useridtext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/txt_userid"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/usernametext"
+        android:layout_width="72dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="@string/txt_username" />
+
+    <TextView
+        android:id="@+id/itempricetext"
+        android:layout_width="96dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="right"
+        android:paddingRight="10dp"
+        android:text="@string/txt_itemprice" />
+
+</LinearLayout>

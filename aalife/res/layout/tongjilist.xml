@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/ListLayout"
+    android:background="@color/tablebg" >
+
+    <TextView
+        android:id="@+id/idtext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/txt_id"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/categorytext"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginBottom="1dp"
+        android:layout_marginLeft="1dp"
+        android:layout_marginTop="1dp"
+        android:layout_weight="1"
+        android:background="@android:color/white"
+        android:gravity="center"
+        android:text="@string/txt_category" />
+
+    <TextView
+        android:id="@+id/totalpricetext"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_margin="1dp"
+        android:layout_weight="1"
+        android:background="@android:color/white"
+        android:gravity="right|center"
+        android:paddingRight="10dp"
+        android:text="@string/txt_itemprice" />
+
+</LinearLayout>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@android:color/white" >
+
+    <ListView
+        android:id="@+id/cattypelistview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/cattypeaddzone"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:cacheColorHint="@android:color/transparent"
+        android:divider="@android:color/white"
+        android:fadingEdgeLength="0dp" >
+
+    </ListView>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_above="@+id/cattypeaddzone"
+        android:background="@color/grey"
+        android:orientation="vertical" >
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/cattypeaddzone"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_vertical"
+        android:padding="10dp" >
+
+        <EditText
+            android:id="@+id/cattypenameadd"
+            style="@style/MyEditText"
+            android:layout_weight="4"
+            android:inputType="textNoSuggestions" >
+        </EditText>
+
+        <Button
+            android:id="@+id/cattypeaddbtn"
+            style="@style/MyButton"
+            android:text="@string/txt_cattypeadd" />
+
+        <Button
+            android:id="@+id/cattypecancelbtn"
+            style="@style/MyButton"
+            android:text="@string/txt_cattypecancel" />
+
+    </LinearLayout>
+
+</RelativeLayout>

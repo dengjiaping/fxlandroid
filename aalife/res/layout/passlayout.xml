@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/popwinbg"
+    android:gravity="center"
+    android:padding="10dp" >
+
+    <TableRow
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center" >
+
+        <EditText
+            android:id="@+id/passtext"
+            style="@style/AddLayout"
+            android:layout_span="3"
+            android:clickable="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:gravity="center_vertical|center_horizontal"
+            android:hint="@string/pass_hint"
+            android:inputType="number"
+            android:maxLength="6"
+            android:ellipsize="start"
+            android:textSize="18sp" />
+
+    </TableRow>
+
+    <TableRow
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center" >
+
+        <Button
+            android:id="@+id/button1"
+            style="@style/PassButtonLayout"
+            android:text="@string/pass_1" />
+
+        <Button
+            android:id="@+id/button2"
+            style="@style/PassButtonLayout"
+            android:text="@string/pass_2" />
+
+        <Button
+            android:id="@+id/button3"
+            style="@style/PassButtonLayout"
+            android:text="@string/pass_3" />
+
+    </TableRow>
+
+    <TableRow
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center" >
+
+        <Button
+            android:id="@+id/button4"
+            style="@style/PassButtonLayout"
+            android:text="@string/pass_4" />
+
+        <Button
+            android:id="@+id/button5"
+            style="@style/PassButtonLayout"
+            android:text="@string/pass_5" />
+
+        <Button
+            android:id="@+id/button6"
+            style="@style/PassButtonLayout"
+            android:text="@string/pass_6" />
+
+    </TableRow>
+
+    <TableRow
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center" >
+
+        <Button
+            android:id="@+id/button7"
+            style="@style/PassButtonLayout"
+            android:text="@string/pass_7" />
+
+        <Button
+            android:id="@+id/button8"
+            style="@style/PassButtonLayout"
+            android:text="@string/pass_8" />
+
+        <Button
+            android:id="@+id/button9"
+            style="@style/PassButtonLayout"
+            android:text="@string/pass_9" />
+
+    </TableRow>
+
+    <TableRow
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center" >
+
+        <Button
+            android:id="@+id/buttonok"
+            style="@style/PassButtonLayout"
+            android:text="@string/pass_ok" />
+
+        <Button
+            android:id="@+id/button0"
+            style="@style/PassButtonLayout"
+            android:text="@string/pass_0" />
+
+        <Button
+            android:id="@+id/buttondel"
+            style="@style/PassButtonLayout"
+            android:text="@string/pass_del" />
+
+    </TableRow>
+
+</TableLayout>

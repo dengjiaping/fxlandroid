@@ -1,0 +1,244 @@
+<RelativeLayout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/layoutbg"
+    tools:context=".ItemListActivity" >
+
+    <RelativeLayout
+        android:id="@+id/userzone"
+        style="@style/MyTitleLayout"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/titlelayoutbg" >
+
+        <ImageView
+            android:id="@+id/userimageview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_navibtnuser"
+            android:contentDescription="@string/desc_image" />
+
+        <TextView
+            android:id="@+id/usernametext"
+            style="@style/MyTitleText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_toRightOf="@+id/userimageview"
+            android:text="@string/txt_user"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/usergroupidtext"
+            style="@style/MyTitleText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/usernametext"
+            android:text="@string/txt_groupid" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        style="@style/MyItemListLayout"
+        android:layout_above="@+id/datezone"
+        android:layout_below="@+id/userzone"
+        android:background="@drawable/boxlayoutbg" >
+
+        <LinearLayout
+            android:id="@+id/titlezone"
+            style="@style/MyListItemLayout"
+            android:background="@color/blue"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="56dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/txt_id"
+                android:textColor="@android:color/white"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="96dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/txt_catname"
+                android:textColor="@android:color/white"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="72dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/txt_username"
+                android:textColor="@android:color/white"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="96dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:paddingRight="10dp"
+                android:text="@string/txt_itemprice"
+                android:textColor="@android:color/white"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/itemlistzone"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_above="@+id/totalzone"
+            android:layout_below="@+id/titlezone"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/emptytext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:padding="5dp"
+                android:text="@string/text_empty"
+                android:visibility="gone" />
+
+            <ListView
+                android:id="@+id/itemlist"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:cacheColorHint="@android:color/transparent"
+                android:divider="@color/listbg"
+                android:dividerHeight="1dp" >
+            </ListView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:layout_above="@+id/totalzone"
+            android:background="@color/listbg"
+            android:orientation="vertical" >
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/totalzone"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:paddingBottom="5dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="5dp" >
+
+            <TextView
+                android:id="@+id/monthpricetext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/txt_month"
+                android:textColor="@color/green"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/totalpricetext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:text="@string/txt_today"
+                android:textColor="@color/blue"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/userlisttext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/totalpricetext"
+                android:text="@string/txt_users" />
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/datezone"
+        style="@style/MyDateBtnLayout"
+        android:layout_above="@+id/navizone" >
+
+        <Button
+            android:id="@+id/leftbtn"
+            style="@style/MyDateBtn"
+            android:layout_alignParentLeft="true"
+            android:text="@string/btn_symbol_left" />
+
+        <Button
+            android:id="@+id/premonthbtn"
+            style="@style/MyDateBtn"
+            android:layout_toRightOf="@+id/leftbtn"
+            android:text="@string/btn_symbol_premonth" />
+
+        <TextView
+            android:id="@+id/datetext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="@string/txt_date"
+            android:textStyle="bold" />
+
+        <ProgressBar
+            android:id="@+id/progressbar"
+            style="@style/MyProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/datetext"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/nextmonthbtn"
+            style="@style/MyDateBtn"
+            android:layout_toLeftOf="@+id/rightbtn"
+            android:text="@string/btn_symbol_nextmonth" />
+
+        <Button
+            android:id="@+id/rightbtn"
+            style="@style/MyDateBtn"
+            android:layout_alignParentRight="true"
+            android:text="@string/btn_symbol_right" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/navizone"
+        style="@style/MyNaviLayout"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/navilayoutbg" >
+
+        <ImageButton
+            android:id="@+id/backbtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_navibtnback_s"
+            android:contentDescription="@string/desc_exit" />
+
+        <ImageButton
+            android:id="@+id/userbtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@drawable/ic_navibtnuserinfo"
+            android:contentDescription="@string/desc_group" />
+
+        <ImageButton
+            android:id="@+id/addbtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/ic_navibtnadd_s"
+            android:contentDescription="@string/desc_add" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

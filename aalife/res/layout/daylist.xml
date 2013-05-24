@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        style="@style/ListLayout"
+        android:background="@color/daytitlebg" >
+
+        <TextView
+            android:id="@+id/itembuydatetext"
+            style="@style/ListTitleTextSize"
+            android:layout_width="160dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:gravity="center|left"
+            android:paddingLeft="10dp"
+            android:text="@string/txt_itembuydate"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/itempricetext"
+            style="@style/ListTitleTextSize"
+            android:layout_width="128dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:gravity="right|center"
+            android:paddingRight="5dp"
+            android:text="@string/txt_itemprice"
+            android:textStyle="bold" />
+
+        <ImageButton
+            android:id="@+id/addbtn"
+        	style="@style/ListButtonLayout"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/img_desc_add"
+            android:src="@drawable/ic_add_l" />
+
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/subitemlistview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:divider="@color/dayitembg"
+        android:dividerHeight="1dp"
+        android:listSelector="@android:color/transparent" >
+
+    </ListView>
+
+</LinearLayout>

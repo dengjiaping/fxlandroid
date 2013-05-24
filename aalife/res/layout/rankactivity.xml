@@ -1,0 +1,52 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" >
+
+    <RelativeLayout
+        android:id="@+id/title"
+        style="@style/TitleLayout" >
+
+        <TextView
+            android:id="@+id/titletext"
+            style="@style/TitleTextSize"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:paddingLeft="10dp"
+            android:text="@string/title_activity_rank" />
+
+        <ImageButton
+            android:id="@+id/selectmonthbtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_margin="3dp"
+            android:background="@color/whitetrans"
+            android:contentDescription="@string/img_desc_selectday"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:src="@drawable/ic_date_s" />
+    </RelativeLayout>
+
+    <ViewFlipper
+        android:id="@+id/viewflipper"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/monthtotalpricetext"
+        android:layout_below="@+id/title" >
+
+        <include layout="@layout/rankpricelayout" />
+        
+        <include layout="@layout/rankitemlayout" />
+    </ViewFlipper>
+
+    <TextView
+        android:id="@+id/monthtotalpricetext"
+        style="@style/TotalLayout"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:text="@string/txt_monthprice"
+        android:textColor="@color/total" />
+
+</RelativeLayout>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="whitetrans">#8FFFFFFF</color>
+    <color name="tablebg">#FFDFEDF9</color>
+    <color name="daytitle">#FF0000FF</color>
+    <color name="daytitlebg">#FFDFEDF9</color>
+    <color name="dayitembg">#8FDFEDF9</color>
+    <color name="dayitembgselect">#8FFFA508</color>
+    <color name="daytitlecur">#FF009900</color>
+    <color name="daytitlebgcur">#FFD8F0D5</color>
+    <color name="daytitlewarn">#FFFF0000</color>
+    <color name="daytitlebgwarn">#FFFFEBE2</color>
+    <color name="total">#FF0000FF</color>
+    <color name="monthtitlebg">#4FFFFFFF</color>
+    <color name="monthsubbg">#8FFFFFFF</color>
+    <color name="popwinbg">#BFEFEFEF</color>
+    <color name="calcbg">#FF7B8891</color>
+    <color name="yellow">#8FFFA508</color>
+
+</resources>

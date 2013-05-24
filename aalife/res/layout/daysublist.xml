@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/ListLayout" >
+
+    <TextView
+        android:id="@+id/subitemidtext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/txt_id"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/subitemnametext"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+        android:gravity="center|left"
+        android:paddingLeft="10dp"
+        android:text="@string/txt_itemname" />
+
+    <TextView
+        android:id="@+id/subitempricetext"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+        android:gravity="right|center"
+        android:paddingRight="10dp"
+        android:text="@string/txt_itemprice" />
+
+</LinearLayout>

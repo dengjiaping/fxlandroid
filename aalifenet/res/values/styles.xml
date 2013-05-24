@@ -1,0 +1,144 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--
+        Base application theme, dependent on API level. This theme is replaced
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+    -->
+    <style name="AppBaseTheme" parent="android:Theme.Light">
+        <!--
+            Theme customizations available in newer API levels can go in
+            res/values-vXX/styles.xml, while customizations related to
+            backward-compatibility can go here.
+        -->
+    </style>
+
+    <!-- Application theme. -->
+    <style name="AppTheme" parent="AppBaseTheme">
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="MyEditText">
+        <item name="android:layout_height">32dp</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:paddingLeft">5dp</item>
+        <item name="android:paddingRight">5dp</item>
+        <item name="android:background">@drawable/myedittext</item>
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+    
+    <style name="MyRadioBox">
+        <item name="android:layout_height">32dp</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:paddingLeft">32dp</item>
+    </style>
+    
+    <style name="MyDateBtn">
+        <item name="android:layout_height">32dp</item>
+        <item name="android:layout_width">32dp</item>
+        <item name="android:background">@drawable/mydatebtn</item>
+    </style>
+    
+    <style name="MyButton">
+        <item name="android:layout_height">32dp</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:layout_margin">3dp</item>
+        <item name="android:background">@drawable/mybutton</item>
+    </style>
+    
+    <style name="MySpinner">
+        <item name="android:layout_height">32dp</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:background">@drawable/myspinner</item>
+    </style>
+    
+    <style name="MySpinLayout">
+        <item name="android:layout_height">48dp</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+    
+    <style name="MyListItemLayout">
+        <item name="android:layout_height">32dp</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+    
+    <style name="MyListLayout">
+        <item name="android:layout_height">163dp</item>
+        <item name="android:layout_width">fill_parent</item>
+    </style>
+    
+    <style name="MyEditTextLayout">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_margin">3dp</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+    
+    <style name="MyNaviLayout">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:paddingLeft">10dp</item>
+        <item name="android:paddingRight">10dp</item>
+    </style>
+    
+    <style name="MyTitleText">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:layout_centerVertical">true</item>
+    </style>
+    
+    <style name="MyTitleLayout">
+        <item name="android:layout_height">48dp</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:gravity">center</item>
+    </style>
+    
+    <style name="MyBoxLayout">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:layout_margin">10dp</item>
+    </style>
+    
+    <style name="MyItemListLayout">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:padding">1dp</item>
+        <item name="android:layout_marginLeft">10dp</item>
+        <item name="android:layout_marginRight">10dp</item>
+        <item name="android:layout_marginTop">10dp</item>
+    </style>
+    
+    <style name="MyDateBtnLayout">
+        <item name="android:layout_height">32dp</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_marginLeft">10dp</item>
+        <item name="android:layout_marginRight">10dp</item>
+    </style>
+    
+    <style name="MyProgressBar">
+        <item name="android:minHeight">16dp</item>
+        <item name="android:minWidth">16dp</item>
+        <item name="android:maxHeight">16dp</item>
+        <item name="android:maxWidth">16dp</item>
+        <item name="android:layout_marginLeft">7dp</item>
+    </style>
+    
+	<style name="MyDialog">
+	    <item name="android:windowFrame">@null</item>
+		<item name="android:windowIsFloating">true</item>
+		<item name="android:windowNoTitle">false</item>
+		<item name="android:windowContentOverlay">@null</item>
+ 		<item name="android:windowBackground">@drawable/dialoginset</item>
+	</style>
+        
+</resources>

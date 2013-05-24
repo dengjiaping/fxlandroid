@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/popwinbg"
+    android:gravity="center"
+    android:padding="10dp" >
+
+    <TableRow
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center" >
+
+        <EditText
+            android:id="@+id/calctext"
+            style="@style/AddLayout"
+            android:layout_span="4"
+            android:clickable="false"
+            android:ellipsize="start"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:gravity="center_vertical|right"
+            android:hint="@string/pass_0"
+            android:inputType="textNoSuggestions"
+            android:textSize="18sp" />
+
+    </TableRow>
+
+    <TableRow
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center" >
+
+        <Button
+            android:id="@+id/buttonclear"
+            style="@style/CalcButtonLayout"
+            android:text="@string/calc_clear" />
+
+        <TextView style="@style/CalcButtonLayout" />
+
+        <TextView style="@style/CalcButtonLayout" />
+
+        <Button
+            android:id="@+id/buttonback"
+            style="@style/CalcButtonLayout"
+            android:text="@string/calc_back" />
+
+    </TableRow>
+
+    <TableRow
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center" >
+
+        <Button
+            android:id="@+id/button1"
+            style="@style/CalcButtonLayout"
+            android:text="@string/pass_1" />
+
+        <Button
+            android:id="@+id/button2"
+            style="@style/CalcButtonLayout"
+            android:text="@string/pass_2" />
+
+        <Button
+            android:id="@+id/button3"
+            style="@style/CalcButtonLayout"
+            android:text="@string/pass_3" />
+
+        <Button
+            android:id="@+id/buttonjia"
+            style="@style/CalcButtonLayout"
+            android:text="@string/calc_jia" />
+
+    </TableRow>
+
+    <TableRow
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center" >
+
+        <Button
+            android:id="@+id/button4"
+            style="@style/CalcButtonLayout"
+            android:text="@string/pass_4" />
+
+        <Button
+            android:id="@+id/button5"
+            style="@style/CalcButtonLayout"
+            android:text="@string/pass_5" />
+
+        <Button
+            android:id="@+id/button6"
+            style="@style/CalcButtonLayout"
+            android:text="@string/pass_6" />
+
+        <Button
+            android:id="@+id/buttonjian"
+            style="@style/CalcButtonLayout"
+            android:text="@string/calc_jian" />
+
+    </TableRow>
+
+    <TableRow
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center" >
+
+        <Button
+            android:id="@+id/button7"
+            style="@style/CalcButtonLayout"
+            android:text="@string/pass_7" />
+
+        <Button
+            android:id="@+id/button8"
+            style="@style/CalcButtonLayout"
+            android:text="@string/pass_8" />
+
+        <Button
+            android:id="@+id/button9"
+            style="@style/CalcButtonLayout"
+            android:text="@string/pass_9" />
+
+        <Button
+            android:id="@+id/buttonchen"
+            style="@style/CalcButtonLayout"
+            android:text="@string/calc_chen" />
+
+    </TableRow>
+
+    <TableRow
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center" >
+
+        <Button
+            android:id="@+id/buttondian"
+            style="@style/CalcButtonLayout"
+            android:text="@string/calc_dian" />
+
+        <Button
+            android:id="@+id/button0"
+            style="@style/CalcButtonLayout"
+            android:text="@string/pass_0" />
+
+        <Button
+            android:id="@+id/buttonden"
+            style="@style/CalcButtonLayout"
+            android:text="@string/calc_den" />
+
+        <Button
+            android:id="@+id/buttonchu"
+            style="@style/CalcButtonLayout"
+            android:text="@string/calc_chu" />
+
+    </TableRow>
+
+</TableLayout>

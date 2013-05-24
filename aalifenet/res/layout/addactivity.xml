@@ -1,0 +1,136 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/layoutbg"
+    tools:context=".AddActivity" >
+
+    <RelativeLayout
+        android:id="@+id/titlezone"
+        style="@style/MyTitleLayout"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/titlelayoutbg" >
+
+        <ImageView
+            android:id="@+id/titleaddimage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/desc_add"
+            android:src="@drawable/ic_navibtnadd" />
+
+        <TextView
+            style="@style/MyTitleText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/titleaddimage"
+            android:text="@string/title_text_additem" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        style="@style/MyBoxLayout"
+        android:layout_below="@+id/titlezone"
+        android:background="@drawable/boxlayoutbg"
+        android:orientation="vertical" >
+
+        <LinearLayout style="@style/MyEditTextLayout" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="10dp"
+                android:text="@string/label_categoryname" />
+
+            <Spinner
+                android:id="@+id/cattypespinner"
+                style="@style/MySpinner" />
+        </LinearLayout>
+
+        <LinearLayout style="@style/MyEditTextLayout" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="10dp"
+                android:text="@string/label_itemname" />
+
+            <AutoCompleteTextView
+                android:id="@+id/addnameedit"
+                style="@style/MyEditText"
+                android:completionThreshold="1"
+                android:imeOptions="actionNext"
+                android:inputType="textAutoComplete" >
+
+                <requestFocus />
+            </AutoCompleteTextView>
+        </LinearLayout>
+
+        <LinearLayout style="@style/MyEditTextLayout" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="10dp"
+                android:text="@string/label_itemprice" />
+
+            <EditText
+                android:id="@+id/addpriceedit"
+                style="@style/MyEditText"
+                android:imeOptions="actionDone"
+                android:inputType="numberDecimal" />
+
+        </LinearLayout>
+
+        <LinearLayout style="@style/MyEditTextLayout" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="10dp"
+                android:text="@string/label_itembuydate" />
+
+            <EditText
+                android:id="@+id/adddateedit"
+                style="@style/MyEditText"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:inputType="date" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@android:color/transparent" >
+
+            <Button
+                android:id="@+id/submitbtn"
+                style="@style/MyButton"
+                android:text="@string/btn_submitadd" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/navizone"
+        style="@style/MyNaviLayout"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/navilayoutbg" >
+
+        <ImageButton
+            android:id="@+id/backbtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_navibtnback_s"
+            android:contentDescription="@string/desc_back" />
+
+        <ImageButton
+            android:id="@+id/cattypebtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@drawable/ic_navibtncattype"
+            android:contentDescription="@string/desc_cattype" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

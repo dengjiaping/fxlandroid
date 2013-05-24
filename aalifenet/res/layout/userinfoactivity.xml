@@ -1,0 +1,186 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/layoutbg"
+    tools:context=".UserinfoActivity" >
+
+    <RelativeLayout
+        android:id="@+id/titlezone"
+        style="@style/MyTitleLayout"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/titlelayoutbg" >
+
+        <ImageView
+            android:id="@+id/titleregisterimage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/desc_user"
+            android:src="@drawable/ic_navibtnuser" />
+
+        <TextView
+            style="@style/MyTitleText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/titleregisterimage"
+            android:text="@string/title_text_userinfo" />
+
+    </RelativeLayout>
+
+    <ScrollView
+        android:id="@+id/loginzone"
+        style="@style/MyBoxLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/titlezone"
+        android:background="@drawable/boxlayoutbg" >
+
+        <LinearLayout
+            android:id="@+id/loginitem"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                style="@style/MyEditTextLayout"
+                android:background="@android:color/transparent" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_username" />
+
+                <EditText
+                    android:id="@+id/usernameedit"
+                    style="@style/MyEditText"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:inputType="textNoSuggestions" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/MyEditTextLayout"
+                android:background="@android:color/transparent" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_userpass" />
+
+                <EditText
+                    android:id="@+id/userpassedit"
+                    style="@style/MyEditText"
+                    android:imeOptions="actionNext"
+                    android:inputType="textPassword" >
+
+                    <requestFocus />
+                </EditText>
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/MyEditTextLayout"
+                android:background="@android:color/transparent" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_usernickname" />
+
+                <EditText
+                    android:id="@+id/usernicknameedit"
+                    style="@style/MyEditText"
+                    android:imeOptions="actionNext"
+                    android:inputType="textNoSuggestions" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/MyEditTextLayout"
+                android:background="@android:color/transparent" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_useremail" />
+
+                <EditText
+                    android:id="@+id/useremailedit"
+                    style="@style/MyEditText"
+                    android:imeOptions="actionNext"
+                    android:inputType="textEmailAddress" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/MyEditTextLayout"
+                android:background="@android:color/transparent" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_userphone" />
+
+                <EditText
+                    android:id="@+id/userphoneedit"
+                    style="@style/MyEditText"
+                    android:imeOptions="actionNext"
+                    android:inputType="numberSigned" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/MyEditTextLayout"
+                android:layout_width="match_parent"
+                android:background="@android:color/transparent" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_usergroup" />
+
+                <EditText
+                    android:id="@+id/usergroupidedit"
+                    style="@style/MyEditText"
+                    android:imeOptions="actionDone"
+                    android:inputType="numberSigned" />
+
+                <CheckBox
+                    android:id="@+id/usergroupsavebox"
+                    style="@style/MyRadioBox"
+                    android:button="@drawable/mycheckbox"
+                    android:checked="true"
+                    android:text="@string/txt_savegroup" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:background="@android:color/transparent" >
+
+                <Button
+                    android:id="@+id/submitbtn"
+                    style="@style/MyButton"
+                    android:text="@string/btn_submituserinfo" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <RelativeLayout
+        android:id="@+id/navizone"
+        style="@style/MyNaviLayout"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/navilayoutbg" >
+
+        <ImageButton
+            android:id="@+id/backbtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_navibtnback_s"
+            android:contentDescription="@string/desc_exit" />
+    </RelativeLayout>
+
+</RelativeLayout>
