@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">AA生活记账</string>
+    <string name="action_exit">退出</string>    
+    
+    <string name="string_warn">警告</string>
+    <string name="string_sure">确定</string>
+    <string name="string_cancel">取消</string>
+    <string name="string_nointernet">您的网络连接错误，请重试。</string>
+    <string name="string_loading">页面努力加载中&#8230;</string>
+    <string name="string_chooserimage">选择图片</string>
+    <string name="string_newversion">有新版本可以升级。</string>
+    <string name="string_updateerror">升级失败！</string>
+
+</resources>

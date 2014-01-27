@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="horizontal" >
+
+    <LinearLayout
+        android:id="@+id/lay_day_select"
+        android:layout_width="0dp"
+        android:layout_height="fill_parent"
+        android:layout_marginBottom="1dp"
+        android:layout_marginLeft="1dp"
+        android:layout_weight="2"
+        android:background="@color/item_bg"
+        android:gravity="center"
+        android:orientation="vertical" >
+
+        <CheckBox
+            android:id="@+id/cb_day_select"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:focusable="false" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_day_itemname"
+        style="@style/tv_item"
+        android:layout_width="0dp"
+        android:layout_height="fill_parent"
+        android:layout_marginBottom="1dp"
+        android:layout_marginLeft="1dp"
+        android:layout_weight="3"
+        android:background="@color/item_bg"
+        android:focusable="false"
+        android:gravity="center"
+        android:text="@string/txt_day_itemname" />
+
+    <TextView
+        android:id="@+id/tv_day_itemprice"
+        style="@style/tv_item_price"
+        android:layout_width="0dp"
+        android:layout_height="fill_parent"
+        android:layout_marginBottom="1dp"
+        android:layout_marginLeft="1dp"
+        android:layout_weight="3"
+        android:background="@color/item_bg"
+        android:focusable="false"
+        android:gravity="right|center"
+        android:text="@string/txt_day_itemprice" />
+
+    <TextView
+        android:id="@+id/tv_day_itempricevalue"
+        style="@style/tv_item_price"
+        android:layout_width="0dp"
+        android:layout_height="fill_parent"
+        android:layout_marginBottom="1dp"
+        android:layout_marginLeft="1dp"
+        android:layout_weight="3"
+        android:background="@color/item_bg"
+        android:gravity="right|center"
+        android:text="@string/txt_day_itemprice"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/lay_day_recommend"
+        android:layout_width="0dp"
+        android:layout_height="fill_parent"
+        android:layout_marginBottom="1dp"
+        android:layout_marginLeft="1dp"
+        android:layout_weight="2"
+        android:background="@color/item_bg"
+        android:gravity="center"
+        android:orientation="vertical" >
+
+        <CheckBox
+            android:id="@+id/cb_day_recommend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:focusable="false" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_day_id"
+        style="@style/tv_item"
+        android:layout_width="0dp"
+        android:layout_height="fill_parent"
+        android:layout_marginBottom="1dp"
+        android:layout_marginLeft="1dp"
+        android:layout_marginRight="1dp"
+        android:layout_weight="2"
+        android:background="@color/item_bg"
+        android:gravity="center"
+        android:text="@string/txt_day_id"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tv_day_catid"
+        style="@style/tv_item"
+        android:layout_width="0dp"
+        android:layout_height="fill_parent"
+        android:layout_marginBottom="1dp"
+        android:layout_marginLeft="1dp"
+        android:layout_marginRight="1dp"
+        android:layout_weight="2"
+        android:background="@color/item_bg"
+        android:gravity="center"
+        android:text="@string/txt_day_id"
+        android:visibility="gone" />
+
+</LinearLayout>
