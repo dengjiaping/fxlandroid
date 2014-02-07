@@ -21,7 +21,7 @@ public class ItemTableAccess {
 	//根据日期查消费
 	public List<Map<String, String>> findItemByDate(String date) {
 		List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-		String sql = "SELECT ItemID, ItemName, ItemPrice, ItemBuyDate, CategoryID FROM " + ITEMTABNAME + " WHERE ItemBuyDate = '" + date + "'";
+		String sql = "SELECT ItemID, ItemName, ItemPrice, ItemBuyDate, CategoryID, Recommend FROM " + ITEMTABNAME + " WHERE ItemBuyDate = '" + date + "'";
 		try {
 			Cursor result = this.db.rawQuery(sql, null);
 			while (result.moveToNext()) {
@@ -34,6 +34,7 @@ public class ItemTableAccess {
 				map.put("itempricevalue", UtilityHelper.formatDouble(result.getDouble(2), "0.0##"));
 				map.put("itembuydate", result.getString(3));
 				map.put("catid", result.getString(4));
+				map.put("recommend", result.getString(5));
 				list.add(map);
 			}
 		} catch(Exception e) {
@@ -70,36 +71,36 @@ public class ItemTableAccess {
 	public List<Map<String, String>> findHomeTotalByDate(String curDate) {
 		List<Map<String, String>> list = new ArrayList<Map<String, String>>();
 		String sql = "SELECT a.*, b.* FROM "
-				   + "(SELECT SUM(ItemPrice) AS Price, '今日' AS Label, 1 AS Flag FROM " + ITEMTABNAME
+				   + "(SELECT 1 AS Rank, SUM(ItemPrice) AS Price, '今日' AS Label, 1 AS Flag FROM " + ITEMTABNAME
 				   + " WHERE STRFTIME('%Y-%m-%d', ItemBuyDate) = STRFTIME('%Y-%m-%d', '" + curDate + "')) AS a"
 				   + " INNER JOIN "
-				   + "(SELECT SUM(ItemPrice) AS Price, '昨日' AS Label, 1 AS Flag FROM " + ITEMTABNAME
+				   + "(SELECT 1 AS Rank, SUM(ItemPrice) AS Price, '昨日' AS Label, 1 AS Flag FROM " + ITEMTABNAME
 				   + " WHERE STRFTIME('%Y-%m-%d', ItemBuyDate) = STRFTIME('%Y-%m-%d', DATE('" + curDate + "','start of day','-1 day'))) AS b"
 				   + " ON a.Flag = b.Flag"
 				   + " UNION "
 				   + "SELECT a.*, b.* FROM "
-				   + "(SELECT SUM(ItemPrice) AS Price, '本月' AS Label, 1 AS Flag FROM " + ITEMTABNAME
+				   + "(SELECT 2 AS Rank, SUM(ItemPrice) AS Price, '本月' AS Label, 1 AS Flag FROM " + ITEMTABNAME
 				   + " WHERE STRFTIME('%Y-%m', ItemBuyDate) = STRFTIME('%Y-%m', '" + curDate + "')) AS a"
 				   + " INNER JOIN "
-				   + "(SELECT SUM(ItemPrice) AS Price, '上月' AS Label, 1 AS Flag FROM " + ITEMTABNAME
+				   + "(SELECT 2 AS Rank, SUM(ItemPrice) AS Price, '上月' AS Label, 1 AS Flag FROM " + ITEMTABNAME
 				   + " WHERE STRFTIME('%Y-%m', ItemBuyDate) = STRFTIME('%Y-%m', DATE('" + curDate + "','start of month','-1 month'))) AS b"
 				   + " ON a.Flag = b.Flag"		
 				   + " UNION "
 				   + "SELECT a.*, b.* FROM "
-				   + "(SELECT SUM(ItemPrice) AS Price, '今年' AS Label, 1 AS Flag FROM " + ITEMTABNAME
+				   + "(SELECT 3 AS Rank, SUM(ItemPrice) AS Price, '今年' AS Label, 1 AS Flag FROM " + ITEMTABNAME
 				   + " WHERE STRFTIME('%Y', ItemBuyDate) = STRFTIME('%Y', '" + curDate + "')) AS a"
 				   + " INNER JOIN "
-				   + "(SELECT SUM(ItemPrice) AS Price, '去年' AS Label, 1 AS Flag FROM " + ITEMTABNAME
+				   + "(SELECT 3 AS Rank, SUM(ItemPrice) AS Price, '去年' AS Label, 1 AS Flag FROM " + ITEMTABNAME
 				   + " WHERE STRFTIME('%Y', ItemBuyDate) = STRFTIME('%Y', DATE('" + curDate + "','start of year','-1 year'))) AS b"
 				   + " ON a.Flag = b.Flag";
 		try {
 			Cursor result = this.db.rawQuery(sql, null);
 			while (result.moveToNext()) {
 				Map<String, String> map = new HashMap<String, String>();
-				map.put("curprice", "￥" + UtilityHelper.formatDouble(result.getDouble(0), "0.0##"));
-				map.put("curlabel", result.getString(1));
-				map.put("prevprice", "￥" + UtilityHelper.formatDouble(result.getDouble(3), "0.0##"));
-				map.put("prevlabel", result.getString(4));
+				map.put("curprice", "￥" + UtilityHelper.formatDouble(result.getDouble(1), "0.0##"));
+				map.put("curlabel", result.getString(2));
+				map.put("prevprice", "￥" + UtilityHelper.formatDouble(result.getDouble(5), "0.0##"));
+				map.put("prevlabel", result.getString(6));
 				list.add(map);
 			}
 		} catch(Exception e) {
@@ -273,6 +274,29 @@ public class ItemTableAccess {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	//更改同步状态
+	public void updateSyncStatus() {
+		String sql = "UPDATE " + ITEMTABNAME + " SET Synchronize='0'";
+		try {
+		    this.db.execSQL(sql);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	//更新类别显示
+	public boolean updateItemRecommend(int itemId, int recommend) {
+		String sql = "UPDATE " + ITEMTABNAME + " SET Recommend='" + recommend + "', Synchronize='1' WHERE ItemID=" + itemId;
+		try {
+		    this.db.execSQL(sql);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		return true;
 	}
 	
 	//恢复数据

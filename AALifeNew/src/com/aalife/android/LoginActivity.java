@@ -12,7 +12,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -26,6 +25,7 @@ public class LoginActivity extends Activity {
 	private EditText etUserName = null;
 	private EditText etUserPass = null;
 	private Button btnUserLogin = null;
+	//private static final String WEBURL = "http://192.168.0.1:81";
 	//private static final String WEBURL = "http://10.0.2.2:81";
 	private static final String WEBURL = "http://www.fxlweb.com";
 	private SharedHelper setting = null;
@@ -111,14 +111,7 @@ public class LoginActivity extends Activity {
 		
 		return result;
 	}
-	
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.login, menu);
-		return true;
-	}
-	
+		
 	//多线程处理
 	static class MyHandler extends Handler {
 		WeakReference<LoginActivity> myActivity = null;

@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.text.TextPaint;
-import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
@@ -86,6 +85,9 @@ public class AddActivity extends Activity {
 		this.adapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item, this.list);
 		this.adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		this.spinner.setAdapter(this.adapter);
+		int category = sharedHelper.getCategory();
+		if(category > 0)
+			this.spinner.setSelection(category);
 
 		//添加继续按钮
 		btnAddContinue.setOnClickListener(new OnClickListener() {
@@ -160,7 +162,8 @@ public class AddActivity extends Activity {
 		String catType = this.spinner.getSelectedItem().toString();
 		this.categoryAccess = new CategoryTableAccess(this.sqlHelper.getReadableDatabase());
 		int catId = this.categoryAccess.findCatIdByName(catType);
-		this.categoryAccess.close();
+		sharedHelper.setCategory(this.spinner.getSelectedItemPosition());
+		this.categoryAccess.close();		
 		
 		String itemName = this.etAddItemName.getText().toString().trim();
 		if (itemName.equals("")) {
@@ -179,6 +182,7 @@ public class AddActivity extends Activity {
 		Boolean result = this.itemAccess.addItem(itemName, itemPrice, itemBuyDate, catId);
 		this.itemAccess.close();
         if(result) {
+        	sharedHelper.setDate(itemBuyDate);
         	sharedHelper.setLocalSync(true);
         	sharedHelper.setSyncStatus(getString(R.string.txt_home_hassync));
 		    return true;
@@ -192,13 +196,6 @@ public class AddActivity extends Activity {
 		// TODO Auto-generated method stub
 		super.onResume();
 		onCreate(null);
-	}
-	
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.add, menu);
-		return true;
 	}
 
 }

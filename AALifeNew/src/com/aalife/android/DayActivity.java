@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.text.TextPaint;
-import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -192,19 +191,26 @@ public class DayActivity extends Activity {
 		
 		itemAccess = new ItemTableAccess(sqlHelper.getReadableDatabase());
 		list = itemAccess.findItemByDate(date);
+
 		itemAccess.close();
-		final boolean[] listCheck = new boolean[list.size()];
+		final boolean[][] listCheck = new boolean[2][list.size()];
+		for(int i=0; i<list.size(); i++) {
+			Map<String, String> map = list.get(i);
+			listCheck[1][i] = map.get("recommend").toString().equals("0") ? false : true;
+		}
 		adapter = new SimpleAdapter(this, list, R.layout.list_day, new String[] { "id", "itemname", "itemprice", "itempricevalue", "id", "itemid", "catid" }, new int[] { R.id.cb_day_select, R.id.tv_day_itemname, R.id.tv_day_itemprice, R.id.tv_day_itempricevalue, R.id.cb_day_recommend, R.id.tv_day_id, R.id.tv_day_catid }) {
 			@Override
 			public View getView(final int position, View convertView, ViewGroup parent) {
 				View view = super.getView(position, convertView, parent);
+				TextView tv = (TextView) view.findViewById(R.id.tv_day_id);
+				final int itemId = Integer.parseInt(tv.getText().toString());
 				final CheckBox se = (CheckBox) view.findViewById(R.id.cb_day_select);
-				se.setChecked(!listCheck[position]);
+				se.setChecked(!listCheck[0][position]);
 				final TextView value = (TextView) view.findViewById(R.id.tv_day_itempricevalue);
 				se.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						listCheck[position] = se.isChecked() ? false : true;
+						listCheck[0][position] = se.isChecked() ? false : true;
 						if(se.isChecked())
 						    updateTotal(Double.parseDouble(value.getText().toString()));
 						else
@@ -212,11 +218,20 @@ public class DayActivity extends Activity {
 					}					
 				});
 				final CheckBox re = (CheckBox) view.findViewById(R.id.cb_day_recommend);
+				re.setChecked(listCheck[1][position]);
 				re.setOnClickListener(new OnClickListener() {
 					@Override
-					public void onClick(View view) {
-						System.out.println(re.isChecked());
-					}					
+					public void onClick(View v) {
+						itemAccess = new ItemTableAccess(sqlHelper.getReadableDatabase());
+						listCheck[1][position] = re.isChecked() ? false : true;
+						if(re.isChecked())
+						    itemAccess.updateItemRecommend(itemId, 1);
+						else
+							itemAccess.updateItemRecommend(itemId, 0);
+						itemAccess.close();
+						sharedHelper.setLocalSync(true);
+			        	sharedHelper.setSyncStatus(getString(R.string.txt_home_hassync));
+					}						
 				});
 				
 				return view;
@@ -253,11 +268,4 @@ public class DayActivity extends Activity {
 		onCreate(null);
 	}
 	
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.day, menu);
-		return true;
-	}
-
 }

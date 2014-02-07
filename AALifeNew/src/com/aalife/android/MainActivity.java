@@ -8,11 +8,13 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.StrictMode;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.DatePicker;
@@ -40,10 +42,12 @@ public class MainActivity extends Activity {
 	private SimpleAdapter adapter = null;
 	private TextView tvDateChoose = null;
 	private String curDate = null;
+	private String todayDate = null;
+	private String tempDate = null;
 	private TextView tvTitleLogin = null;
-	private TextView tvTitleLogout = null;
 	private SyncHelper syncHelper = null;
 	private Boolean checkSyncWeb = false;
+	private Boolean checkVersion = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -55,10 +59,13 @@ public class MainActivity extends Activity {
 			StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 			StrictMode.setThreadPolicy(policy);
 		}
-		
+				
 		//初始化setting
 		sharedHelper = new SharedHelper(this);
 		syncHelper = new SyncHelper(MainActivity.this);
+		pbHomeSync = (ProgressBar) super.findViewById(R.id.pb_home_sync);
+		tvLabStatus = (TextView) super.findViewById(R.id.tv_lab_status);		
+		listTotal = (ListView) super.findViewById(R.id.list_total);
 				
 		//恢复备份数据
 		if(!sharedHelper.getRestore()) {
@@ -80,11 +87,22 @@ public class MainActivity extends Activity {
 		sqlHelper.close();
 		
 		//当前日期
+		tempDate = UtilityHelper.getCurDate();
 		curDate = sharedHelper.getDate();
-		if(curDate.equals(""))
-			curDate = UtilityHelper.getCurDate();
+		if(curDate.equals("")) {
+			curDate = tempDate;
+		}
 		
-		listTotal = (ListView) super.findViewById(R.id.list_total);
+		//今日
+		todayDate = sharedHelper.getToday();
+		if(todayDate.equals("")) {
+			sharedHelper.setToday(tempDate);
+			todayDate = tempDate;
+			curDate = tempDate;	
+		}
+		if(!todayDate.equals(tempDate)) {
+			curDate = tempDate;
+		}
 						
 		//首页日期
 		tvDateChoose = (TextView) super.findViewById(R.id.tv_date_choose);
@@ -113,20 +131,9 @@ public class MainActivity extends Activity {
 			}			
 		});
 		
-		//登出按钮
-		tvTitleLogout = (TextView) super.findViewById(R.id.tv_title_logout);
-		tvTitleLogout.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				sharedHelper.setLogin(false);
-				onCreate(null);
-			}			
-		});
-
-		//显示登录退出按钮
+		//隐藏登录按钮
 		if(sharedHelper.getLogin()) {
 			tvTitleLogin.setVisibility(View.GONE);
-			tvTitleLogout.setVisibility(View.VISIBLE);
 		}
 		
 		//设置ListView
@@ -151,28 +158,6 @@ public class MainActivity extends Activity {
 				startActivity(intent);				
 			}
 		});
-
-		//检查网络同步
-		if(!checkSyncWeb && sharedHelper.getLogin()) {
-			new Thread(new Runnable(){
-				@Override
-				public void run() {
-					Boolean result = false;
-					try {
-						result = syncHelper.checkSyncWeb();
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					
-					Bundle bundle = new Bundle();
-					bundle.putBoolean("result", result);	
-					Message message = new Message();
-					message.what = 2;
-					message.setData(bundle);
-					myHandler.sendMessage(message);
-				}
-			}).start();
-		}
 		
 		//设置用户文本
 		String userName = sharedHelper.getUserName();
@@ -188,23 +173,26 @@ public class MainActivity extends Activity {
 		tvLabGroup.setText(getString(R.string.txt_lab_group) + String.valueOf(group));
 		
 		//设置同步文本
+		if(sharedHelper.getSyncing()) {
+			pbHomeSync.setVisibility(View.VISIBLE);
+			sharedHelper.setSyncStatus(getString(R.string.txt_home_syncing));
+		}
 		String syncStatus = sharedHelper.getSyncStatus();
 		if(syncStatus.equals("")) {
 			syncStatus = getString(R.string.txt_home_nosync);
 		}
 		sharedHelper.setSyncStatus(syncStatus);
-		tvLabStatus = (TextView) super.findViewById(R.id.tv_lab_status);
 		tvLabStatus.setText(syncStatus);
 		
 		//同步按钮
-		pbHomeSync = (ProgressBar) super.findViewById(R.id.pb_home_sync);
 		btnHomeSync = (ImageButton) super.findViewById(R.id.btn_home_sync);
 		btnHomeSync.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View view) {
-				if(sharedHelper.getLocalSync() || sharedHelper.getWebSync() || syncHelper.checkSyncWeb()) {
+				if(sharedHelper.getLocalSync() || sharedHelper.getWebSync()) {
 					pbHomeSync.setVisibility(View.VISIBLE);
 					tvLabStatus.setText(getString(R.string.txt_home_syncing));
+					sharedHelper.setSyncing(true);
 					
 					new Thread(new Runnable(){
 						@Override
@@ -238,6 +226,67 @@ public class MainActivity extends Activity {
 			}			
 		});
 		
+		//检查网络同步
+		if(!checkSyncWeb && sharedHelper.getLogin()) {
+			if(!UtilityHelper.checkInternet(this)) {
+				checkSyncWeb = true;
+				Toast.makeText(MainActivity.this, getString(R.string.txt_nointernet), Toast.LENGTH_SHORT).show();
+			} else {
+				new Thread(new Runnable(){
+					@Override
+					public void run() {
+						boolean result = false;
+						try {
+							result = syncHelper.checkSyncWeb();
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						
+						Bundle bundle = new Bundle();
+						bundle.putBoolean("result", result);	
+						Message message = new Message();
+						message.what = 2;
+						message.setData(bundle);
+						myHandler.sendMessage(message);
+					}
+				}).start();
+			}
+		}
+		
+		//检查新版本
+		if(!checkVersion) {
+			if(!UtilityHelper.checkInternet(this)) {
+				checkVersion = true;
+				Toast.makeText(MainActivity.this, getString(R.string.txt_nointernet), Toast.LENGTH_SHORT).show();
+			} else {
+				if(UtilityHelper.checkNewVersion(this)) {
+					Toast.makeText(MainActivity.this, R.string.txt_newversion, Toast.LENGTH_SHORT).show();
+					new Thread(new Runnable(){
+						@Override
+						public void run() {
+							boolean result = false;
+							try {
+								Uri uri = Uri.fromFile(UtilityHelper.getInstallFile());
+								Intent intent = new Intent(Intent.ACTION_VIEW);
+								intent.setDataAndType(uri, "application/vnd.android.package-archive");
+								startActivity(intent);
+								result = true;
+							} catch(Exception e) {
+								result = false;
+								e.printStackTrace();
+							}
+							
+							Bundle bundle = new Bundle();
+							bundle.putBoolean("result", result);	
+							Message message = new Message();
+							message.what = 3;
+							message.setData(bundle);
+							myHandler.sendMessage(message);
+						}
+					}).start();
+				}
+			}
+		}
 	}
 	
 	//设置ListView	
@@ -254,23 +303,33 @@ public class MainActivity extends Activity {
 				
 		//System.out.println(date);
 	}
-		
+	
 	//关闭this
 	protected void close() {
 		this.finish();
 	}
-	
+
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		onCreate(null);
+		setListData(curDate);
+		tvLabStatus.setText(sharedHelper.getSyncStatus());
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		if(syncFlag)
+			Toast.makeText(this, getString(R.string.txt_home_syncexit), Toast.LENGTH_SHORT).show();
+		else
+			this.close();
+			
 		return true;
 	}
 	
@@ -284,38 +343,54 @@ public class MainActivity extends Activity {
 		@Override
 		public void handleMessage(Message msg) {
 			MainActivity activity = myActivity.get();
+			boolean result = false;
 			switch(msg.what) {
 			case 1:
 				activity.pbHomeSync.setVisibility(View.GONE);
+				activity.sharedHelper.setSyncing(false);
+				
+				String userName = activity.sharedHelper.getUserName();
+				activity.tvLabUserName.setText(activity.getString(R.string.txt_lab_username) + userName);
+			
+				int group = activity.sharedHelper.getGroup();
+				activity.tvLabGroup.setText(activity.getString(R.string.txt_lab_group) + String.valueOf(group));
+				
 				if(!activity.syncFlag) {
-					activity.sharedHelper.setSyncStatus(activity.getString(R.string.txt_home_hassync));
-					activity.onCreate(null);
+					String syncStatus = activity.getString(R.string.txt_home_hassync);
+					activity.sharedHelper.setSyncStatus(syncStatus);
+					activity.tvLabStatus.setText(syncStatus);
 					
 					Toast.makeText(activity, activity.getString(R.string.txt_home_syncerror), Toast.LENGTH_SHORT).show();
-				} else {					
-					String userName = activity.sharedHelper.getUserName();
-					activity.tvLabUserName.setText(activity.getString(R.string.txt_lab_username) + userName);
-					
-					int group = activity.sharedHelper.getGroup();
-					activity.tvLabGroup.setText(activity.getString(R.string.txt_lab_group) + String.valueOf(group));
-					
+				} else {
 					String syncStatus = activity.sharedHelper.getSyncStatus();
 					activity.tvLabStatus.setText(syncStatus);
 					
-					activity.setListData(activity.curDate);
+					activity.syncFlag = false;
 				}
 				
+				activity.setListData(activity.curDate);				
 				break;
 			case 2:
-				Boolean result = msg.getData().getBoolean("result");
+				result = msg.getData().getBoolean("result");
 				if(result) {
-					activity.sharedHelper.setSyncStatus(activity.getString(R.string.txt_home_haswebsync));
+					String syncStatus = activity.getString(R.string.txt_home_haswebsync);
+					activity.tvLabStatus.setText(syncStatus);
+					activity.sharedHelper.setSyncStatus(syncStatus);
+					
 					activity.sharedHelper.setWebSync(true);
+				} else {
+					Toast.makeText(activity, activity.getString(R.string.txt_home_nowebsync), Toast.LENGTH_SHORT).show();
 				}
 				
-				activity.checkSyncWeb = true;
-				activity.onCreate(null);
+				activity.checkSyncWeb = true;				
+				break;
+			case 3:
+				result = msg.getData().getBoolean("result");
+				if(!result) {
+					Toast.makeText(activity, activity.getString(R.string.txt_updateerror), Toast.LENGTH_SHORT).show();
+				}
 				
+				activity.checkVersion = true;				
 				break;
 			}
 		}			

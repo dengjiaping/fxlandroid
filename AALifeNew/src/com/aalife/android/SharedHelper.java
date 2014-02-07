@@ -19,6 +19,15 @@ public class SharedHelper {
 		setting.edit().putString("date", date).commit();
 	}
 	
+	//今日
+	public String getToday() {
+		return setting.getString("today", "");
+	}
+
+	public void setToday(String date) {
+		setting.edit().putString("today", date).commit();
+	}
+	
 	//用户名
 	public String getUserName() {
 		return setting.getString("username", "");
@@ -36,7 +45,7 @@ public class SharedHelper {
 	public void setGroup(int group) {
 		setting.edit().putInt("group", group).commit();
 	}
-	
+
 	//用户ID
 	public int getUserId() {
 		return setting.getInt("userid", 0);
@@ -44,6 +53,15 @@ public class SharedHelper {
 
 	public void setUserId(int userId) {
 		setting.edit().putInt("userid", userId).commit();
+	}
+	
+	//当前Category
+	public int getCategory() {
+		return setting.getInt("category", 0);
+	}
+
+	public void setCategory(int category) {
+		setting.edit().putInt("category", category).commit();
 	}
 
 	//同步状态
@@ -98,6 +116,15 @@ public class SharedHelper {
 
 	public void setFirstSync(Boolean flag) {
 		setting.edit().putBoolean("firstsync", flag).commit();
+	}
+
+	//同步中
+	public boolean getSyncing() {
+		return setting.getBoolean("syncing", false);
+	}
+
+	public void setSyncing(Boolean flag) {
+		setting.edit().putBoolean("syncing", flag).commit();
 	}
 	
 }

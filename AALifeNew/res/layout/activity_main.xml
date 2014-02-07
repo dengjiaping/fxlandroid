@@ -68,16 +68,6 @@
             android:text="@string/txt_title_login"
             android:textColor="@drawable/nav_btn_selector" />
 
-        <TextView
-            android:id="@+id/tv_title_logout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:drawableRight="@drawable/ic_title_logout"
-            android:gravity="center"
-            android:text="@string/txt_title_logout"
-            android:visibility="gone" />
-
     </RelativeLayout>
 
     <RelativeLayout

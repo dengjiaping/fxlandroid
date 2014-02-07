@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.text.TextPaint;
-import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -204,13 +203,6 @@ public class MonthActivity extends Activity {
 		// TODO Auto-generated method stub
 		super.onResume();
 		onCreate(null);
-	}
-	
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.day, menu);
-		return true;
 	}
 	
 }

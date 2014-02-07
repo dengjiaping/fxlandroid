@@ -29,28 +29,34 @@
         </activity>
         <activity
             android:name="com.aalife.android.DayActivity"
-            android:label="@string/title_activity_day" >
+            android:label="@string/title_activity_day"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="com.aalife.android.MonthActivity"
-            android:label="@string/title_activity_month" >
+            android:label="@string/title_activity_month"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="com.aalife.android.AddActivity"
-            android:label="@string/title_activity_add" >
+            android:label="@string/title_activity_add"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="com.aalife.android.EditActivity"
             android:label="@string/title_activity_edit"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" >
         </activity>
         <activity
             android:name="com.aalife.android.LoginActivity"
-            android:label="@string/title_activity_login" >
+            android:label="@string/title_activity_login"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="com.aalife.android.CategoryEditActivity"
-            android:label="@string/title_activity_category_edit" >
+            android:label="@string/title_activity_category_edit"
+            android:screenOrientation="portrait" >
         </activity>
     </application>
 

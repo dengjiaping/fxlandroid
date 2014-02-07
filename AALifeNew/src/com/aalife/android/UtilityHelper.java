@@ -1,10 +1,15 @@
 package com.aalife.android;
 
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -14,12 +19,21 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
+import org.json.JSONObject;
+
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Environment;
 
 
 public class UtilityHelper {
+	//private static final String WEBURL = "http://192.168.0.1:81";
+	//private static final String WEBURL = "http://10.0.2.2:81";
+	private static final String WEBURL = "http://www.fxlweb.com";
 	
 	public UtilityHelper() {
 		
@@ -188,4 +202,90 @@ public class UtilityHelper {
 		return df.format(d);
 	}
 	
+	//检查网络
+	public static boolean checkInternet(Context context) {
+		ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo info = cm.getActiveNetworkInfo();
+		if(info != null) {
+			return info.isAvailable();
+		}
+		
+		return false;
+	}
+
+	//检查新版本
+	public static boolean checkNewVersion(Context context) {
+		String versionWeb = getVersionFromWeb();
+		String versionApp = getVersionFromApp(context);
+
+		if(versionWeb.equals("") || versionApp.equals(""))
+			return false;
+		
+		if(!versionWeb.equals(versionApp))
+			return true;
+		else
+			return false;
+	}
+	
+	//取APP版本
+	public static String getVersionFromApp(Context context) {
+		String version = "";
+		
+		try {
+			PackageManager pm = context.getPackageManager();
+			PackageInfo pi = pm.getPackageInfo(context.getPackageName(), 0);
+			version = pi.versionName;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return version;
+	}
+	
+	//取网络版本
+	public static String getVersionFromWeb() {
+		String version = "";
+		String url = WEBURL + "/AALifeWeb/GetWebVersion.aspx";
+		try {
+			JSONObject jsonAll = new JSONObject(HttpHelper.post(url));
+			version = jsonAll.getString("version");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return version;
+	}
+	
+	//取安装文件
+	public static File getInstallFile() throws Exception {
+		String url = WEBURL +  "/app/AALifeNew.apk";
+		File file = null;		
+		URL myUrl = null;
+		try {
+			myUrl = new URL(url);
+			HttpURLConnection conn = (HttpURLConnection) myUrl.openConnection();
+			InputStream is = conn.getInputStream();
+			
+			file = new File(Environment.getExternalStorageDirectory() + File.separator + "aalifenet" + File.separator, "AALifeNet.apk");
+			if(!file.getParentFile().exists()) {
+				file.getParentFile().mkdirs();
+			}
+			
+			FileOutputStream fos = new FileOutputStream(file);
+			BufferedInputStream bis = new BufferedInputStream(is);
+			byte[] buffer = new byte[1024];
+			int len = 0;
+			while((len = bis.read(buffer)) != -1) {
+				fos.write(buffer, 0, len);
+			}
+			
+			fos.close();
+			bis.close();
+			is.close();
+		} catch (Exception e) {
+			throw new Exception();
+		}
+		
+		return file;
+	}
 }

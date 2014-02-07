@@ -3,7 +3,10 @@ package com.aalife.android;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -21,10 +24,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 public class HttpHelper {
-    public static final int HTTP_REQUEST_TIMEOUT_MS = 20 * 1000;
+    public static final int HTTP_REQUEST_TIMEOUT_MS = 10 * 1000;
     
 	public static String post(String url, List<NameValuePair> params) {
-		String result = "";
+		String result = "{\"result\":\"no\"}";
 		try {
 			HttpPost request = new HttpPost(url);
 			request.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
@@ -41,7 +44,7 @@ public class HttpHelper {
 	}
 	
 	public static String post(String url) {
-		String result = "";
+		String result = "{\"result\":\"no\"}";
 		try {
 			HttpPost request = new HttpPost(url);
 			HttpResponse response = getHttpClient().execute(request);			
@@ -82,5 +85,28 @@ public class HttpHelper {
         ConnManagerParams.setTimeout(params, HTTP_REQUEST_TIMEOUT_MS);
         return httpClient;
     }
+	
+	public static String formatJson(List<Map<String, String>> list) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("[");
+		Iterator<Map<String, String>> it = list.iterator();
+		while(it.hasNext()) {
+			sb.append("{");
+			Map<String, String> map = it.next();
+			Iterator<Entry<String, String>> im = map.entrySet().iterator();
+			while(im.hasNext()) {
+				Entry<String, String> entry = im.next();
+				Object key = entry.getKey();
+				Object value = entry.getValue();
+				sb.append("\"" + key + "\":" + "\"" + value + "\",");
+			}
+			sb.deleteCharAt(sb.length() - 1);
+			sb.append("},");
+		}
+		sb.deleteCharAt(sb.length() - 1);
+		sb.append("]");
+		
+		return sb.toString();
+	}
 	
 }

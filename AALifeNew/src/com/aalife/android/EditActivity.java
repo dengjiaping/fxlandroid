@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.text.TextPaint;
-import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
@@ -185,6 +184,7 @@ public class EditActivity extends Activity {
 		String catType = this.spinner.getSelectedItem().toString();
 		this.categoryAccess = new CategoryTableAccess(this.sqlHelper.getReadableDatabase());
 		int catId = this.categoryAccess.findCatIdByName(catType);
+		sharedHelper.setCategory(this.spinner.getSelectedItemPosition());
 		this.categoryAccess.close();
 		
 		String itemName = this.etAddItemName.getText().toString().trim();
@@ -204,6 +204,7 @@ public class EditActivity extends Activity {
 		Boolean result = this.itemAccess.updateItem(Integer.parseInt(items[0]), itemName, itemPrice, itemBuyDate, catId);
 		this.itemAccess.close();
         if(result) {
+        	sharedHelper.setDate(itemBuyDate);
         	sharedHelper.setLocalSync(true);
         	sharedHelper.setSyncStatus(getString(R.string.txt_home_hassync));
 		    return true;
@@ -217,13 +218,6 @@ public class EditActivity extends Activity {
 		// TODO Auto-generated method stub
 		super.onResume();
 		onCreate(null);
-	}
-	
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.add, menu);
-		return true;
 	}
 
 }
