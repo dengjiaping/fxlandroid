@@ -57,8 +57,8 @@ public class CategoryEditActivity extends Activity {
 		//数据库
 		sqlHelper = new DatabaseHelper(this);
 		
-		sharedHelper = new SharedHelper(this);
-		
+		//初始化
+		sharedHelper = new SharedHelper(this);		
 		etCatName = (EditText) super.findViewById(R.id.et_cat_name);
 		listCategory = (ListView) super.findViewById(R.id.list_category);
 		
@@ -160,7 +160,7 @@ public class CategoryEditActivity extends Activity {
 					return;
 				}
 				CategoryEditActivity.this.categoryAccess = new CategoryTableAccess(CategoryEditActivity.this.sqlHelper.getReadableDatabase());
-				Boolean result = CategoryEditActivity.this.categoryAccess.saveCategory(saveId, catName, CategoryEditActivity.this.list.size() + 1);
+				Boolean result = CategoryEditActivity.this.categoryAccess.saveCategory(saveId, catName);
 				CategoryEditActivity.this.categoryAccess.close();
 		        if(result) {
 		        	CategoryEditActivity.this.sharedHelper.setLocalSync(true);

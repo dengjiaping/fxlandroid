@@ -20,6 +20,9 @@ public class SyncHelper {
 	private SQLiteOpenHelper sqlHelper = null;
 	private ItemTableAccess itemAccess = null;
 	private CategoryTableAccess categoryAccess = null;
+	//private static final String WEBURL = "http://192.168.1.106:81";
+	//private static final String WEBURL = "http://10.0.2.2:81";
+	private static final String WEBURL = "http://www.fxlweb.com";
 	
 	public SyncHelper(Context context) {
 		this.context = context;
@@ -30,6 +33,7 @@ public class SyncHelper {
 	
 	//开始同步
 	public void Start() throws Exception {
+		//同步用户
 		if(setting.getUserId() == 0) {
 			String userName = UtilityHelper.createUserName();
 			
@@ -43,57 +47,52 @@ public class SyncHelper {
 				throw new Exception();
 			}
 		}
-		
+		//同步本地
 		if(setting.getLocalSync()) {
-			itemAccess = new ItemTableAccess(sqlHelper.getReadableDatabase());
-			categoryAccess = new CategoryTableAccess(sqlHelper.getReadableDatabase());
-			
+			categoryAccess = new CategoryTableAccess(sqlHelper.getReadableDatabase());			
 			List<Map<String, String>> list = categoryAccess.findAllSyncCat();
+			categoryAccess.close();
 			if(list.size() > 0) {
 				try {
 					syncCategory(list);
 				} catch(Exception e) {
-					categoryAccess.close();
-					e.printStackTrace();
 					throw new Exception();
 				}
 			}
-			
+
+			itemAccess = new ItemTableAccess(sqlHelper.getReadableDatabase());
 			list = itemAccess.findSyncItem();
+			itemAccess.close();
 			if(list.size() > 0) {
 				try {
 					syncItem(list);
 				} catch(Exception e) {
-					itemAccess.close();
-					e.printStackTrace();
 					throw new Exception();
 				}
 			}
-			
-			list = itemAccess.findDelSyncItem();			
+			itemAccess = new ItemTableAccess(sqlHelper.getReadableDatabase());
+			list = itemAccess.findDelSyncItem();
 			if(list.size() > 0) {
 				try {
 					delSyncItem(list);
 					itemAccess.clearDelTable();
 				} catch(Exception e) {
 					itemAccess.close();
-					e.printStackTrace();
 					throw new Exception();
 				}
 			}
+			itemAccess.close();
 
 			setting.setLocalSync(false);
+			setting.setFirstSync(true);
 			setting.setSyncStatus(this.context.getString(R.string.txt_home_syncat) + " " + UtilityHelper.getSyncDate());
-			
-			itemAccess.close();
-			categoryAccess.close();
-			
+						
 			//检查网络
-			if(checkSyncWeb()) {
+			if(checkSyncWeb() == 1) {
 				setting.setWebSync(true);
 			}
 		}		
-		
+		//同步网络
 		if(setting.getWebSync()) {
 			if(!UtilityHelper.checkInternet(this.context)) {
 				throw new Exception();
@@ -123,7 +122,7 @@ public class SyncHelper {
 					syncDelWebItemBack();
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				setting.setSyncStatus(this.context.getString(R.string.txt_home_haswebsync));
 				throw new Exception();
 			}
 			
@@ -135,7 +134,7 @@ public class SyncHelper {
 	//同步用户名
 	public int[] syncUserName(String userName) throws Exception {
 		int[] result = new int[2];
-		String url = getWebUrl() +  "/AALifeWeb/SyncUser.aspx";
+		String url = WEBURL +  "/AALifeWeb/SyncUser.aspx";
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("username", userName));
 
@@ -143,8 +142,6 @@ public class SyncHelper {
 		if(jsonObject.length() > 0) {
 			result[0] = jsonObject.getInt("group");
 			result[1] = jsonObject.getInt("userid");
-		} else {
-			throw new Exception();
 		}
 		
 		return result;
@@ -154,7 +151,7 @@ public class SyncHelper {
 	public void syncItem(List<Map<String, String>> list) throws Exception {
 		itemAccess = new ItemTableAccess(this.sqlHelper.getReadableDatabase());
 		String result = "";
-		String url = getWebUrl() +  "/AALifeWeb/SyncItem.aspx";
+		String url = WEBURL +  "/AALifeWeb/SyncItem.aspx";
 		String userId = String.valueOf(setting.getUserId());
 		String userGroupId = String.valueOf(setting.getGroup());
 		for(int i=0; i<list.size(); i++) {
@@ -187,7 +184,7 @@ public class SyncHelper {
 
 	//同步消费//作废：由于一次性发送数据过大会造成超时
 	public void syncItem(String json) throws Exception {
-		String url = getWebUrl() +  "/AALifeWeb/SyncItemJson.aspx";
+		String url = WEBURL +  "/AALifeWeb/SyncItemJson.aspx";
 		String userId = String.valueOf(setting.getUserId());
 		String userGroupId = String.valueOf(setting.getGroup());
 
@@ -206,7 +203,7 @@ public class SyncHelper {
 	public void syncCategory(List<Map<String, String>> list) throws Exception {
 		categoryAccess = new CategoryTableAccess(sqlHelper.getReadableDatabase());
 		String result = "";
-		String url = getWebUrl() +  "/AALifeWeb/SyncCategory.aspx";
+		String url = WEBURL +  "/AALifeWeb/SyncCategory.aspx";
 		String userGroupId = String.valueOf(setting.getGroup());
 		for(int i=0; i<list.size(); i++) {
 			Map<String, String> map = list.get(i);
@@ -236,7 +233,7 @@ public class SyncHelper {
 	//删除同步消费
 	public void delSyncItem(List<Map<String, String>> list) throws Exception {
 		String result = "";
-		String url = getWebUrl() +  "/AALifeWeb/DelSyncItem.aspx";
+		String url = WEBURL +  "/AALifeWeb/DelSyncItem.aspx";
 		for(int i=0; i<list.size(); i++) {
 			Map<String, String> map = list.get(i);
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -257,7 +254,7 @@ public class SyncHelper {
 	//取同步网络消费
 	public List<Map<String, String>> getSyncWebItem() throws Exception {
 		List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-		String url = getWebUrl() +  "/AALifeWeb/GetSyncWebItem.aspx";
+		String url = WEBURL +  "/AALifeWeb/GetSyncWebItem.aspx";
 		String userId = String.valueOf(setting.getUserId());
 		String userGroupId = String.valueOf(setting.getGroup());
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -285,7 +282,7 @@ public class SyncHelper {
 	//取第一次同步网络消费
 	public List<Map<String, String>> getSyncWebFirst() throws Exception {
 		List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-		String url = getWebUrl() +  "/AALifeWeb/GetSyncWebFirst.aspx";
+		String url = WEBURL +  "/AALifeWeb/GetSyncWebFirst.aspx";
 		String userId = String.valueOf(setting.getUserId());
 		String userGroupId = String.valueOf(setting.getGroup());
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -313,7 +310,7 @@ public class SyncHelper {
 	//取同步网络类别
 	public List<Map<String, String>> getSyncWebCategory() throws Exception {
 		List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-		String url = getWebUrl() +  "/AALifeWeb/GetSyncWebCategory.aspx";
+		String url = WEBURL +  "/AALifeWeb/GetSyncWebCategory.aspx";
 		String userGroupId = String.valueOf(setting.getGroup());
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("usergroupid", userGroupId));
@@ -336,7 +333,7 @@ public class SyncHelper {
 	//取删除同步网络消费
 	public List<Map<String, String>> getDelSyncWebItem() throws Exception {
 		List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-		String url = getWebUrl() +  "/AALifeWeb/GetDelSyncWebItem.aspx";
+		String url = WEBURL +  "/AALifeWeb/GetDelSyncWebItem.aspx";
 
 		JSONObject jsonAll = new JSONObject(HttpHelper.post(url));
 		JSONArray jsonArray = jsonAll.getJSONArray("deletelist");
@@ -352,9 +349,9 @@ public class SyncHelper {
 	}
 	
 	//检查同步网络消费
-	public boolean checkSyncWeb() {
+	public int checkSyncWeb() {
 		String result = "";
-		String url = getWebUrl() +  "/AALifeWeb/CheckSyncWeb.aspx";
+		String url = WEBURL +  "/AALifeWeb/CheckSyncWeb.aspx";
 		String userId = String.valueOf(setting.getUserId());
 		String userGroupId = String.valueOf(setting.getGroup());
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -370,7 +367,7 @@ public class SyncHelper {
 			e.printStackTrace();
 		}
 		
-		return result.equals("ok");
+		return result.equals("ok") ? 1 : result.equals("error") ? 0 : 2;
 	}
 	
 	//同步网络消费
@@ -387,17 +384,13 @@ public class SyncHelper {
 			int catId = Integer.parseInt(map.get("catid"));
 			int recommend = Integer.parseInt(map.get("recommend"));
 			
-			try {
-				boolean result = itemAccess.addWebItem(itemId, itemAppId, itemName, itemPrice, itemBuyDate, catId, recommend);
-				if(result) {
-					if(!syncWebItemBack(itemId)) {
-						itemAccess.delWebItem(itemId, itemAppId);
-					}
+			boolean result = itemAccess.addWebItem(itemId, itemAppId, itemName, itemPrice, itemBuyDate, catId, recommend);
+			if(result) {
+				if(!syncWebItemBack(itemId)) {
+					itemAccess.delWebItem(itemId, itemAppId);
+					itemAccess.close();
+					throw new Exception();
 				}
-			} catch(Exception e) {
-				itemAccess.close();
-				e.printStackTrace();
-				throw new Exception();
 			}
 		}
 		itemAccess.close();
@@ -445,7 +438,7 @@ public class SyncHelper {
 	//同步网络消费返回
 	public boolean syncWebItemBack(int itemId) {
 		String result = "";
-		String url = getWebUrl() +  "/AALifeWeb/SyncWebItemBack.aspx";
+		String url = WEBURL +  "/AALifeWeb/SyncWebItemBack.aspx";
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("itemid", String.valueOf(itemId)));
 		
@@ -464,7 +457,7 @@ public class SyncHelper {
 	//同步删除网络消费返回
 	public void syncDelWebItemBack() throws Exception {
 		String result = "";
-		String url = getWebUrl() +  "/AALifeWeb/SyncDelWebItemBack.aspx";
+		String url = WEBURL +  "/AALifeWeb/SyncDelWebItemBack.aspx";
 		
 		JSONObject jsonObject = new JSONObject(HttpHelper.post(url));
 		if(jsonObject.length() > 0) {
@@ -479,7 +472,7 @@ public class SyncHelper {
 	//同步删除网络类别返回
 	public void syncWebCategoryBack() throws Exception {
 		String result = "";
-		String url = getWebUrl() +  "/AALifeWeb/SyncWebCategoryBack.aspx";
+		String url = WEBURL +  "/AALifeWeb/SyncWebCategoryBack.aspx";
 		String userGroupId = String.valueOf(setting.getGroup());
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("usergroupid", userGroupId));
@@ -497,7 +490,7 @@ public class SyncHelper {
 	//同步删除网络类别返回
 	public void syncWebItemBackAll(List<Map<String, String>> list) throws Exception {
 		String result = "";
-		String url = getWebUrl() +  "/AALifeWeb/SyncWebItemBackAll.aspx";
+		String url = WEBURL +  "/AALifeWeb/SyncWebItemBackAll.aspx";
 		String userId = String.valueOf(setting.getUserId());
 		String userGroupId = String.valueOf(setting.getGroup());
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -512,12 +505,6 @@ public class SyncHelper {
 		if(result.equals("no")) {
 			throw new Exception();
 		}
-	}
-	
-	public String getWebUrl() {
-		//return "http://192.168.0.1:81";
-		//return "http://10.0.2.2:81";
-		return "http://www.fxlweb.com";
 	}
 	
 }

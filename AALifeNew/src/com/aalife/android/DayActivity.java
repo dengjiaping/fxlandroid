@@ -46,7 +46,7 @@ public class DayActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_day);
-
+		
 		//标题变粗
 		TextPaint textPaint = null;
 		TextView tvTitleSelect = (TextView) super.findViewById(R.id.tv_title_select);
@@ -61,25 +61,22 @@ public class DayActivity extends Activity {
 		TextView tvTitleRecommend = (TextView) super.findViewById(R.id.tv_title_recommend);
 		textPaint = tvTitleRecommend.getPaint();
 		textPaint.setFakeBoldText(true);
+		
 		TextView tvTotalLabel = (TextView) super.findViewById(R.id.tv_total_label);
 		textPaint = tvTotalLabel.getPaint();
 		textPaint.setFakeBoldText(true);
 		tvTotalPrice = (TextView) super.findViewById(R.id.tv_total_price);
 		textPaint = tvTotalPrice.getPaint();
 		textPaint.setFakeBoldText(true);
-
-		sharedHelper = new SharedHelper(this);
-		
-		//当前日期
-		curDate = sharedHelper.getDate();
-		if(curDate.equals(""))
-			curDate = UtilityHelper.getCurDate();
 		
 		//数据库
 		sqlHelper = new DatabaseHelper(this);
-				
+
+		//初始化
 		listDay = (ListView) super.findViewById(R.id.list_day);
+		listDay.setDivider(null);
 		layNoItem = (LinearLayout) super.findViewById(R.id.lay_noitem);
+		sharedHelper = new SharedHelper(this);
 		
 		//列表点击
 		listDay.setOnItemClickListener(new OnItemClickListener() {
@@ -92,7 +89,7 @@ public class DayActivity extends Activity {
 		        items[0] = map.get("itemid");
 		        items[1] = map.get("catid");
 		        items[2] = map.get("itemname");
-		        items[3] = UtilityHelper.formatDouble(Double.parseDouble(map.get("itempricevalue")), "0.###");
+		        items[3] = UtilityHelper.formatDouble(Double.parseDouble(map.get("pricevalue")), "0.###");
 		        items[4] = map.get("itembuydate");
 		        
 		        final LinearLayout laySelect = (LinearLayout) view.findViewById(R.id.lay_day_select);
@@ -146,9 +143,6 @@ public class DayActivity extends Activity {
 				setListData(rightDate);
 			}
 		});
-
-		//设置ListView
-		setListData(curDate);
 		
 		//返回按钮
 		btnTitleBack = (ImageButton) super.findViewById(R.id.btn_title_back);
@@ -180,17 +174,17 @@ public class DayActivity extends Activity {
 	//设置ListView	
 	protected void setListData(String date) {
 		curDate = date;
-		tvNavMain.setText(UtilityHelper.formatDate(date, "m-d-w"));
-		sharedHelper.setDate(date);
+		tvNavMain.setText(UtilityHelper.formatDate(curDate, "m-d-w"));
+		sharedHelper.setDate(curDate);
 		
-		leftDate = UtilityHelper.getNavDate(date, -1, "d");
+		leftDate = UtilityHelper.getNavDate(curDate, -1, "d");
 		tvNavLeft.setText(UtilityHelper.formatDate(leftDate, "m-d-w"));
 		
-		rightDate = UtilityHelper.getNavDate(date, 1, "d");
+		rightDate = UtilityHelper.getNavDate(curDate, 1, "d");
 		tvNavRight.setText(UtilityHelper.formatDate(rightDate, "m-d-w"));
 		
 		itemAccess = new ItemTableAccess(sqlHelper.getReadableDatabase());
-		list = itemAccess.findItemByDate(date);
+		list = itemAccess.findItemByDate(curDate);
 
 		itemAccess.close();
 		final boolean[][] listCheck = new boolean[2][list.size()];
@@ -198,15 +192,15 @@ public class DayActivity extends Activity {
 			Map<String, String> map = list.get(i);
 			listCheck[1][i] = map.get("recommend").toString().equals("0") ? false : true;
 		}
-		adapter = new SimpleAdapter(this, list, R.layout.list_day, new String[] { "id", "itemname", "itemprice", "itempricevalue", "id", "itemid", "catid" }, new int[] { R.id.cb_day_select, R.id.tv_day_itemname, R.id.tv_day_itemprice, R.id.tv_day_itempricevalue, R.id.cb_day_recommend, R.id.tv_day_id, R.id.tv_day_catid }) {
+		adapter = new SimpleAdapter(this, list, R.layout.list_day, new String[] { "id", "itemname", "itemprice", "pricevalue", "id", "itemid", "catid" }, new int[] { R.id.cb_day_select, R.id.tv_day_itemname, R.id.tv_day_itemprice, R.id.tv_day_pricevalue, R.id.cb_day_recommend, R.id.tv_day_itemid, R.id.tv_day_catid }) {
 			@Override
 			public View getView(final int position, View convertView, ViewGroup parent) {
 				View view = super.getView(position, convertView, parent);
-				TextView tv = (TextView) view.findViewById(R.id.tv_day_id);
+				TextView tv = (TextView) view.findViewById(R.id.tv_day_itemid);
 				final int itemId = Integer.parseInt(tv.getText().toString());
 				final CheckBox se = (CheckBox) view.findViewById(R.id.cb_day_select);
 				se.setChecked(!listCheck[0][position]);
-				final TextView value = (TextView) view.findViewById(R.id.tv_day_itempricevalue);
+				final TextView value = (TextView) view.findViewById(R.id.tv_day_pricevalue);
 				se.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
@@ -249,13 +243,14 @@ public class DayActivity extends Activity {
 		Iterator<Map<String, String>> it = list.iterator();
 		while(it.hasNext()) {
 			Map<String, String> map = (Map<String, String>) it.next();
-			totalPrice += Double.parseDouble(map.get("itempricevalue"));
+			totalPrice += Double.parseDouble(map.get("pricevalue"));
 		}
 		tvTotalPrice.setText(getString(R.string.txt_price) + UtilityHelper.formatDouble(totalPrice, "0.0##"));
 		
-		//System.out.println(date);
+		//System.out.println(curDate);
 	}
 
+	//更新总价
 	protected void updateTotal(double price) {
 		totalPrice += price;
 		tvTotalPrice.setText(getString(R.string.txt_price) + UtilityHelper.formatDouble(totalPrice, "0.0##"));
@@ -265,7 +260,9 @@ public class DayActivity extends Activity {
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		onCreate(null);
+		
+		curDate = sharedHelper.getDate();
+		setListData(curDate);
 	}
 	
 }

@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -15,12 +16,14 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -93,10 +96,18 @@ public class UtilityHelper {
 		
 		if(type.equals("m-d-w"))
 			return month + "-" + day + "  " + week;
+		else if(type.equals("y"))
+			return year;
 		else if(type.equals("y-m"))
 			return year + "-" + month;
+		else if(type.equals("ys-m"))
+			return year.substring(2) + "-" + month;
 		else if(type.equals("m-d"))
 			return month + "-" + day;
+		else if(type.equals("m"))
+			return month + "月";
+		else if(type.equals("m-d-w"))
+			return month + "-" + day + " " + week;
 		else if(type.equals("y-m-d-w"))
 			return year + "-" + month + "-" + day + "  " + week;
 		else
@@ -181,7 +192,7 @@ public class UtilityHelper {
 				SQLiteOpenHelper sqlHelper = new DatabaseHelper(context);
 				sqlHelper.close();
 				ItemTableAccess itemAccess = new ItemTableAccess(sqlHelper.getWritableDatabase());
-				Boolean flag = itemAccess.restoreItemTable(list);
+				Boolean flag = itemAccess.restoreDataBase(list);
 				itemAccess.close();
 				if(flag) result = 1;
 				else result = 0;
@@ -193,6 +204,40 @@ public class UtilityHelper {
 		}
 		
 		return result;
+	}
+	
+	public static boolean startBackup(Context context) {
+		ItemTableAccess itemAccess = new ItemTableAccess(new DatabaseHelper(context).getReadableDatabase());
+		List<CharSequence> itemList = itemAccess.bakDataBase();
+		itemAccess.close();
+		
+		FileOutputStream output = null;
+		try {
+			if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+				File file = new File(Environment.getExternalStorageDirectory().toString() + File.separator + "aalife" + File.separator + "aalife.bak");
+				if(!file.getParentFile().exists()) {
+					file.getParentFile().mkdirs();
+				}
+				
+				output = new FileOutputStream(file, false);
+			} else {
+				output = context.openFileOutput("aalife.bak", Activity.MODE_PRIVATE);
+			}
+
+			PrintStream out = new PrintStream(output);
+			Iterator<CharSequence> it = itemList.iterator();
+			while(it.hasNext()) {
+				out.println(it.next());
+			}
+
+			out.close();
+			output.close();
+		} catch(Exception e) {
+			e.printStackTrace();
+			return false;
+		}	
+
+		return true;
 	}
 	
 	//格式化金额
@@ -247,8 +292,10 @@ public class UtilityHelper {
 		String version = "";
 		String url = WEBURL + "/AALifeWeb/GetWebVersion.aspx";
 		try {
-			JSONObject jsonAll = new JSONObject(HttpHelper.post(url));
-			version = jsonAll.getString("version");
+			JSONObject jsonObject = new JSONObject(HttpHelper.post(url));
+			if(jsonObject.length() > 0) {
+				version = jsonObject.getString("version");
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -266,7 +313,7 @@ public class UtilityHelper {
 			HttpURLConnection conn = (HttpURLConnection) myUrl.openConnection();
 			InputStream is = conn.getInputStream();
 			
-			file = new File(Environment.getExternalStorageDirectory() + File.separator + "aalifenet" + File.separator, "AALifeNet.apk");
+			file = new File(Environment.getExternalStorageDirectory() + File.separator + "aalife" + File.separator, "AALifeNet.apk");
 			if(!file.getParentFile().exists()) {
 				file.getParentFile().mkdirs();
 			}

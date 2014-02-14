@@ -29,25 +29,13 @@
         android:text="@string/txt_month_date" />
 
     <TextView
-        android:id="@+id/tv_month_datevalue"
-        style="@style/tv_item"
-        android:layout_width="0dp"
-        android:layout_height="fill_parent"
-        android:layout_marginBottom="1dp"
-        android:layout_marginLeft="1dp"
-        android:layout_weight="1"
-        android:background="@color/item_bg"
-        android:gravity="center"
-        android:text="@string/txt_month_date"
-        android:visibility="gone" />
-
-    <TextView
         android:id="@+id/tv_month_price"
         style="@style/tv_item_price"
         android:layout_width="0dp"
         android:layout_height="fill_parent"
         android:layout_marginBottom="1dp"
         android:layout_marginLeft="1dp"
+        android:layout_marginRight="1dp"
         android:layout_weight="1"
         android:background="@color/item_bg"
         android:gravity="right|center"

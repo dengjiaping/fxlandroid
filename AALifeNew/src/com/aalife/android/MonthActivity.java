@@ -55,25 +55,22 @@ public class MonthActivity extends Activity {
 		TextView tvTitlePrice = (TextView) super.findViewById(R.id.tv_title_price);
 		textPaint = tvTitlePrice.getPaint();
 		textPaint.setFakeBoldText(true);
+		
 		TextView tvTotalLabel = (TextView) super.findViewById(R.id.tv_total_label);
 		textPaint = tvTotalLabel.getPaint();
 		textPaint.setFakeBoldText(true);
 		tvTotalPrice = (TextView) super.findViewById(R.id.tv_total_price);
 		textPaint = tvTotalPrice.getPaint();
 		textPaint.setFakeBoldText(true);
-
-		sharedHelper = new SharedHelper(this);
-		
-		//当前日期
-		curDate = sharedHelper.getDate();
-		if(curDate.equals(""))
-			curDate = UtilityHelper.getCurDate();
 		
 		//数据库
 		sqlHelper = new DatabaseHelper(this);
 		
+		//初始化
 		listMonth = (ListView) super.findViewById(R.id.list_month);
+		listMonth.setDivider(null);
 		layNoItem = (LinearLayout) super.findViewById(R.id.lay_noitem);
+		sharedHelper = new SharedHelper(this);
 		
 		//列表点击
 		listMonth.setOnItemClickListener(new OnItemClickListener() {
@@ -133,9 +130,6 @@ public class MonthActivity extends Activity {
 				setListData(rightDate);
 			}
 		});
-
-		//设置ListView
-		setListData(curDate);
 		
 		//返回按钮
 		btnTitleBack = (ImageButton) super.findViewById(R.id.btn_title_back);
@@ -166,19 +160,19 @@ public class MonthActivity extends Activity {
 	//设置ListView	
 	protected void setListData(String date) {
 		curDate = date;
-		tvNavMain.setText(UtilityHelper.formatDate(date, "y-m"));
-		sharedHelper.setDate(date);
+		tvNavMain.setText(UtilityHelper.formatDate(curDate, "y-m"));
+		sharedHelper.setDate(curDate);
 		
-		leftDate = UtilityHelper.getNavDate(date, -1, "m");
+		leftDate = UtilityHelper.getNavDate(curDate, -1, "m");
 		tvNavLeft.setText(UtilityHelper.formatDate(leftDate, "y-m"));
 		
-		rightDate = UtilityHelper.getNavDate(date, 1, "m");
+		rightDate = UtilityHelper.getNavDate(curDate, 1, "m");
 		tvNavRight.setText(UtilityHelper.formatDate(rightDate, "y-m"));
 		
 		itemAccess = new ItemTableAccess(sqlHelper.getReadableDatabase());
-		list = itemAccess.findMonthByDate(date);
+		list = itemAccess.findMonthByDate(curDate);
 		itemAccess.close();
-		adapter = new SimpleAdapter(this, list, R.layout.list_month, new String[] { "id", "price", "date", "datevalue" }, new int[] { R.id.tv_month_id, R.id.tv_month_price, R.id.tv_month_date, R.id.tv_month_datevalue });
+		adapter = new SimpleAdapter(this, list, R.layout.list_month, new String[] { "id", "price", "date" }, new int[] { R.id.tv_month_id, R.id.tv_month_price, R.id.tv_month_date });
 		listMonth.setAdapter(adapter);
 		
 		//设置empty
@@ -195,14 +189,16 @@ public class MonthActivity extends Activity {
 		}
 		tvTotalPrice.setText(getString(R.string.txt_price) + UtilityHelper.formatDouble(total, "0.0##"));		
 		
-		//System.out.println(date);
+		//System.out.println(curDate);
 	}
 
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		onCreate(null);
+		
+		curDate = sharedHelper.getDate();
+		setListData(curDate);
 	}
 	
 }

@@ -1,0 +1,177 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/ic_bg"
+    tools:context=".RankDateActivity" >
+
+    <LinearLayout
+        android:id="@+id/LinearLayout1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/title_bg" >
+
+        <ImageButton
+            android:id="@+id/btn_title_back"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/title_btn_selector"
+            android:contentDescription="@string/txt_title_back"
+            android:src="@drawable/ic_title_left" />
+
+        <TextView
+            android:id="@+id/tv_title_rankdate"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="4"
+            android:gravity="center"
+            android:text="@string/txt_tab_rankdate"
+            android:textColor="@android:color/white"
+            android:textSize="22sp" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/txt_empty" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/LinearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/LinearLayout1"
+        android:background="@color/color_main" >
+
+        <TextView
+            android:id="@+id/tv_nav_cat"
+            style="@style/tv_item"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/nav_border_sub"
+            android:clickable="true"
+            android:gravity="center"
+            android:text="@string/txt_tab_rankcat"
+            android:textColor="@drawable/nav_btn_selector" />
+
+        <TextView
+            android:id="@+id/tv_nav_count"
+            style="@style/tv_item"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/nav_border_sub"
+            android:clickable="true"
+            android:gravity="center"
+            android:text="@string/txt_tab_rankcount"
+            android:textColor="@drawable/nav_btn_selector" />
+
+        <TextView
+            android:id="@+id/tv_nav_price"
+            style="@style/tv_item"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/nav_border_sub"
+            android:clickable="true"
+            android:gravity="center"
+            android:text="@string/txt_tab_rankprice"
+            android:textColor="@drawable/nav_btn_selector" />
+
+        <TextView
+            android:id="@+id/tv_nav_date"
+            style="@style/tv_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/nav_border_main"
+            android:clickable="true"
+            android:drawableRight="@drawable/ic_date_choose"
+            android:gravity="center|right"
+            android:text="@string/txt_tab_rankdate_s"
+            android:textColor="@drawable/nav_btn_selector" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/LinearLayout3"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/LinearLayout2"
+        android:background="@android:color/white" >
+
+        <TextView
+            android:id="@+id/tv_title_id"
+            style="@style/tv_item"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="1dp"
+            android:layout_marginLeft="1dp"
+            android:layout_marginTop="1dp"
+            android:layout_weight="1"
+            android:background="@color/title_bg"
+            android:gravity="center"
+            android:text="@string/txt_rank_id" />
+
+        <TextView
+            android:id="@+id/tv_title_itembuydate"
+            style="@style/tv_item"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="1dp"
+            android:layout_marginLeft="1dp"
+            android:layout_marginTop="1dp"
+            android:layout_weight="1"
+            android:background="@color/title_bg"
+            android:gravity="center"
+            android:text="@string/txt_rank_itembuydate" />
+
+        <TextView
+            android:id="@+id/tv_title_price"
+            style="@style/tv_item_price"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="1dp"
+            android:layout_weight="1"
+            android:background="@color/title_bg"
+            android:gravity="right"
+            android:text="@string/txt_rank_price" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lay_noitem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/LinearLayout3"
+        android:background="@color/item_bg"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
+        android:visibility="gone" >
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/txt_noitem" />
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/list_rankdate"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/LinearLayout3"
+        android:background="@android:color/white"
+        android:descendantFocusability="blocksDescendants"
+        android:divider="@android:color/transparent"
+        android:listSelector="@android:color/transparent" >
+
+    </ListView>
+
+</RelativeLayout>

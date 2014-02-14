@@ -51,7 +51,7 @@
         android:text="@string/txt_day_itemprice" />
 
     <TextView
-        android:id="@+id/tv_day_itempricevalue"
+        android:id="@+id/tv_day_pricevalue"
         style="@style/tv_item_price"
         android:layout_width="0dp"
         android:layout_height="fill_parent"
@@ -69,6 +69,7 @@
         android:layout_height="fill_parent"
         android:layout_marginBottom="1dp"
         android:layout_marginLeft="1dp"
+        android:layout_marginRight="1dp"
         android:layout_weight="2"
         android:background="@color/item_bg"
         android:gravity="center"
@@ -83,7 +84,7 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/tv_day_id"
+        android:id="@+id/tv_day_itemid"
         style="@style/tv_item"
         android:layout_width="0dp"
         android:layout_height="fill_parent"

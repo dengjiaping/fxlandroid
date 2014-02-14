@@ -85,7 +85,7 @@ public class CategoryTableAccess {
 	}
 
 	//保存类别
-	public boolean saveCategory(int saveId, String catName, int catRank) {
+	public boolean saveCategory(int saveId, String catName) {
 		String sql = "SELECT * FROM " + CATTABNAME + " WHERE CategoryName='" + catName + "' AND CategoryLive='1'";
 		try {
 			Cursor result = this.db.rawQuery(sql, null);
@@ -100,7 +100,7 @@ public class CategoryTableAccess {
 					catId = Integer.parseInt(result.getString(0));
 				}
 				sql = "INSERT INTO " + CATTABNAME + "(CategoryID, CategoryName, Synchronize, CategoryRank) "
-				   	+ "VALUES ('" + catId + "', '" + catName + "', '1', '" + catRank + "')";
+				   	+ "VALUES ('" + catId + "', '" + catName + "', '1', '" + catId + "')";
 			} else {
 				sql = "UPDATE " + CATTABNAME + " SET CategoryName='" + catName + "', Synchronize='1' WHERE CategoryID=" + saveId;
 			}
@@ -121,8 +121,8 @@ public class CategoryTableAccess {
 			if (result.moveToNext()) {
 				sql = "UPDATE " + CATTABNAME + " SET CategoryName='" + catName + "', CategoryDisplay='" + catDisplay + "', CategoryLive='" + catLive + "', Synchronize='0' WHERE CategoryID=" + catId;
 			} else {
-				sql = "INSERT INTO " + CATTABNAME + "(CategoryID, CategoryName, CategoryDisplay, CategoryLive, Synchronize) "
-				   	+ "VALUES ('" + catId + "', '" + catName + "', '" + catDisplay + "', '" + catLive + "', '0')";
+				sql = "INSERT INTO " + CATTABNAME + "(CategoryID, CategoryName, CategoryDisplay, CategoryLive, Synchronize, CategoryRank) "
+				   	+ "VALUES ('" + catId + "', '" + catName + "', '" + catDisplay + "', '" + catLive + "', '0', '" + catId + "')";
 			}
 		    this.db.execSQL(sql);
 		} catch (Exception e) {

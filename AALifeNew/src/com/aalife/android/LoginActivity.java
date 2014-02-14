@@ -94,7 +94,7 @@ public class LoginActivity extends Activity {
 	//登录用户
 	public int[] loginUser(String userName, String userPass) {
 		int[] result = new int[3];
-		String url = WEBURL +  "/AALifeWeb/UserLogin.aspx";
+		String url = WEBURL +  "/AALifeWeb/SyncLogin.aspx";
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("username", userName));
 		params.add(new BasicNameValuePair("userpass", userPass));
@@ -142,10 +142,7 @@ public class LoginActivity extends Activity {
 					Toast.makeText(activity, activity.getString(R.string.txt_user_loginsuccess), Toast.LENGTH_SHORT).show();
 					activity.close();
 				} else {
-					activity.setting.setLogin(false);
-					
 					Toast.makeText(activity, activity.getString(R.string.txt_user_loginerror), Toast.LENGTH_SHORT).show();
-					return;
 				}
 				
 				break;

@@ -72,6 +72,24 @@ public class SharedHelper {
 	public void setSyncStatus(String status) {
 		setting.edit().putString("sync", status).commit();
 	}
+	
+	//登录密锁
+	public String getLockText() {
+		return setting.getString("lock", "");
+	}
+
+	public void setLockText(String text) {
+		setting.edit().putString("lock", text).commit();
+	}
+	
+	//首页文字
+	public String getWelcomeText() {
+		return setting.getString("welcome", "");
+	}
+
+	public void setWelcomeText(String text) {
+		setting.edit().putString("welcome", text).commit();
+	}
 
 	//本地同步
 	public boolean getLocalSync() {

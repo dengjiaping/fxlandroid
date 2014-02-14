@@ -60,8 +60,8 @@ public class AddActivity extends Activity {
 		//数据库
 		sqlHelper = new DatabaseHelper(this);
 		
-		sharedHelper = new SharedHelper(this);
-				
+		//初始化
+		sharedHelper = new SharedHelper(this);				
 		spinner = (Spinner) super.findViewById(R.id.sp_add_cattype);
 		etAddItemName = (EditText) super.findViewById(R.id.et_add_itemname);
 		etAddItemPrice = (EditText) super.findViewById(R.id.et_add_itemprice);
@@ -71,12 +71,7 @@ public class AddActivity extends Activity {
 		
 		//设置购买日期
 		curDate = sharedHelper.getDate();
-		if(curDate.equals("")) {
-			curDate = UtilityHelper.getCurDate();
-			etAddItemBuyDate.setText(curDate);
-		} else {
-			etAddItemBuyDate.setText(curDate);
-		}
+		etAddItemBuyDate.setText(UtilityHelper.formatDate(curDate, "y-m-d-w"));
 		
 		//绑定类别下拉
 		this.categoryAccess = new CategoryTableAccess(this.sqlHelper.getReadableDatabase());
@@ -134,7 +129,7 @@ public class AddActivity extends Activity {
 					public void onDateSet(DatePicker view, int year, int month, int day) {
 						String date = UtilityHelper.formatDate(year + "-" + (month + 1) + "-" + day, "");
 						curDate = date;
-						etAddItemBuyDate.setText(date);
+						etAddItemBuyDate.setText(UtilityHelper.formatDate(curDate, "y-m-d-w"));
 					}					
 				}, Integer.parseInt(array[0]), Integer.parseInt(array[1]) - 1, Integer.parseInt(array[2]));
 				dateDialog.show();
@@ -177,12 +172,11 @@ public class AddActivity extends Activity {
 			return false;
 		}
 		
-		String itemBuyDate = this.etAddItemBuyDate.getText().toString();
 		this.itemAccess = new ItemTableAccess(this.sqlHelper.getReadableDatabase());
-		Boolean result = this.itemAccess.addItem(itemName, itemPrice, itemBuyDate, catId);
+		Boolean result = this.itemAccess.addItem(itemName, itemPrice, curDate, catId);
 		this.itemAccess.close();
         if(result) {
-        	sharedHelper.setDate(itemBuyDate);
+        	sharedHelper.setDate(curDate);
         	sharedHelper.setLocalSync(true);
         	sharedHelper.setSyncStatus(getString(R.string.txt_home_hassync));
 		    return true;
@@ -190,12 +184,26 @@ public class AddActivity extends Activity {
         	return false;
         }
 	}
+
+	//绑定类别下拉
+	protected void setListData() {
+		this.categoryAccess = new CategoryTableAccess(this.sqlHelper.getReadableDatabase());
+		this.list = this.categoryAccess.findAllCategory();
+		this.categoryAccess.close();
+		this.adapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item, this.list);
+		this.adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		this.spinner.setAdapter(this.adapter);
+		int category = sharedHelper.getCategory();
+		if(category > 0)
+			this.spinner.setSelection(category);
+	}
 	
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		onCreate(null);
+
+		setListData();
 	}
 
 }
