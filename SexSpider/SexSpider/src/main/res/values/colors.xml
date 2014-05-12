@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="title_bar_bg">#FF666666</color>
+    <color name="title_bar_text">#FFFFFFFF</color>
+    <color name="list_notdown_text">#FF999999</color>
+    <color name="list_isdown_text">#FF000000</color>
+    <color name="list_isread_text">#FF0099CC</color>
+    <color name="gallery_bg">#FF666666</color>
+</resources>

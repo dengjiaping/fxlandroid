@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    style="@style/listStyle">
+
+    <TextView
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/list_listtitle"
+        android:id="@+id/list_listtitle"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:gravity="center_vertical" />
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:id="@+id/list_isdowning"
+        android:layout_alignParentRight="true"
+        android:visibility="gone"
+        android:layout_centerVertical="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/list_listlink"
+        android:id="@+id/list_listlink"
+        android:visibility="gone" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/list_listid"
+        android:id="@+id/list_listid"
+        android:visibility="gone" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/list_isdown"
+        android:id="@+id/list_isdown"
+        android:visibility="gone" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/list_isread"
+        android:id="@+id/list_isread"
+        android:visibility="gone" />
+</RelativeLayout>

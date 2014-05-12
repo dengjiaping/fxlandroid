@@ -1,68 +1,53 @@
 package com.aalife.android;
 
+import java.lang.ref.WeakReference;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import android.app.Activity;
-import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextPaint;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.CheckBox;
-import android.widget.DatePicker;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class DayActivity extends Activity {
-	private ListView listDay = null;
+	private ListView lvDayList = null;
 	private List<Map<String, String>> list = null;
-	private SimpleAdapter adapter = null;
 	private SQLiteOpenHelper sqlHelper = null;
 	private ItemTableAccess itemAccess = null;
-	private String curDate = "";
-	private String leftDate = "";
-	private String rightDate = "";
-	private TextView tvNavMain = null;
-	private TextView tvNavLeft = null;
-	private TextView tvNavRight = null;
+	private DayAdapter dayAdapter = null;
+	private MyHandler myHandler = new MyHandler(this);
+	private ProgressBar pbDay = null;
 	private LinearLayout layNoItem = null;
-	private ImageButton btnTitleBack = null;
-	private ImageButton btnTitleAdd = null;
-	private SharedHelper sharedHelper = null;
+	private String curDate = "";
+	private int visibleLastIndex = 0;
+	private boolean loading = false;
+	private List<Map<String, String>> newList = null;
+	private TextView tvTotalLabel = null;
 	private TextView tvTotalPrice = null;
-	private double totalPrice = 0;
+	private LinearLayout layDayTotal = null;
+	private final int FIRST_REQUEST_CODE = 1;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_day);
-		
+
 		//标题变粗
 		TextPaint textPaint = null;
-		TextView tvTitleSelect = (TextView) super.findViewById(R.id.tv_title_select);
-		textPaint = tvTitleSelect.getPaint();
-		textPaint.setFakeBoldText(true);
-		TextView tvTitleItemName = (TextView) super.findViewById(R.id.tv_title_itemname);
-		textPaint = tvTitleItemName.getPaint();
-		textPaint.setFakeBoldText(true);
-		TextView tvTitleItemPrice = (TextView) super.findViewById(R.id.tv_title_itemprice);
-		textPaint = tvTitleItemPrice.getPaint();
-		textPaint.setFakeBoldText(true);
-		TextView tvTitleRecommend = (TextView) super.findViewById(R.id.tv_title_recommend);
-		textPaint = tvTitleRecommend.getPaint();
-		textPaint.setFakeBoldText(true);
-		
-		TextView tvTotalLabel = (TextView) super.findViewById(R.id.tv_total_label);
+		tvTotalLabel = (TextView) super.findViewById(R.id.tv_total_label);
 		textPaint = tvTotalLabel.getPaint();
 		textPaint.setFakeBoldText(true);
 		tvTotalPrice = (TextView) super.findViewById(R.id.tv_total_price);
@@ -73,79 +58,84 @@ public class DayActivity extends Activity {
 		sqlHelper = new DatabaseHelper(this);
 
 		//初始化
-		listDay = (ListView) super.findViewById(R.id.list_day);
-		listDay.setDivider(null);
+		lvDayList = (ListView) super.findViewById(R.id.list_day);
+		lvDayList.setDivider(null);
+		lvDayList.setFocusable(false);
+		pbDay = (ProgressBar) super.findViewById(R.id.pb_day);
+		pbDay.setVisibility(View.VISIBLE);
 		layNoItem = (LinearLayout) super.findViewById(R.id.lay_noitem);
-		sharedHelper = new SharedHelper(this);
+		layNoItem.setVisibility(View.GONE);	
+		layDayTotal = (LinearLayout) super.findViewById(R.id.lay_day_total);
+		layDayTotal.setVisibility(View.GONE);	
 		
-		//列表点击
-		listDay.setOnItemClickListener(new OnItemClickListener() {
+		//线程加载
+		new Thread(new Runnable(){
 			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				ListView lv = (ListView) parent;
-		        @SuppressWarnings("unchecked")
-				Map<String, String> map = (Map<String, String>) lv.getItemAtPosition(position);
-		        final String[] items = new String[5];
-		        items[0] = map.get("itemid");
-		        items[1] = map.get("catid");
-		        items[2] = map.get("itemname");
-		        items[3] = UtilityHelper.formatDouble(Double.parseDouble(map.get("pricevalue")), "0.###");
-		        items[4] = map.get("itembuydate");
-		        
-		        final LinearLayout laySelect = (LinearLayout) view.findViewById(R.id.lay_day_select);
-		        laySelect.setBackgroundColor(DayActivity.this.getResources().getColor(R.color.color_tran_main));
-		        final TextView tvItemName = (TextView) view.findViewById(R.id.tv_day_itemname);
-		        tvItemName.setBackgroundColor(DayActivity.this.getResources().getColor(R.color.color_tran_main));
-		        final TextView tvItemPrice = (TextView) view.findViewById(R.id.tv_day_itemprice);
-		        tvItemPrice.setBackgroundColor(DayActivity.this.getResources().getColor(R.color.color_tran_main));
-		        final LinearLayout layRecommend = (LinearLayout) view.findViewById(R.id.lay_day_recommend);
-		        layRecommend.setBackgroundColor(DayActivity.this.getResources().getColor(R.color.color_tran_main));
-		        
-		        Intent intent = new Intent(DayActivity.this, EditActivity.class);
-				intent.putExtra("items", items);
-		        startActivity(intent);
-			}			
-		});
+			public void run() {
+				itemAccess = new ItemTableAccess(sqlHelper.getReadableDatabase());
+				String lastDate = itemAccess.findLastDate();
+				list = itemAccess.findAllDayFirstBuyDate(lastDate);
+				if(lastDate.equals(""))
+					curDate = UtilityHelper.getCurDate();
+				else
+					curDate = lastDate;
+				itemAccess.close();
 
-		//设置导航日期
-		tvNavMain = (TextView) super.findViewById(R.id.tv_nav_main);
-		textPaint = tvNavMain.getPaint();
-		textPaint.setFakeBoldText(true);
-		tvNavMain.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				String[] array = curDate.split("-");
-				DatePickerDialog dateDialog = new DatePickerDialog(DayActivity.this, new DatePickerDialog.OnDateSetListener() {
-					@Override
-					public void onDateSet(DatePicker view, int year, int month, int day) {
-						String date = UtilityHelper.formatDate(year + "-" + (month + 1) + "-" + day, "");
-						setListData(date);
-					}					
-				}, Integer.parseInt(array[0]), Integer.parseInt(array[1]) - 1, Integer.parseInt(array[2]));
-				dateDialog.show();
+				boolean result = false;
+				if(list.size() > 0)
+					result = true;
+				
+				Bundle bundle = new Bundle();
+				bundle.putBoolean("result", result);	
+				Message message = new Message();
+				message.what = 1;
+				message.setData(bundle);
+				myHandler.sendMessage(message);
 			}
-		});
+		}).start(); 
 		
-		//向左按钮
-		tvNavLeft = (TextView) super.findViewById(R.id.tv_nav_left);
-		tvNavLeft.setOnClickListener(new OnClickListener() {
+		//列表滑动事件
+		lvDayList.setOnScrollListener(new OnScrollListener() {
 			@Override
-			public void onClick(View view) {
-				setListData(leftDate);
+			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+				visibleLastIndex = firstVisibleItem + visibleItemCount - 1;
 			}
-		});
-		
-		//向右按钮
-		tvNavRight = (TextView) super.findViewById(R.id.tv_nav_right);
-		tvNavRight.setOnClickListener(new OnClickListener() {
+
 			@Override
-			public void onClick(View view) {
-				setListData(rightDate);
-			}
+			public void onScrollStateChanged(AbsListView view, int scrollState) {
+				int itemsLastIndex = dayAdapter.getCount() - 1;
+			    if (scrollState == OnScrollListener.SCROLL_STATE_IDLE && visibleLastIndex == itemsLastIndex) { 
+					if(!loading) {
+				    	pbDay.setVisibility(View.VISIBLE);
+						loading = true;
+						
+						new Thread(new Runnable(){
+							@Override
+							public void run() {
+								itemAccess = new ItemTableAccess(sqlHelper.getReadableDatabase());
+								String nextDate = itemAccess.findNextDate(curDate);
+								newList = itemAccess.findAllDayBuyDate(nextDate);
+								itemAccess.close();
+
+								if(newList.size() > 0) {
+									curDate = nextDate;
+									Message message = new Message();
+									message.what = 2;
+									myHandler.sendMessage(message);
+								} else {
+									Message message = new Message();
+									message.what = 3;
+									myHandler.sendMessage(message);									
+								}
+							}
+						}).start(); 
+				    } 
+				}
+			}					
 		});
 		
 		//返回按钮
-		btnTitleBack = (ImageButton) super.findViewById(R.id.btn_title_back);
+		ImageButton btnTitleBack = (ImageButton) super.findViewById(R.id.btn_title_back);
 		btnTitleBack.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -154,13 +144,13 @@ public class DayActivity extends Activity {
 		});
 
 		//添加按钮
-		btnTitleAdd = (ImageButton) super.findViewById(R.id.btn_title_add);
+		ImageButton btnTitleAdd = (ImageButton) super.findViewById(R.id.btn_title_add);
 		btnTitleAdd.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				sharedHelper.setDate(curDate);
 				Intent intent = new Intent(DayActivity.this, AddActivity.class);
-				startActivity(intent);
+				intent.putExtra("date", UtilityHelper.getCurDate());
+				startActivityForResult(intent, FIRST_REQUEST_CODE);
 			}			
 		});
 		
@@ -171,98 +161,80 @@ public class DayActivity extends Activity {
 		this.finish();
 	}
 	
-	//设置ListView	
-	protected void setListData(String date) {
-		curDate = date;
-		tvNavMain.setText(UtilityHelper.formatDate(curDate, "m-d-w"));
-		sharedHelper.setDate(curDate);
-		
-		leftDate = UtilityHelper.getNavDate(curDate, -1, "d");
-		tvNavLeft.setText(UtilityHelper.formatDate(leftDate, "m-d-w"));
-		
-		rightDate = UtilityHelper.getNavDate(curDate, 1, "d");
-		tvNavRight.setText(UtilityHelper.formatDate(rightDate, "m-d-w"));
-		
-		itemAccess = new ItemTableAccess(sqlHelper.getReadableDatabase());
-		list = itemAccess.findItemByDate(curDate);
-
-		itemAccess.close();
-		final boolean[][] listCheck = new boolean[2][list.size()];
-		for(int i=0; i<list.size(); i++) {
-			Map<String, String> map = list.get(i);
-			listCheck[1][i] = map.get("recommend").toString().equals("0") ? false : true;
+	//多线程处理
+	static class MyHandler extends Handler {
+		WeakReference<DayActivity> myActivity = null;
+		MyHandler(DayActivity activity) {
+			myActivity = new WeakReference<DayActivity>(activity);
 		}
-		adapter = new SimpleAdapter(this, list, R.layout.list_day, new String[] { "id", "itemname", "itemprice", "pricevalue", "id", "itemid", "catid" }, new int[] { R.id.cb_day_select, R.id.tv_day_itemname, R.id.tv_day_itemprice, R.id.tv_day_pricevalue, R.id.cb_day_recommend, R.id.tv_day_itemid, R.id.tv_day_catid }) {
-			@Override
-			public View getView(final int position, View convertView, ViewGroup parent) {
-				View view = super.getView(position, convertView, parent);
-				TextView tv = (TextView) view.findViewById(R.id.tv_day_itemid);
-				final int itemId = Integer.parseInt(tv.getText().toString());
-				final CheckBox se = (CheckBox) view.findViewById(R.id.cb_day_select);
-				se.setChecked(!listCheck[0][position]);
-				final TextView value = (TextView) view.findViewById(R.id.tv_day_pricevalue);
-				se.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						listCheck[0][position] = se.isChecked() ? false : true;
-						if(se.isChecked())
-						    updateTotal(Double.parseDouble(value.getText().toString()));
-						else
-							updateTotal(-Double.parseDouble(value.getText().toString()));
-					}					
-				});
-				final CheckBox re = (CheckBox) view.findViewById(R.id.cb_day_recommend);
-				re.setChecked(listCheck[1][position]);
-				re.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						itemAccess = new ItemTableAccess(sqlHelper.getReadableDatabase());
-						listCheck[1][position] = re.isChecked() ? false : true;
-						if(re.isChecked())
-						    itemAccess.updateItemRecommend(itemId, 1);
-						else
-							itemAccess.updateItemRecommend(itemId, 0);
-						itemAccess.close();
-						sharedHelper.setLocalSync(true);
-			        	sharedHelper.setSyncStatus(getString(R.string.txt_home_hassync));
-					}						
-				});
+		
+		@Override
+		public void handleMessage(Message msg) {
+			final DayActivity activity = myActivity.get();
+			switch(msg.what) {
+			case 1:
+				boolean result = msg.getData().getBoolean("result");
+				if(!result)
+					activity.layNoItem.setVisibility(View.VISIBLE);
+				else
+					activity.layDayTotal.setVisibility(View.VISIBLE);
 				
-				return view;
-			}			
-		};
-		listDay.setAdapter(adapter);
-		
-		//设置empty
-		if(list.size() == 0)
-			layNoItem.setVisibility(View.VISIBLE);
-		else
-			layNoItem.setVisibility(View.GONE);
-		
-		totalPrice = 0;
-		Iterator<Map<String, String>> it = list.iterator();
-		while(it.hasNext()) {
-			Map<String, String> map = (Map<String, String>) it.next();
-			totalPrice += Double.parseDouble(map.get("pricevalue"));
+				activity.pbDay.setVisibility(View.GONE);
+				
+				activity.dayAdapter = new DayAdapter(activity, activity.list);
+				activity.lvDayList.setAdapter(activity.dayAdapter);
+								
+				break;
+			case 2:
+				Iterator<Map<String, String>> it = activity.newList.iterator();
+				while(it.hasNext()) {
+					activity.list.add(it.next());
+				}
+				activity.dayAdapter.notifyDataSetChanged();
+				
+				activity.pbDay.setVisibility(View.GONE);
+				activity.loading = false;
+				
+				break;
+			case 3:
+				activity.pbDay.setVisibility(View.GONE);
+				
+				break;
+			}
+		}			
+	};	
+	
+	//返回处理
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if(requestCode == FIRST_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+			ItemTableAccess itemAccess = new ItemTableAccess(sqlHelper.getReadableDatabase());
+			list = itemAccess.findAllDayFirstBuyDate(curDate);
+			itemAccess.close();
+			
+			//设置empty
+			if(list.size() <= 0) {
+				layNoItem.setVisibility(View.VISIBLE);
+				layDayTotal.setVisibility(View.GONE);	
+			} else {
+				layNoItem.setVisibility(View.GONE);
+				layDayTotal.setVisibility(View.VISIBLE);
+			}
+			
+			dayAdapter.updateData(list);
 		}
-		tvTotalPrice.setText(getString(R.string.txt_price) + UtilityHelper.formatDouble(totalPrice, "0.0##"));
-		
-		//System.out.println(curDate);
-	}
-
-	//更新总价
-	protected void updateTotal(double price) {
-		totalPrice += price;
-		tvTotalPrice.setText(getString(R.string.txt_price) + UtilityHelper.formatDouble(totalPrice, "0.0##"));
 	}
 	
-	@Override
-	protected void onResume() {
-		// TODO Auto-generated method stub
-		super.onResume();
-		
-		curDate = sharedHelper.getDate();
-		setListData(curDate);
+	//Adapter调用刷新
+	public void refreshData() {
+		dayAdapter.notifyDataSetChanged();
+	}
+	
+	//设置总计
+	public void setTotalData(String date, String price) {
+		tvTotalLabel.setText(UtilityHelper.formatDate(date, "y2-m2"));
+		tvTotalPrice.setText(price);
 	}
 	
 }

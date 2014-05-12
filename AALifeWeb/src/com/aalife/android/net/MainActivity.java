@@ -1,5 +1,6 @@
 package com.aalife.android.net;
 
+import java.lang.ref.WeakReference;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -9,9 +10,11 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.StrictMode;
+import android.os.Handler;
+import android.os.Message;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.webkit.DownloadListener;
 import android.webkit.JsResult;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
@@ -20,57 +23,52 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-@SuppressLint("SetJavaScriptEnabled")
 public class MainActivity extends Activity {
     private WebView webView = null;
     private ProgressBar loading = null;
+	private MyHandler myHandler = new MyHandler(this);
     private ValueCallback<Uri> mUploadMessage = null;
     private final static int FILECHOOSER_RESULTCODE = 1;
-        
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        if (requestCode == FILECHOOSER_RESULTCODE) {
-            if (null == mUploadMessage)
-                return;
-            Uri result = intent == null || resultCode != RESULT_OK ? null : intent.getData();
-            mUploadMessage.onReceiveValue(result);
-            mUploadMessage = null;
-        }
-    }
 
+	@SuppressLint("SetJavaScriptEnabled")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
-		if(android.os.Build.VERSION.SDK_INT > 9) {
-			StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-			StrictMode.setThreadPolicy(policy);
-		}
-		
-		loading = (ProgressBar) super.findViewById(R.id.progressBar1);
+		//初始化
+		loading = (ProgressBar) super.findViewById(R.id.loading);
 	
-		webView = (WebView) super.findViewById(R.id.webView1);
+		//网页
+		webView = (WebView) super.findViewById(R.id.webViewMain);
 		webView.getSettings().setJavaScriptEnabled(true);
 		webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+		//webView.loadUrl("http://10.0.2.2:81/shouji/Default.aspx");
 		webView.loadUrl("http://www.fxlweb.com");
 		webView.setWebViewClient(new AALifeWebClient());
 		webView.setWebChromeClient(new AALifeWebChromeClient());
+		webView.setDownloadListener(new AALifeWebDownload());
 		
+		//检查新版本
 		if(MyHelper.checkInternet(this)) {
-			if(MyHelper.checkNewVersion(this)) {
-				Toast.makeText(MainActivity.this, R.string.string_newversion, Toast.LENGTH_SHORT).show();
-				
-				try {
-					Uri uri = Uri.fromFile(MyHelper.getInstallFile());
-					Intent intent = new Intent(Intent.ACTION_VIEW);
-					intent.setDataAndType(uri, "application/vnd.android.package-archive");
-					startActivity(intent);
-				} catch(Exception e) {
-					e.printStackTrace();
-					Toast.makeText(MainActivity.this, R.string.string_updateerror, Toast.LENGTH_SHORT).show();
+			new Thread(new Runnable(){
+				@Override
+				public void run() {
+					boolean result = false;
+					try {
+						result = MyHelper.checkNewVersion(MainActivity.this);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					
+					Bundle bundle = new Bundle();
+					bundle.putBoolean("result", result);	
+					Message message = new Message();
+					message.what = 1;
+					message.setData(bundle);
+					myHandler.sendMessage(message);
 				}
-			}
+			}).start();
 		}
 	}
 
@@ -82,19 +80,132 @@ public class MainActivity extends Activity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		exitActivity();
-		return true;
+		switch (item.getItemId()) {
+		case R.id.action_exit:
+			exitActivity();
+			break;
+		case R.id.action_about:
+			Dialog dialog = new AlertDialog.Builder(this)
+					.setTitle(R.string.string_about)
+					.setMessage(R.string.string_abouttext)
+					.setNegativeButton(R.string.string_sure, new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int whichButton) {
+							dialog.cancel();
+						}
+					}).create();
+			dialog.show();
+			break;
+		}
+		
+		return false;
 	}
 	
 	//退出 
 	protected void exitActivity() {
 		this.finish();
 	}
+    
+	//返回调用
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+	    if (requestCode == FILECHOOSER_RESULTCODE) {
+	        if (null == mUploadMessage) return;
+	        Uri result = intent == null || resultCode != RESULT_OK ? null : intent.getData();
+	        mUploadMessage.onReceiveValue(result);
+	        mUploadMessage = null;
+	    }
+	}
 	
-	private class AALifeWebClient extends WebViewClient{
+	//多线程处理
+	static class MyHandler extends Handler {
+		WeakReference<MainActivity> myActivity = null;
+		MyHandler(MainActivity activity) {
+			myActivity = new WeakReference<MainActivity>(activity);
+		}
+		
+		@Override
+		public void handleMessage(Message msg) {
+			boolean result = false;
+			final MainActivity activity = myActivity.get();
+			switch(msg.what) {
+			case 1:
+				result = msg.getData().getBoolean("result");
+				if(result) {					
+					Dialog dialog = new AlertDialog.Builder(activity)
+							.setTitle(R.string.string_about)
+							.setMessage(R.string.string_newversion)
+							.setPositiveButton(R.string.string_sure, new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog, int whichButton) {
+									Toast.makeText(activity, activity.getString(R.string.string_downing), Toast.LENGTH_SHORT).show();
+									activity.downNewFile();
+								}
+							}).setNegativeButton(R.string.string_cancel, new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog, int whichButton) {
+									dialog.cancel();
+								}
+							}).create();
+					dialog.show();
+				}
+
+				break;
+			case 2:
+				result = msg.getData().getBoolean("result");
+				if(result) {
+					activity.exitActivity();
+				} else {
+					Toast.makeText(activity, activity.getString(R.string.string_updateerror), Toast.LENGTH_SHORT).show();
+				}
+
+				break;				
+			}				
+		}			
+	};
+	
+	//升级
+	protected void downNewFile() {
+		new Thread(new Runnable(){
+			@Override
+			public void run() {
+				boolean result = false;
+				try {
+					Uri uri = Uri.fromFile(MyHelper.getInstallFile());
+					Intent intent = new Intent(Intent.ACTION_VIEW);
+					intent.setDataAndType(uri, "application/vnd.android.package-archive");
+					startActivity(intent);
+					
+					result = true;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+				Bundle bundle = new Bundle();
+				bundle.putBoolean("result", result);	
+				Message message = new Message();
+				message.what = 2;
+				message.setData(bundle);
+				myHandler.sendMessage(message);
+			}
+		}).start();
+	}
+	
+	//网页
+	private class AALifeWebClient extends WebViewClient {
 		@Override
 		public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-			view.loadDataWithBaseURL(null, getString(R.string.string_nointernet), "text/html", "UTF-8", null);			
+			view.loadDataWithBaseURL(null, getString(R.string.string_nointernet), "text/html", "UTF-8", null);	
+			Dialog dialog = new AlertDialog.Builder(MainActivity.this)
+					.setTitle(R.string.string_warn)
+					.setMessage(R.string.string_nointernet)
+					.setPositiveButton(R.string.string_sure, new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int whichButton) {
+							onCreate(null);
+						}
+					}).setNegativeButton(R.string.string_cancel, new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int whichButton) {
+							dialog.cancel();
+						}
+					}).create();
+			dialog.show();
 		}
 
 		@Override
@@ -116,6 +227,7 @@ public class MainActivity extends Activity {
 		}		
 	}
 	
+	//网页JS事件
 	private class AALifeWebChromeClient extends WebChromeClient {
 		@Override
 		public boolean onJsConfirm(WebView view, String url, String message, final JsResult result) {
@@ -163,13 +275,27 @@ public class MainActivity extends Activity {
 		}
 		
 		// For Android < 3.0
+		@SuppressWarnings("unused")
 		public void openFileChooser(ValueCallback<Uri> uploadMsg) {
 			openFileChooser(uploadMsg, "");
 		}
 		
 		// For Android > 4.1.1
+		@SuppressWarnings("unused")
 		public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType, String capture) {
 			openFileChooser(uploadMsg, acceptType);
 		}
 	}
+	
+	//网页下载
+	private class AALifeWebDownload implements DownloadListener {
+		@Override
+		public void onDownloadStart(String url, String userAgent,
+				String contentDisposition, String mimetype, long contentLength) {
+			Uri uri = Uri.parse(url);  
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);  
+            startActivity(intent); 
+		}		
+	}
+	
 }

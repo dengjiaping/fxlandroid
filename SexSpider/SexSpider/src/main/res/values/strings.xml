@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">SexSpider</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="txt_open">打开</string>
+    <string name="title_activity_list">图片列表</string>
+    <string name="txt_refresh">刷新</string>
+    <string name="txt_download">下载</string>
+    <string name="txt_empty">请先刷新列表。</string>
+    <string name="list_listtitle">标题</string>
+    <string name="list_listlink">链接</string>
+    <string name="list_listid">编号</string>
+    <string name="list_isdown">已下载</string>
+    <string name="list_isread">已读</string>
+    <string name="title_activity_gallery">图片展示</string>
+    <string name="txt_nodown">开始下载当前选择图片。</string>
+    <string name="txt_isdowning">图片正在下载中。</string>
+    <string name="list_mainname">名称</string>
+    <string name="list_siteid">编号</string>
+    <string name="txt_refresherror">列表刷新失败！</string>
+    <string name="txt_refreshempty">无内容更新。</string>
+    <string name="txt_updateerror">更新数据源失败！</string>
+    <string name="txt_opreate">请选择您的操作。</string>
+    <string name="txt_deletethis">删除此项</string>
+    <string name="txt_clearlist">清除内容列表</string>
+    <string name="txt_redown">重新下载</string>
+    <string name="txt_no">否</string>
+    <string name="txt_yes">是</string>
+    <string name="txt_keepdown">是否要继续下载？</string>
+
+</resources>

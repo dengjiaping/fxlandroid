@@ -26,8 +26,10 @@ public class MyHelper {
 		String version = "";
 		String url = getWebUrl() + "/AALifeWeb/GetVersion.aspx";
 		try {
-			JSONObject jsonAll = new JSONObject(HttpHelper.post(url));
-			version = jsonAll.getString("version");
+			JSONObject jsonObject = new JSONObject(HttpHelper.post(url));
+			if(jsonObject.length() > 0) {
+				version = jsonObject.getString("version");
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -63,15 +65,14 @@ public class MyHelper {
 	}
 	
 	public static File getInstallFile() {
-		String url = getWebUrl() +  "/app/AALifeNet.apk";
-		File file = null;		
-		URL myUrl = null;
+		String url = getWebUrl() +  "/app/AALifeWeb.apk";
+		File file = null;	
 		try {
-			myUrl = new URL(url);
+			URL myUrl = new URL(url);
 			HttpURLConnection conn = (HttpURLConnection) myUrl.openConnection();
 			InputStream is = conn.getInputStream();
 			
-			file = new File(Environment.getExternalStorageDirectory() + File.separator + "aalifenet" + File.separator, "AALifeNet.apk");
+			file = new File(Environment.getExternalStorageDirectory() + File.separator + "aalifeweb" + File.separator, "AALifeWeb.apk");
 			if(!file.getParentFile().exists()) {
 				file.getParentFile().mkdirs();
 			}

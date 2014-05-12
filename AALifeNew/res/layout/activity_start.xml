@@ -39,9 +39,16 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/textView2"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="96dp"
-        android:text="@string/app_welcome"
-        android:textColor="@android:color/white" />
+        android:layout_marginTop="116dp"
+        android:text="@string/app_welcome" />
+
+    <ProgressBar
+        android:id="@+id/pb_start"
+        style="?android:attr/progressBarStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/lay_lock"
@@ -58,10 +65,12 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/color_tran2_white"
+            android:background="@color/color_tran2_main"
             android:ems="10"
+            android:gravity="center"
             android:inputType="numberDecimal"
-            android:maxLength="10" />
+            android:maxLength="10"
+            android:textColor="@color/color_text" />
 
         <ImageButton
             android:id="@+id/btn_lock_go"

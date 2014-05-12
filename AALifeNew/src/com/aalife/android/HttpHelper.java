@@ -1,8 +1,5 @@
 package com.aalife.android;
 
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -20,11 +17,9 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-
 public class HttpHelper {
-    public static final int HTTP_REQUEST_TIMEOUT_MS = 10 * 1000;
+    public static final int HTTP_CONN_TIMEOUT_MS = 8 * 1000;
+    public static final int HTTP_SO_TIMEOUT_MS = 14 * 1000;
     
 	public static String post(String url, List<NameValuePair> params) {
 		String result = "{\"result\":\"no\"}";
@@ -59,30 +54,39 @@ public class HttpHelper {
 		return result;
 	}
 	
-	public static Bitmap postBitmap(String url) {
-		Bitmap bitmap = null;
-		URL myUrl = null;
+	public static String post(String url, int connTimeOut, int soTimeOut) {
+		String result = "{\"result\":\"no\"}";
 		try {
-			myUrl = new URL(url);
-			HttpURLConnection conn = (HttpURLConnection) myUrl.openConnection();
-			if(conn.getResponseCode() == 200) {
-				InputStream is = conn.getInputStream();
-				bitmap = BitmapFactory.decodeStream(is);
-				is.close();
+			HttpPost request = new HttpPost(url);
+			HttpResponse response = getHttpClient(connTimeOut, soTimeOut).execute(request);			
+
+			if(response.getStatusLine().getStatusCode() == 200) {
+				result = EntityUtils.toString(response.getEntity()).trim();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
-		return bitmap;
+		return result;
 	}
 	
-	public static HttpClient getHttpClient() {
+	public static HttpClient getHttpClient() {		
         HttpClient httpClient = new DefaultHttpClient();
-        final HttpParams params = httpClient.getParams();
-        HttpConnectionParams.setConnectionTimeout(params, HTTP_REQUEST_TIMEOUT_MS);
-        HttpConnectionParams.setSoTimeout(params, HTTP_REQUEST_TIMEOUT_MS);
-        ConnManagerParams.setTimeout(params, HTTP_REQUEST_TIMEOUT_MS);
+        HttpParams params = httpClient.getParams();
+        HttpConnectionParams.setConnectionTimeout(params, HTTP_CONN_TIMEOUT_MS);
+        HttpConnectionParams.setSoTimeout(params, HTTP_SO_TIMEOUT_MS);
+        ConnManagerParams.setTimeout(params, HTTP_SO_TIMEOUT_MS);
+		
+        return httpClient;
+    }
+	
+	public static HttpClient getHttpClient(int connTimeOut, int soTimeOut) {
+        HttpClient httpClient = new DefaultHttpClient();
+        HttpParams params = httpClient.getParams();
+        HttpConnectionParams.setConnectionTimeout(params, connTimeOut);
+        HttpConnectionParams.setSoTimeout(params, soTimeOut);
+        ConnManagerParams.setTimeout(params, soTimeOut);
+        
         return httpClient;
     }
 	

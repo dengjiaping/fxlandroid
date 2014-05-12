@@ -1,36 +1,31 @@
 package com.aalife.android;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONObject;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextPaint;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class LoginActivity extends Activity {
-	private ImageButton btnTitleBack = null;
 	private EditText etUserName = null;
 	private EditText etUserPass = null;
-	private Button btnUserLogin = null;
-	//private static final String WEBURL = "http://192.168.0.1:81";
-	//private static final String WEBURL = "http://10.0.2.2:81";
-	private static final String WEBURL = "http://www.fxlweb.com";
-	private SharedHelper setting = null;
+	private SQLiteOpenHelper sqlHelper = null;
+	private ItemTableAccess itemAccess = null;
+	private SharedHelper sharedHelper = null;
 	private MyHandler myHandler = new MyHandler(this);
-	private int[] result = null;
+	private String[] result = null;
 	private ProgressBar pbUserLoading = null;
 	
 	@Override
@@ -38,14 +33,26 @@ public class LoginActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
 		
-		setting = new SharedHelper(this);
+		//标题变粗
+		TextPaint textPaint = null;
+		TextView tvUserName = (TextView) super.findViewById(R.id.tv_user_name);
+		textPaint = tvUserName.getPaint();
+		textPaint.setFakeBoldText(true);
+		TextView tvUserPass = (TextView) super.findViewById(R.id.tv_user_pass);
+		textPaint = tvUserPass.getPaint();
+		textPaint.setFakeBoldText(true);
+				
+		//数据库
+		sqlHelper = new DatabaseHelper(this);
 		
+		//初始化
+		sharedHelper = new SharedHelper(this);
 		etUserName = (EditText) super.findViewById(R.id.et_user_name);
 		etUserPass = (EditText) super.findViewById(R.id.et_user_pass);
 		pbUserLoading = (ProgressBar) super.findViewById(R.id.pb_user_loading);
 
 		//返回按钮
-		btnTitleBack = (ImageButton) super.findViewById(R.id.btn_title_back);
+		ImageButton btnTitleBack = (ImageButton) super.findViewById(R.id.btn_title_back);
 		btnTitleBack.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -54,17 +61,17 @@ public class LoginActivity extends Activity {
 		});
 		
 		//登录按钮
-		btnUserLogin = (Button) super.findViewById(R.id.btn_user_login);
+		Button btnUserLogin = (Button) super.findViewById(R.id.btn_user_login);
 		btnUserLogin.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				final String userName = LoginActivity.this.etUserName.getText().toString().trim();
+				final String userName = etUserName.getText().toString().trim();
 				if (userName.equals("")) {
 					Toast.makeText(LoginActivity.this, getString(R.string.txt_user_username) + getString(R.string.txt_nonull), Toast.LENGTH_SHORT).show();
 					return;
 				}
 
-				final String userPass = LoginActivity.this.etUserPass.getText().toString().trim();
+				final String userPass = etUserPass.getText().toString().trim();
 				if (userPass.equals("")) {
 					Toast.makeText(LoginActivity.this, getString(R.string.txt_user_userpass) + getString(R.string.txt_nonull), Toast.LENGTH_SHORT).show();
 					return;
@@ -75,7 +82,14 @@ public class LoginActivity extends Activity {
 				new Thread(new Runnable(){
 					@Override
 					public void run() {						
-						result = loginUser(userName, userPass);
+						result = UtilityHelper.loginUser(userName, userPass);
+						
+						if(!result[7].equals("")) {
+							Boolean success = UtilityHelper.loadBitmap(LoginActivity.this, result[7]);
+							if(success) {
+								sharedHelper.setUserImage(result[7]);
+							}
+						}
 						
 						Message message = new Message();
 						message.what = 1;
@@ -83,33 +97,22 @@ public class LoginActivity extends Activity {
 					}
 				}).start();
 			}			
-		});
+		});	
+		
+		//注册按钮
+		ImageButton btnUserAdd = (ImageButton) super.findViewById(R.id.btn_user_add);
+		btnUserAdd.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+				startActivity(intent);
+			}			
+		});	
 	}
 
 	//关闭this
 	protected void close() {
 		this.finish();
-	}
-	
-	//登录用户
-	public int[] loginUser(String userName, String userPass) {
-		int[] result = new int[3];
-		String url = WEBURL +  "/AALifeWeb/SyncLogin.aspx";
-		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		params.add(new BasicNameValuePair("username", userName));
-		params.add(new BasicNameValuePair("userpass", userPass));
-		try {
-			JSONObject jsonObject = new JSONObject(HttpHelper.post(url, params));
-			if(jsonObject.length() > 0) {
-				result[0] = jsonObject.getInt("group");
-				result[1] = jsonObject.getInt("userid");
-				result[2] = jsonObject.getInt("hassync");
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return result;
 	}
 		
 	//多线程处理
@@ -126,23 +129,33 @@ public class LoginActivity extends Activity {
 			case 1:
 				activity.pbUserLoading.setVisibility(View.GONE);
 				
-				if(activity.result[0] > 0) {					
-					String userName = activity.etUserName.getText().toString();
-					activity.setting.setGroup(activity.result[0]);
-					activity.setting.setUserId(activity.result[1]);
-					activity.setting.setUserName(userName);
+				if(activity.result[3].equals("1")) {
+					Toast.makeText(activity, activity.getString(R.string.txt_user_userrepeat), Toast.LENGTH_SHORT).show();
+				} else if(activity.result[0].equals("0")) {
+					Toast.makeText(activity, activity.getString(R.string.txt_user_loginerror), Toast.LENGTH_SHORT).show();
+				} else {					
+					String userName = activity.etUserName.getText().toString().trim();
+					String userPass = activity.etUserPass.getText().toString().trim();
+					activity.sharedHelper.setGroup(Integer.parseInt(activity.result[0]));
+					activity.sharedHelper.setUserId(Integer.parseInt(activity.result[1]));
+					activity.sharedHelper.setUserName(userName);
+					activity.sharedHelper.setUserPass(userPass);
+					activity.sharedHelper.setUserNickName(activity.result[4]);
+					activity.sharedHelper.setUserEmail(activity.result[5]);
 					
-					if(activity.result[2] > 0) {
-						activity.setting.setWebSync(true);
-						activity.setting.setSyncStatus(activity.getString(R.string.txt_home_haswebsync));
+					//删除本地数据
+					if(!activity.result[2].equals("0")) {
+						activity.itemAccess = new ItemTableAccess(activity.sqlHelper.getReadableDatabase());
+						activity.itemAccess.deleteAllData();
+						activity.itemAccess.close();
+						
+						activity.sharedHelper.setWebSync(true);
+						activity.sharedHelper.setSyncStatus(activity.getString(R.string.txt_home_haswebsync));
 					}
 
-					activity.setting.setLogin(true);
-					
+					activity.sharedHelper.setLogin(true);					
 					Toast.makeText(activity, activity.getString(R.string.txt_user_loginsuccess), Toast.LENGTH_SHORT).show();
 					activity.close();
-				} else {
-					Toast.makeText(activity, activity.getString(R.string.txt_user_loginerror), Toast.LENGTH_SHORT).show();
 				}
 				
 				break;

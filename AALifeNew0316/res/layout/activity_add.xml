@@ -1,0 +1,214 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/ic_bg"
+    tools:context=".AddActivity" >
+
+    <LinearLayout
+        android:id="@+id/LinearLayout1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/title_bg" >
+
+        <ImageButton
+            android:id="@+id/btn_title_back"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/title_btn_selector"
+            android:contentDescription="@string/txt_title_back"
+            android:src="@drawable/ic_title_left" />
+
+        <TextView
+            android:id="@+id/textView1"
+            style="@style/title_style"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="4"
+            android:gravity="center"
+            android:text="@string/txt_tab_add" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/txt_empty" />
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/scrollView1"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/LinearLayout1"
+        android:background="@color/color_item_bg" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="15dp" >
+
+            <TextView
+                android:id="@+id/tv_cattype"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:drawableLeft="@drawable/ic_add_dot"
+                android:gravity="center|left"
+                android:text="@string/txt_add_cattype" />
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" >
+
+                <Spinner
+                    android:id="@+id/sp_add_cattype"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@+id/btn_add_catedit" />
+
+                <ImageButton
+                    android:id="@+id/btn_add_catedit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="@string/txt_add_cattype"
+                    android:src="@drawable/ic_add_catedit" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/tv_itemname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:drawableLeft="@drawable/ic_add_dot"
+                android:gravity="center|left"
+                android:text="@string/txt_add_itemname" />
+
+            <AutoCompleteTextView
+                android:id="@+id/et_add_itemname"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textAutoComplete"
+                android:completionThreshold="1"
+                android:maxLength="20" />
+
+            <TextView
+                android:id="@+id/tv_itemprice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:drawableLeft="@drawable/ic_add_dot"
+                android:gravity="center|left"
+                android:text="@string/txt_add_itemprice" />
+
+            <EditText
+                android:id="@+id/et_add_itemprice"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="numberDecimal"
+                android:maxLength="10" />
+
+            <TextView
+                android:id="@+id/tv_itembuydate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:drawableLeft="@drawable/ic_add_dot"
+                android:gravity="center|left"
+                android:text="@string/txt_add_itembuydate" />
+
+            <EditText
+                android:id="@+id/et_add_itembuydate"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:inputType="date" />
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp" >
+
+                <Button
+                    android:id="@+id/btn_add_continue"
+                    style="@style/btn_style_img"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/main_btn_selector"
+                    android:drawableLeft="@drawable/ic_add_continue"
+                    android:text="@string/txt_add_addcontinue" />
+
+                <Button
+                    android:id="@+id/btn_add_back"
+                    style="@style/btn_style_img"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/main_btn_selector"
+                    android:drawableLeft="@drawable/ic_add_back"
+                    android:text="@string/txt_add_addback" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <SlidingDrawer
+        android:id="@+id/slidingDrawer1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="48dp"
+        android:content="@+id/list_content"
+        android:handle="@+id/btn_handle"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/btn_handle"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="@dimen/smart_handle_width"
+            android:layout_height="92dp"
+            android:background="@drawable/smart_btn_selector"
+            android:text="@string/txt_add_smart" />
+
+        <RelativeLayout
+            android:id="@+id/list_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/color_back2_main"
+            android:gravity="center|top"
+            android:paddingBottom="2dp"
+            android:paddingLeft="2dp"
+            android:paddingTop="2dp" >
+
+            <ListView
+                android:id="@+id/list_add_smart"
+                style="@style/catlist_style"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white" >
+
+            </ListView>
+
+            <Button
+                android:id="@+id/btn_smart_back"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="match_parent"
+                android:layout_height="47dp"
+                android:layout_alignParentBottom="true"
+                android:background="@drawable/smart_back_selector"
+                android:text="@string/txt_add_smartback" />
+
+        </RelativeLayout>
+    </SlidingDrawer>
+
+</RelativeLayout>

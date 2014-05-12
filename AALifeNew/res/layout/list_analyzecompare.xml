@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="horizontal" >
+
+    <TextView
+        android:id="@+id/tv_analyze_catid"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/txt_analyze_catid"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tv_analyze_catname"
+        style="@style/tv_item"
+        android:layout_width="0dp"
+        android:layout_height="fill_parent"
+        android:layout_marginBottom="1dp"
+        android:layout_marginLeft="1dp"
+        android:layout_weight="1"
+        android:background="@color/color_item_bg"
+        android:gravity="center"
+        android:text="@string/txt_analyze_catname" />
+
+    <TextView
+        android:id="@+id/tv_analyze_pricecur"
+        style="@style/tv_item_price"
+        android:layout_width="0dp"
+        android:layout_height="fill_parent"
+        android:layout_marginBottom="1dp"
+        android:layout_marginLeft="1dp"
+        android:layout_weight="1"
+        android:background="@color/color_item_bg"
+        android:gravity="right|center"
+        android:text="@string/txt_analyze_pricecur" />
+
+    <TextView
+        android:id="@+id/tv_analyze_priceprev"
+        style="@style/tv_item_price"
+        android:layout_width="0dp"
+        android:layout_height="fill_parent"
+        android:layout_marginBottom="1dp"
+        android:layout_marginLeft="1dp"
+        android:layout_marginRight="1dp"
+        android:layout_weight="1"
+        android:background="@color/color_item_bg"
+        android:gravity="right|center"
+        android:text="@string/txt_analyze_priceprev" />
+
+</LinearLayout>

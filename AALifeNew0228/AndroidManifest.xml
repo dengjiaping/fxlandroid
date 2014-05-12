@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.aalife.android"
+    android:versionCode="302"
+    android:versionName="3.0.2" >
+
+    <uses-sdk
+        android:minSdkVersion="10"
+        android:targetSdkVersion="15"
+        tools:ignore="OldTargetApi" />
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name="com.aalife.android.StartActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.aalife.android.MainActivity"
+            android:label="@string/title_activity_main"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.aalife.android.DayActivity"
+            android:label="@string/title_activity_day"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.aalife.android.DayDetailActivity"
+            android:label="@string/title_activity_day_detail"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.aalife.android.MonthActivity"
+            android:label="@string/title_activity_month"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.aalife.android.AddActivity"
+            android:label="@string/title_activity_add"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustResize" >
+        </activity>
+        <activity
+            android:name="com.aalife.android.EditActivity"
+            android:label="@string/title_activity_edit"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustResize" >
+        </activity>
+        <activity
+            android:name="com.aalife.android.LoginActivity"
+            android:label="@string/title_activity_login"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.aalife.android.CategoryEditActivity"
+            android:label="@string/title_activity_category_edit"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.aalife.android.RankCatDetailActivity"
+            android:label="@string/title_activity_rank_cat_detail"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.aalife.android.RankCountDetailActivity"
+            android:label="@string/title_activity_rank_count_detail"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.aalife.android.SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.aalife.android.AnalyzeRecommendActivity"
+            android:label="@string/title_activity_analyze_recommend"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.aalife.android.RankActivity"
+            android:label="@string/title_activity_rank"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.aalife.android.SearchActivity"
+            android:label="@string/title_activity_search"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustResize" >
+        </activity>
+    </application>
+
+</manifest>

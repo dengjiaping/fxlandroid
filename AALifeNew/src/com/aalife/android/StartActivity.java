@@ -3,7 +3,11 @@ package com.aalife.android;
 import java.lang.ref.WeakReference;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,73 +20,58 @@ import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class StartActivity extends Activity {
+	private SQLiteOpenHelper sqlHelper = null;
 	private SharedHelper sharedHelper = null;
-	private SyncHelper syncHelper = null;
 	private MyHandler myHandler = new MyHandler(this);
 	private TextView tvStartLabel = null;
 	private LinearLayout layLock = null;
 	private EditText etLockText = null;
 	private ImageButton btnLockGo = null;
+	private ProgressBar pbStart = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_start);
 		
+		//数据库
+		sqlHelper = new DatabaseHelper(this);
+		sqlHelper.getWritableDatabase();
+		sqlHelper.close();
+		
 		//初始化
 		sharedHelper = new SharedHelper(this);
-		syncHelper = new SyncHelper(this);
 		tvStartLabel = (TextView) super.findViewById(R.id.tv_start_lable);
 		layLock = (LinearLayout) super.findViewById(R.id.lay_lock);
 		etLockText = (EditText) super.findViewById(R.id.et_lock_text);
 		btnLockGo = (ImageButton) super.findViewById(R.id.btn_lock_go);
+		pbStart = (ProgressBar) super.findViewById(R.id.pb_start);
+		pbStart.setVisibility(View.VISIBLE);
 		
+		//设置欢迎文字
 		String welcome = sharedHelper.getWelcomeText();
 		if(welcome.equals("")) {
 			welcome = getString(R.string.app_welcome);
 			sharedHelper.setWelcomeText(welcome);
-		}
-		
+		}		
 		tvStartLabel.setText(welcome);
 
 		//恢复备份数据
 		if(!sharedHelper.getRestore()) {
 			int result = UtilityHelper.startRestore(this);
 			if(result == 1) {
-				sharedHelper.setLocalSync(true);
-				sharedHelper.setSyncStatus(getString(R.string.txt_home_hassync));
+				//sharedHelper.setLocalSync(true);
+				//sharedHelper.setSyncStatus(getString(R.string.txt_home_hassync));
 			}
 			sharedHelper.setRestore(true);
 		}
 		
-		//如果网络开启
+		//检查新版本
 		if(UtilityHelper.checkInternet(this)) {
-			//检查网络同步
-			if(sharedHelper.getLogin() && !sharedHelper.getSyncing()) {
-				new Thread(new Runnable(){
-					@Override
-					public void run() {
-						int result = 0;
-						try {
-							result = syncHelper.checkSyncWeb();
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-						
-						Bundle bundle = new Bundle();
-						bundle.putInt("result", result);	
-						Message message = new Message();
-						message.what = 2;
-						message.setData(bundle);
-						myHandler.sendMessage(message);
-					}
-				}).start();
-			}
-	
-			//检查新版本
 			if(!sharedHelper.getSyncing()) {
 				new Thread(new Runnable(){
 					@Override
@@ -102,11 +91,25 @@ public class StartActivity extends Activity {
 						myHandler.sendMessage(message);
 					}
 				}).start();
+			} else {
+				jumpActivity();
 			}
+		} else {
+			myHandler.postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					jumpActivity();
+				}
+			}, 2000);
 		}
 	}
+
+	//关闭this
+	protected void close() {
+		this.finish();
+	}
 	
-	// 返回键
+	//返回键
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -124,7 +127,7 @@ public class StartActivity extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		if(UtilityHelper.startBackup(this)) {
-			this.finish();
+			this.close();
 		}
 		return true;
 	}
@@ -141,24 +144,28 @@ public class StartActivity extends Activity {
 			boolean result = false;
 			final StartActivity activity = myActivity.get();
 			switch(msg.what) {
-			case 2:
-				int res = msg.getData().getInt("result");
-				if(res == 1) {
-					String syncStatus = activity.getString(R.string.txt_home_haswebsync);
-					activity.sharedHelper.setSyncStatus(syncStatus);
-					activity.sharedHelper.setWebSync(true);
-				}
-							
-				break;
 			case 3:
 				result = msg.getData().getBoolean("result");
-				if(result) {
-					activity.tvStartLabel.setText(R.string.txt_newdowning);
-					activity.downNewFile();
+				if(result) {					
+					Dialog dialog = new AlertDialog.Builder(activity)
+							.setTitle(R.string.txt_tips)
+							.setMessage(R.string.txt_newversion)
+							.setPositiveButton(R.string.txt_sure, new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog, int whichButton) {
+									activity.tvStartLabel.setText(R.string.txt_newdowning);
+									activity.downNewFile();
+								}
+							}).setNegativeButton(R.string.txt_cancel, new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog, int whichButton) {
+									dialog.cancel();
+									activity.jumpActivity();
+								}
+							}).create();
+					dialog.show();
 				} else {
 					String lock = activity.sharedHelper.getLockText();
 					if(lock.equals("")) {
-						activity.finish();
+						activity.close();
 					}
 					activity.jumpActivity();
 				}
@@ -167,11 +174,13 @@ public class StartActivity extends Activity {
 			case 4:
 				result = msg.getData().getBoolean("result");
 				if(result) {
-					activity.finish();
+					activity.close();
 				} else {
 					activity.tvStartLabel.setText(R.string.txt_updateerror);
 					activity.jumpActivity();
 				}
+				
+				activity.pbStart.setVisibility(View.GONE);
 
 				break;				
 			}				
@@ -184,6 +193,7 @@ public class StartActivity extends Activity {
 		if(!lock.equals("")) {
 			tvStartLabel.setText(R.string.txt_lock);
 			layLock.setVisibility(View.VISIBLE);
+			pbStart.setVisibility(View.GONE);
 			
 			btnLockGo.setOnClickListener(new OnClickListener() {
 				@Override
@@ -192,7 +202,7 @@ public class StartActivity extends Activity {
 					if(text.equals(lock)) {
 						Intent intent = new Intent(StartActivity.this, MainActivity.class);
 						startActivity(intent);  
-						StartActivity.this.finish();
+						StartActivity.this.close();
 					} else {
 						tvStartLabel.setText(R.string.txt_lock_error);
 					}
@@ -201,7 +211,7 @@ public class StartActivity extends Activity {
 		} else {		
 			Intent intent = new Intent(StartActivity.this, MainActivity.class);
 			startActivity(intent);  
-			this.finish();
+			this.close();
 		}
 	}
 	
@@ -212,10 +222,11 @@ public class StartActivity extends Activity {
 			public void run() {
 				boolean result = false;
 				try {
-					Uri uri = Uri.fromFile(UtilityHelper.getInstallFile());
+					Uri uri = Uri.fromFile(UtilityHelper.getInstallFile(StartActivity.this));
 					Intent intent = new Intent(Intent.ACTION_VIEW);
 					intent.setDataAndType(uri, "application/vnd.android.package-archive");
 					startActivity(intent);
+					
 					result = true;
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -230,4 +241,5 @@ public class StartActivity extends Activity {
 			}
 		}).start();
 	}
+
 }

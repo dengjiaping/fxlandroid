@@ -5,7 +5,10 @@ import java.util.List;
 import java.util.Map;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
@@ -17,8 +20,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.DatePicker;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SimpleAdapter;
@@ -29,29 +35,28 @@ public class MainActivity extends Activity {
 	private TextView tvLabUserName = null;
 	private TextView tvLabGroup = null;
 	private TextView tvLabStatus = null;
-	private ImageButton btnHomeSync = null;
 	private SQLiteOpenHelper sqlHelper = null;
 	private ProgressBar pbHomeSync = null;
 	private SharedHelper sharedHelper = null;
 	private MyHandler myHandler = new MyHandler(this);
-	private ImageButton btnTitleAdd = null;
-	private Boolean syncFlag = false;
 	private ItemTableAccess itemAccess = null;
 	private ListView listTotal = null;
 	private List<Map<String, String>> list = null;
 	private SimpleAdapter adapter = null;
 	private TextView tvDateChoose = null;
-	private String curDate = null;
-	private String todayDate = null;
-	private String tempDate = null;
+	private String curDate = "";
+	private String fromDate = "";
 	private TextView tvTitleLogin = null;
+	private TextView tvTitleUserEdit = null;
 	private SyncHelper syncHelper = null;
+	private ImageView ivUserImage = null;
+	private final int FIRST_REQUEST_CODE = 1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
+	
 		//标题变粗
 		TextPaint textPaint = null;
 		TextView tvTitleWelcome = (TextView) super.findViewById(R.id.tv_title_welcome);
@@ -67,30 +72,31 @@ public class MainActivity extends Activity {
 		pbHomeSync = (ProgressBar) super.findViewById(R.id.pb_home_sync);
 		tvLabStatus = (TextView) super.findViewById(R.id.tv_lab_status);		
 		listTotal = (ListView) super.findViewById(R.id.list_total);
+		ivUserImage = (ImageView) super.findViewById(R.id.iv_userimage);
 				
 		//数据库
 		sqlHelper = new DatabaseHelper(this);
-		sqlHelper.getWritableDatabase();
-		sqlHelper.close();
 		
+		//检查网络同步
+		if(sharedHelper.getLogin() && !sharedHelper.getSyncing()) {
+			new Thread(new Runnable(){
+				@Override
+				public void run() {
+					int result = 0;
+					result = syncHelper.checkSyncWeb();
+					
+					Bundle bundle = new Bundle();
+					bundle.putInt("result", result);	
+					Message message = new Message();
+					message.what = 2;
+					message.setData(bundle);
+					myHandler.sendMessage(message);
+				}
+			}).start();
+		}
+				
 		//当前日期
-		tempDate = UtilityHelper.getCurDate();
-		curDate = sharedHelper.getDate();
-		if(curDate.equals("")) {
-			curDate = tempDate;
-			sharedHelper.setDate(curDate);
-		}
-		
-		//今日
-		todayDate = sharedHelper.getToday();
-		if(todayDate.equals("")) {
-			sharedHelper.setToday(tempDate);
-			todayDate = tempDate;
-			curDate = tempDate;	
-		}
-		if(!todayDate.equals(tempDate)) {
-			curDate = tempDate;
-		}
+		curDate = UtilityHelper.getCurDate();
 						
 		//首页日期
 		tvDateChoose = (TextView) super.findViewById(R.id.tv_date_choose);
@@ -108,8 +114,20 @@ public class MainActivity extends Activity {
 				dateDialog.show();
 			}
 		});
+		
+		//首页统计点击
+		listTotal.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				if(position == 0) {
+					Intent intent = new Intent(MainActivity.this, DayDetailActivity.class);
+					intent.putExtra("date", fromDate);
+					startActivityForResult(intent, FIRST_REQUEST_CODE);
+				}
+			}			
+		});
 				
-		//每日消费
+		//每日消费菜单
 		ImageButton btnTabDay = (ImageButton)super.findViewById(R.id.btn_tab_day);
 		btnTabDay.setOnClickListener(new OnClickListener() {
 			@Override
@@ -119,7 +137,7 @@ public class MainActivity extends Activity {
 			}
 		});
 		
-		//每月消费
+		//每月消费菜单
 		ImageButton btnTabMonth = (ImageButton)super.findViewById(R.id.btn_tab_month);
 		btnTabMonth.setOnClickListener(new OnClickListener() {
 			@Override
@@ -129,35 +147,36 @@ public class MainActivity extends Activity {
 			}
 		});
 		
-		//消费排行
+		//消费排行菜单
 		ImageButton btnTabRank = (ImageButton)super.findViewById(R.id.btn_tab_rank);
 		btnTabRank.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				Intent intent = new Intent(MainActivity.this, RankCategoryActivity.class);
+				Intent intent = new Intent(MainActivity.this, RankActivity.class);
 				startActivity(intent);				
 			}
 		});
 
-		//添加消费
+		//消费分析菜单
 		ImageButton btnTabAnalyze = (ImageButton)super.findViewById(R.id.btn_tab_analyze);
 		btnTabAnalyze.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				Intent intent = new Intent(MainActivity.this, AnalyzeRecommendActivity.class);
+				Intent intent = new Intent(MainActivity.this, AnalyzeActivity.class);
 				startActivity(intent);				
 			}
 		});
 		
 		//设置用户文本
+		tvLabUserName = (TextView) super.findViewById(R.id.tv_lab_username);
+		tvLabGroup = (TextView) super.findViewById(R.id.tv_lab_group);
 		String userName = sharedHelper.getUserName();
 		if(userName.equals("")) {
 			userName = getString(R.string.txt_home_nouser);
 			sharedHelper.setUserName(userName);
 		}
-		tvLabUserName = (TextView) super.findViewById(R.id.tv_lab_username);
-		tvLabGroup = (TextView) super.findViewById(R.id.tv_lab_group);
 		
+		//设置同步文本
 		String syncStatus = sharedHelper.getSyncStatus();
 		if(syncStatus.equals("")) {
 			syncStatus = getString(R.string.txt_home_nosync);
@@ -165,23 +184,23 @@ public class MainActivity extends Activity {
 		}
 		
 		//同步按钮
-		btnHomeSync = (ImageButton) super.findViewById(R.id.btn_home_sync);
+		ImageButton btnHomeSync = (ImageButton) super.findViewById(R.id.btn_home_sync);
 		btnHomeSync.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View view) {
 				if(sharedHelper.getLocalSync() || sharedHelper.getWebSync()) {
-					tvLabStatus.setText(getString(R.string.txt_home_syncing));
 					pbHomeSync.setVisibility(View.VISIBLE);
-					sharedHelper.setSyncing(true);
+					tvLabStatus.setText(getString(R.string.txt_home_syncing));
 					
 					new Thread(new Runnable(){
 						@Override
 						public void run() {
 							try {
-								syncFlag = true;
+								sharedHelper.setSyncing(true);
 								syncHelper.Start();
 							} catch (Exception e) {
-								syncFlag = false;
+								sharedHelper.setSyncing(false);
+								e.printStackTrace();
 							}
 							
 							Message message = new Message();
@@ -196,12 +215,13 @@ public class MainActivity extends Activity {
 		});
 
 		//添加按钮
-		btnTitleAdd = (ImageButton) super.findViewById(R.id.btn_title_add);
+		ImageButton btnTitleAdd = (ImageButton) super.findViewById(R.id.btn_title_add);
 		btnTitleAdd.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
 				Intent intent = new Intent(MainActivity.this, AddActivity.class);
-				startActivity(intent);
+				intent.putExtra("date", curDate);
+				startActivityForResult(intent, FIRST_REQUEST_CODE);
 			}			
 		});
 				
@@ -214,21 +234,29 @@ public class MainActivity extends Activity {
 				startActivity(intent);
 			}			
 		});
+		
+		//用户编辑按钮
+		tvTitleUserEdit = (TextView) super.findViewById(R.id.tv_title_useredit);
+		tvTitleUserEdit.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				Intent intent = new Intent(MainActivity.this, UserEditActivity.class);
+				startActivity(intent);
+			}			
+		});
+				
 	}
 	
 	//设置ListView	
 	protected void setListData(String date) {
-		curDate = date;
-		tvDateChoose.setText(UtilityHelper.formatDate(curDate, "y-m-d-w"));
-		sharedHelper.setDate(date);
+		fromDate = date;
+		tvDateChoose.setText(UtilityHelper.formatDate(date, "y-m-d-w2"));
 		
 		itemAccess = new ItemTableAccess(sqlHelper.getReadableDatabase());
-		list = itemAccess.findHomeTotalByDate(curDate);
+		list = itemAccess.findHomeTotalByDate(date);
 		itemAccess.close();
 		adapter = new SimpleAdapter(this, list, R.layout.list_total, new String[] { "curlabel", "curprice", "prevlabel", "prevprice" }, new int[] { R.id.tv_curdate_label, R.id.tv_curdate_price, R.id.tv_prevdate_label, R.id.tv_prevdate_price });
 		listTotal.setAdapter(adapter);
-				
-		//System.out.println(date);
 	}
 	
 	//关闭this
@@ -236,16 +264,16 @@ public class MainActivity extends Activity {
 		this.finish();
 	}
 	
-	// 返回键
+	//返回键
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			if(syncFlag) {
+			if(sharedHelper.getSyncing()) {
 				Toast.makeText(this, getString(R.string.txt_home_syncexit), Toast.LENGTH_SHORT).show();
 				return false;
 			} else {
-				if(UtilityHelper.startBackup(MainActivity.this)) {
-					MainActivity.this.close();
+				if(UtilityHelper.startBackup(this)) {
+					this.close();
 				}
 			}
 		}
@@ -262,8 +290,13 @@ public class MainActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.action_exits:
-			if(UtilityHelper.startBackup(this)) {
-				this.close();
+			if(sharedHelper.getSyncing()) {
+				Toast.makeText(this, getString(R.string.txt_home_syncexit), Toast.LENGTH_SHORT).show();
+				return false;
+			} else {
+				if(UtilityHelper.startBackup(this)) {
+					this.close();
+				}
 			}
 			
 			break;
@@ -271,6 +304,17 @@ public class MainActivity extends Activity {
 			Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
 			startActivity(intent);
 			
+			break;
+		case R.id.action_abouts:
+			Dialog dialog = new AlertDialog.Builder(this)
+					.setTitle(R.string.txt_about)
+					.setMessage(R.string.txt_abouttext)
+					.setNegativeButton(R.string.txt_sure, new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int whichButton) {
+							dialog.cancel();
+						}
+					}).create();
+			dialog.show();
 			break;
 		}
 		
@@ -282,13 +326,21 @@ public class MainActivity extends Activity {
 		// TODO Auto-generated method stub
 		super.onResume();
 		
-		setListData(sharedHelper.getDate());
-		tvLabUserName.setText(getString(R.string.txt_lab_username) + sharedHelper.getUserName());
+		setListData(curDate);
+		
+		String userName = sharedHelper.getUserName();
+		String userNickName = sharedHelper.getUserNickName();
+		tvLabUserName.setText(getString(R.string.txt_lab_username) + (userNickName.equals("") ? userName : userNickName));
 		tvLabGroup.setText(getString(R.string.txt_lab_group) + sharedHelper.getGroup());
 		
-		//隐藏登录按钮
+		//隐藏登录显示修改
 		if(sharedHelper.getLogin()) {
 			tvTitleLogin.setVisibility(View.GONE);
+			tvTitleUserEdit.setVisibility(View.VISIBLE);
+			
+			String userImage = sharedHelper.getUserImage();
+			if(!userImage.equals(""))
+			    ivUserImage.setImageBitmap(UtilityHelper.getUserImage(this, userImage));
 		}
 
 		//设置同步状态文本
@@ -298,6 +350,17 @@ public class MainActivity extends Activity {
 		}
 		
 		tvLabStatus.setText(sharedHelper.getSyncStatus());
+	}
+	
+	//返回处理
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if(requestCode == FIRST_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+			if(data != null) {
+				curDate = data.getStringExtra("date");
+			}
+		}
 	}
 	
 	//多线程处理
@@ -310,30 +373,47 @@ public class MainActivity extends Activity {
 		@Override
 		public void handleMessage(Message msg) {
 			MainActivity activity = myActivity.get();
+			String syncStatus = "";
+			boolean syncFlag = activity.sharedHelper.getSyncing();
 			switch(msg.what) {
 			case 1:
 				activity.pbHomeSync.setVisibility(View.GONE);
-				activity.sharedHelper.setSyncing(false);
 				
 				String userName = activity.sharedHelper.getUserName();
-				activity.tvLabUserName.setText(activity.getString(R.string.txt_lab_username) + userName);
+				String userNickName = activity.sharedHelper.getUserNickName();
+				activity.tvLabUserName.setText(activity.getString(R.string.txt_lab_username) + (userNickName.equals("") ? userName : userNickName));
 			
 				int group = activity.sharedHelper.getGroup();
 				activity.tvLabGroup.setText(activity.getString(R.string.txt_lab_group) + String.valueOf(group));
 				
-				if(!activity.syncFlag) {
-					String syncStatus = activity.sharedHelper.getSyncStatus();
-					activity.tvLabStatus.setText(syncStatus);
-					
-					Toast.makeText(activity, activity.getString(R.string.txt_home_syncerror), Toast.LENGTH_SHORT).show();
-				} else {
-					String syncStatus = activity.sharedHelper.getSyncStatus();
-					activity.tvLabStatus.setText(syncStatus);
-					
-					activity.syncFlag = false;
+				if(activity.sharedHelper.getLogin()) {
+					activity.tvTitleLogin.setVisibility(View.GONE);
+					activity.tvTitleUserEdit.setVisibility(View.VISIBLE);
 				}
 				
-				activity.setListData(activity.curDate);				
+				syncStatus = activity.sharedHelper.getSyncStatus();
+				
+				if(!syncFlag) {	
+					syncStatus = activity.getString(R.string.txt_home_syncerror);
+					activity.sharedHelper.setSyncStatus(syncStatus);
+					Toast.makeText(activity, syncStatus, Toast.LENGTH_SHORT).show();
+				} else {
+                    activity.sharedHelper.setSyncing(false);
+				}
+				
+				activity.tvLabStatus.setText(syncStatus);
+				activity.setListData(activity.curDate);			
+				
+				break;
+			case 2:
+				int res = msg.getData().getInt("result");
+				if(res == 1 && !syncFlag) {
+					syncStatus = activity.getString(R.string.txt_home_haswebsync);
+					activity.sharedHelper.setSyncStatus(syncStatus);
+					activity.sharedHelper.setWebSync(true);
+					activity.tvLabStatus.setText(syncStatus);
+				}
+							
 				break;
 			}
 		}			

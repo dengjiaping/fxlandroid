@@ -1,0 +1,46 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.fxlweb.sexspider.sexspider.MainActivity">
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="48dp"
+        android:id="@+id/titleLayout"
+        android:gravity="center_vertical"
+        android:background="@color/title_bar_bg"
+        android:layout_alignParentTop="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/app_name"
+            android:id="@+id/textView"
+            android:textColor="@color/title_bar_text"
+            android:gravity="center" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/img_refresh"
+            android:src="@drawable/ic_title_refresh"
+            android:layout_alignParentRight="true"
+            android:contentDescription="@string/txt_refresh" />
+
+    </RelativeLayout>
+
+    <ListView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/list_main"
+        android:layout_below="@+id/titleLayout" />
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/main_loading"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
+</RelativeLayout>
