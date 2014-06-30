@@ -10,6 +10,15 @@ public class SharedHelper {
 		setting = context.getSharedPreferences("setting", 0);
 	}
 
+	//当前日期
+	public String getCurDate() {
+		return setting.getString("curdate", "");
+	}
+
+	public void setCurDate(String curDate) {
+		setting.edit().putString("curdate", curDate).commit();
+	}
+
 	//用户名
 	public String getUserName() {
 		return setting.getString("username", "");
@@ -162,5 +171,4 @@ public class SharedHelper {
 	public void setSyncing(Boolean flag) {
 		setting.edit().putBoolean("syncing", flag).commit();
 	}
-	
 }

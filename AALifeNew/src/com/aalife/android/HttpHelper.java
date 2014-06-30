@@ -18,8 +18,8 @@ import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
 public class HttpHelper {
-    public static final int HTTP_CONN_TIMEOUT_MS = 8 * 1000;
-    public static final int HTTP_SO_TIMEOUT_MS = 14 * 1000;
+    public static final int HTTP_CONN_TIMEOUT_MS = 5 * 1000;
+    public static final int HTTP_SO_TIMEOUT_MS = 10 * 1000;
     
 	public static String post(String url, List<NameValuePair> params) {
 		String result = "{\"result\":\"no\"}";

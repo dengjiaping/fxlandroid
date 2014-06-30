@@ -143,7 +143,7 @@ public class LoginActivity extends Activity {
 					activity.sharedHelper.setUserNickName(activity.result[4]);
 					activity.sharedHelper.setUserEmail(activity.result[5]);
 					
-					//删除本地数据
+					//检查同步数据
 					if(!activity.result[2].equals("0")) {
 						activity.itemAccess = new ItemTableAccess(activity.sqlHelper.getReadableDatabase());
 						activity.itemAccess.deleteAllData();

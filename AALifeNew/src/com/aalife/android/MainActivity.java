@@ -51,6 +51,8 @@ public class MainActivity extends Activity {
 	private SyncHelper syncHelper = null;
 	private ImageView ivUserImage = null;
 	private final int FIRST_REQUEST_CODE = 1;
+	private Runnable runnable = null;
+	private final int DELAY_TIME = 5 * 1000;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -191,11 +193,13 @@ public class MainActivity extends Activity {
 				if(sharedHelper.getLocalSync() || sharedHelper.getWebSync()) {
 					pbHomeSync.setVisibility(View.VISIBLE);
 					tvLabStatus.setText(getString(R.string.txt_home_syncing));
-					
+
 					new Thread(new Runnable(){
 						@Override
 						public void run() {
-							try {
+							try {				
+								myHandler.postDelayed(runnable, DELAY_TIME);
+								
 								sharedHelper.setSyncing(true);
 								syncHelper.Start();
 							} catch (Exception e) {
@@ -244,7 +248,18 @@ public class MainActivity extends Activity {
 				startActivity(intent);
 			}			
 		});
+
+		//定时刷新
+		runnable = new Runnable() {
+			@Override
+			public void run() {
+				Message message = new Message();
+				message.what = 3;
+				myHandler.sendMessage(message);
 				
+				myHandler.postDelayed(this, DELAY_TIME);
+			}			
+		};
 	}
 	
 	//设置ListView	
@@ -290,13 +305,9 @@ public class MainActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.action_exits:
-			if(sharedHelper.getSyncing()) {
-				Toast.makeText(this, getString(R.string.txt_home_syncexit), Toast.LENGTH_SHORT).show();
-				return false;
-			} else {
-				if(UtilityHelper.startBackup(this)) {
-					this.close();
-				}
+			if(UtilityHelper.startBackup(this)) {
+				sharedHelper.setSyncing(false);
+				this.close();
 			}
 			
 			break;
@@ -363,6 +374,15 @@ public class MainActivity extends Activity {
 		}
 	}
 	
+	//销毁处理
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		
+		myHandler.removeCallbacks(runnable);
+	}
+
 	//多线程处理
 	static class MyHandler extends Handler {
 		WeakReference<MainActivity> myActivity = null;
@@ -415,8 +435,11 @@ public class MainActivity extends Activity {
 				}
 							
 				break;
+			case 3:
+				activity.curDate = activity.fromDate;
+				activity.setListData(activity.curDate);
+				break;
 			}
-		}			
-	};
-	
+		}
+	}
 }

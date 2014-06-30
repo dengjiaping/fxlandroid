@@ -20,7 +20,7 @@
             android:layout_weight="1"
             android:background="@color/color_title_bg"
             android:gravity="center"
-            android:text="@string/txt_analyze_catname" />
+            android:text="@string/txt_rank_itemname" />
 
         <TextView
             android:id="@+id/tv_title_itembuydate"
@@ -33,7 +33,7 @@
             android:layout_weight="1"
             android:background="@color/color_title_bg"
             android:gravity="center"
-            android:text="@string/txt_analyze_itembuydate" />
+            android:text="@string/txt_rank_itembuydate" />
 
         <TextView
             android:id="@+id/tv_title_itemprice"
@@ -44,7 +44,7 @@
             android:layout_weight="1"
             android:background="@color/color_title_bg"
             android:gravity="right"
-            android:text="@string/txt_analyze_itemprice" />
+            android:text="@string/txt_rank_itemprice" />
     </LinearLayout>
 
     <LinearLayout
@@ -62,11 +62,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/txt_noitem" />
-
     </LinearLayout>
 
     <ListView
-        android:id="@+id/list_analyzerecommend"
+        android:id="@+id/list_analyzesearch"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/white"

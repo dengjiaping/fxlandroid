@@ -92,7 +92,6 @@ public class DayDetailActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				ListView lv = (ListView) parent;
-		        @SuppressWarnings("unchecked")
 				Map<String, String> map = (Map<String, String>) lv.getItemAtPosition(position);
 		        final String[] items = new String[5];
 		        items[0] = map.get("itemid");

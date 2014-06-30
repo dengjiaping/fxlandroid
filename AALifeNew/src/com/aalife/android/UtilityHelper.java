@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Random;
 
 import org.apache.http.NameValuePair;
@@ -235,6 +236,9 @@ public class UtilityHelper {
 		try {
 			FileOutputStream output = null;
 			if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+				File nomedia = new File(Environment.getExternalStorageDirectory().toString() + File.separator + "aalife" + File.separator + ".nomedia");
+				if(!nomedia.exists()) nomedia.createNewFile();
+				
 				File file = new File(Environment.getExternalStorageDirectory().toString() + File.separator + "aalife" + File.separator + "aalife.bak");
 				if(!file.getParentFile().exists()) {
 					file.getParentFile().mkdirs();
@@ -242,6 +246,9 @@ public class UtilityHelper {
 				
 				output = new FileOutputStream(file, false);
 			} else {
+				File nomedia = context.getFileStreamPath(".nomedia");
+				if(!nomedia.exists()) nomedia.createNewFile();
+				
 				output = context.openFileOutput("aalife.bak", Activity.MODE_PRIVATE);
 			}
 
@@ -433,7 +440,7 @@ public class UtilityHelper {
 		
 		return result;
 	}
-		
+			
 	//注册用户
 	public static String[] addUser(String userName, String userPass, String userNickName, String userEmail) {
 		String[] result = new String[] { "0", "0", "0", "0", "", "", "", "" };
@@ -460,6 +467,29 @@ public class UtilityHelper {
 		}	
 		
 		return result;
+	}
+
+	
+	//登录同步消费
+	public static void syncItemLogin(List<Map<String, String>> list, String userId, String userGroupId) {
+		String url = WEBURL +  "/AALifeWeb/SyncItemLogin.aspx";
+		Iterator<Map<String, String>> it = list.iterator();
+		while(it.hasNext()) {
+			Map<String, String> map = it.next();
+			List<NameValuePair> params = new ArrayList<NameValuePair>();
+			params.add(new BasicNameValuePair("userid", userId));
+			params.add(new BasicNameValuePair("usergroupid", userGroupId));
+			params.add(new BasicNameValuePair("itemappid", map.get("itemid")));
+	
+			try {
+				JSONObject jsonObject = new JSONObject(HttpHelper.post(url, params));
+				if(jsonObject.length() > 0) {
+					
+				}
+			} catch(Exception e) {
+				continue;
+			}
+		}
 	}
 	
 	//登录后保存头像

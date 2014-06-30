@@ -45,6 +45,7 @@ public class AddActivity extends Activity {
 	private SharedHelper sharedHelper = null;
 	private String curDate = "";
 	private String fromDate = "";
+	private int recommend = 0;
 	
 	private AutoCompleteTextView etAddItemName = null;
 	private ArrayAdapter<CharSequence> nameAdapter = null;
@@ -86,7 +87,7 @@ public class AddActivity extends Activity {
 				
 		//数据库
 		sqlHelper = new DatabaseHelper(this);
-		
+				
 		//初始化
 		sharedHelper = new SharedHelper(this);				
 		spinner = (Spinner) super.findViewById(R.id.sp_add_cattype);
@@ -151,6 +152,7 @@ public class AddActivity extends Activity {
 		
 		//获取数据
 		Intent intent = super.getIntent();
+		recommend = intent.getIntExtra("recommend", 0);
 		fromDate = intent.getStringExtra("date");
 		if(fromDate != null && !fromDate.equals("")) {
 			curDate = fromDate;
@@ -381,7 +383,7 @@ public class AddActivity extends Activity {
 			String itemBuyDate = curDate + " " + UtilityHelper.getCurTime();
 			
 			itemAccess = new ItemTableAccess(sqlHelper.getReadableDatabase());
-			Boolean result = itemAccess.addItem(itemName, itemPrice, itemBuyDate, catId);
+			Boolean result = itemAccess.addItem(itemName, itemPrice, itemBuyDate, catId, recommend);
 			itemAccess.close();
 	        if(result) {
 	        	sharedHelper.setLocalSync(true);

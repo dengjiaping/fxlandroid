@@ -22,7 +22,6 @@
     <string name="title_activity_analyze_compare_detail">比较明细</string>
     <string name="title_activity_rank">消费排行</string>
     <string name="title_activity_analyze">消费分析</string>
-    <string name="title_activity_search">搜索分析</string>
     <string name="title_activity_user_edit">修改资料</string>
     <string name="txt_title_home">AA生活记账</string>
     <string name="txt_title_welcome">用户中心</string>
@@ -32,8 +31,6 @@
     <string name="txt_title_add">添加</string>
     <string name="txt_title_back">返回</string>
     <string name="txt_title_date">日期</string>
-    <string name="txt_title_rank">消费排行</string>
-    <string name="txt_title_analyze">消费分析</string>
     <string name="txt_title_search">搜索</string>
     <string name="txt_tab_day">每日消费</string>
     <string name="txt_tab_day_detail">消费明细</string>
@@ -42,6 +39,7 @@
     <string name="txt_tab_analyze">消费分析</string>
     <string name="txt_tab_analyzecompare">比较分析</string>
     <string name="txt_tab_analyzerecommend">推荐分析</string>
+    <string name="txt_tab_analyzesearch">搜索分析</string>
     <string name="txt_tab_add">添加消费</string>
     <string name="txt_tab_edit">编辑消费</string>
     <string name="txt_tab_login">用户登录</string>
@@ -66,6 +64,7 @@
     <string name="txt_home_hassync">有未同步的数据。</string>
     <string name="txt_home_haswebsync">有未同步的网络数据。</string>
     <string name="txt_home_nosync">没有要同步的数据。</string>
+    <string name="txt_home_loginsync">请登录或直接同步数据。</string>
     <string name="txt_home_syncexit">数据同步中不能退出。</string>
     <string name="txt_home_syncerror">数据同步失败！请重试。</string>
     <string name="txt_search_keyempty">搜索关键字不能为空。</string>
@@ -97,7 +96,7 @@
     <string name="txt_analyze_pricecur">当月总价</string>
     <string name="txt_analyze_priceprev">上月总价</string>
     <string name="txt_analyze_itembuydate">日期</string>
-    <string name="txt_analyze_itemprice">总价</string>
+    <string name="txt_analyze_itemprice">价格</string>
     <string name="txt_analyze_countcur">当月</string>
     <string name="txt_analyze_countprev">上月</string>
     <string name="txt_analyze_itemname">商品名称</string>
@@ -148,7 +147,7 @@
     <string name="txt_user_registersuccess">注册成功，请登录。</string>
     <string name="txt_user_editerror">资料修改失败！</string>
     <string name="txt_user_editsuccess">资料修改成功。</string>
-    <string name="txt_user_loginnote">注意：登录会清除本地所有数据！</string>
+    <string name="txt_user_loginnote">注意：登录将清除本地数据，同步网络数据！</string>
     <string name="txt_user_userrepeat">用户名重复！</string>
     <string name="txt_user_userimage">头像</string>
     <string name="txt_user_imagesuccess">头像更新成功。</string>

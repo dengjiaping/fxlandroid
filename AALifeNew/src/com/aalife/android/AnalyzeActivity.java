@@ -21,11 +21,13 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class AnalyzeActivity extends Activity {
 	private ViewPager viewPager = null;
@@ -34,11 +36,16 @@ public class AnalyzeActivity extends Activity {
 	private List<View> viewPagerList = null;
 	private View layAnalyzeCompare = null;
 	private View layAnalyzeRecommend = null;
+	private View layAnalyzeSearch = null;
 	private ImageButton btnTitleDate = null;
+	private ImageButton btnTitleAdd = null;
+	private EditText etTitleKey = null;
 	private ImageButton btnTitleSearch = null;
+	private String key = "";
 	
 	private ListView listAnalyzeCompare = null;
 	private ListView listAnalyzeRecommend = null;
+	private ListView listAnalyzeSearch = null;
 	private List<Map<String, String>> list = null;
 	private SimpleAdapter adapter = null;
 	private SQLiteOpenHelper sqlHelper = null;
@@ -46,10 +53,13 @@ public class AnalyzeActivity extends Activity {
 	private String curDate = "";
 	private TextView tvNavCompare = null;
 	private TextView tvNavRecommend = null;
+	private TextView tvNavSearch = null;
 	private TextView tvTitleAnalyze = null;
 	private LinearLayout layNoItemCompare = null;
 	private LinearLayout layNoItemRecommend = null;
+	private LinearLayout layNoItemSearch = null;
 	private final int FIRST_REQUEST_CODE = 1;
+	private final int SECOND_REQUEST_CODE = 2;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -64,9 +74,11 @@ public class AnalyzeActivity extends Activity {
 		mInflater = getLayoutInflater();
 		layAnalyzeCompare = mInflater.inflate(R.layout.analyze_compare, null);
 		layAnalyzeRecommend = mInflater.inflate(R.layout.analyze_recommend, null);
+		layAnalyzeSearch = mInflater.inflate(R.layout.analyze_search, null);
 		
         viewPagerList.add(layAnalyzeCompare);
         viewPagerList.add(layAnalyzeRecommend);
+        viewPagerList.add(layAnalyzeSearch);
 
 		viewPager = (ViewPager) super.findViewById(R.id.viewPager);
         
@@ -92,13 +104,26 @@ public class AnalyzeActivity extends Activity {
 		textPaint = tvTitleItemPrice.getPaint();
 		textPaint.setFakeBoldText(true);
 		
+		tvTitleItemName = (TextView) layAnalyzeSearch.findViewById(R.id.tv_title_itemname);
+		textPaint = tvTitleItemName.getPaint();
+		textPaint.setFakeBoldText(true);
+		tvTitleItemBuyDate = (TextView) layAnalyzeSearch.findViewById(R.id.tv_title_itembuydate);
+		textPaint = tvTitleItemBuyDate.getPaint();
+		textPaint.setFakeBoldText(true);
+		tvTitleItemPrice = (TextView) layAnalyzeSearch.findViewById(R.id.tv_title_itemprice);
+		textPaint = tvTitleItemPrice.getPaint();
+		textPaint.setFakeBoldText(true);
+		
         //初始化
 		curDate = UtilityHelper.getCurDate();
 		tvTitleAnalyze = (TextView) super.findViewById(R.id.tv_title_analyze);
 		layNoItemCompare = (LinearLayout) layAnalyzeCompare.findViewById(R.id.lay_noitem);
 		layNoItemRecommend = (LinearLayout) layAnalyzeRecommend.findViewById(R.id.lay_noitem);
+		layNoItemSearch = (LinearLayout) layAnalyzeSearch.findViewById(R.id.lay_noitem);
 		layNoItemCompare.setVisibility(View.GONE);
 		layNoItemRecommend.setVisibility(View.GONE);
+		layNoItemSearch.setVisibility(View.GONE);
+		etTitleKey = (EditText) super.findViewById(R.id.et_title_key);
 		
         //定义分类比较ListView
 		listAnalyzeCompare = (ListView) layAnalyzeCompare.findViewById(R.id.list_analyzecompare);
@@ -107,7 +132,6 @@ public class AnalyzeActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				ListView lv = (ListView) parent;
-		        @SuppressWarnings("unchecked")
 				Map<String, String> map = (Map<String, String>) lv.getItemAtPosition(position);
 		        int catId = Integer.parseInt(map.get("catid"));
 		        
@@ -132,7 +156,6 @@ public class AnalyzeActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				ListView lv = (ListView) parent;
-		        @SuppressWarnings("unchecked")
 				Map<String, String> map = (Map<String, String>) lv.getItemAtPosition(position);
 		        String date = map.get("datevalue");
 		        
@@ -146,6 +169,29 @@ public class AnalyzeActivity extends Activity {
 		        Intent intent = new Intent(AnalyzeActivity.this, DayDetailActivity.class);
 		        intent.putExtra("date", date);
 		        startActivityForResult(intent, FIRST_REQUEST_CODE);
+			}			
+		});
+		
+		//定义搜索分析ListView
+		listAnalyzeSearch = (ListView) layAnalyzeSearch.findViewById(R.id.list_analyzesearch);
+		listAnalyzeSearch.setDivider(null);		
+		listAnalyzeSearch.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				ListView lv = (ListView) parent;
+				Map<String, String> map = (Map<String, String>) lv.getItemAtPosition(position);
+		        String date = map.get("datevalue");
+		        
+		        TextView tvItemName = (TextView) view.findViewById(R.id.tv_rank_itemname);
+		        tvItemName.setBackgroundColor(AnalyzeActivity.this.getResources().getColor(R.color.color_tran_main));
+		        TextView tvItemBuyDate = (TextView) view.findViewById(R.id.tv_rank_itembuydate);
+		        tvItemBuyDate.setBackgroundColor(AnalyzeActivity.this.getResources().getColor(R.color.color_tran_main));
+		        TextView tvItemPrice = (TextView) view.findViewById(R.id.tv_rank_itemprice);
+		        tvItemPrice.setBackgroundColor(AnalyzeActivity.this.getResources().getColor(R.color.color_tran_main));
+		        
+		        Intent intent = new Intent(AnalyzeActivity.this, DayDetailActivity.class);
+		        intent.putExtra("date", date);
+		        startActivityForResult(intent, SECOND_REQUEST_CODE);
 			}			
 		});
 				
@@ -167,6 +213,15 @@ public class AnalyzeActivity extends Activity {
 			}
 		});
 
+		//搜索导航
+		tvNavSearch = (TextView) super.findViewById(R.id.tv_nav_search);
+		tvNavSearch.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				viewPager.setCurrentItem(2);
+			}
+		});
+		
 		//返回按钮
 		ImageButton btnTitleBack = (ImageButton) super.findViewById(R.id.btn_title_back);
 		btnTitleBack.setOnClickListener(new OnClickListener() {
@@ -193,13 +248,32 @@ public class AnalyzeActivity extends Activity {
 			}		
 		});
 		
+		//添加按钮
+		btnTitleAdd = (ImageButton) super.findViewById(R.id.btn_title_add);
+		btnTitleAdd.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				Intent intent = new Intent(AnalyzeActivity.this, AddActivity.class);
+				intent.putExtra("recommend", 1);
+				startActivityForResult(intent, FIRST_REQUEST_CODE);
+			}			
+		});
+		
 		//搜索按钮
 		btnTitleSearch = (ImageButton) super.findViewById(R.id.btn_title_search);
 		btnTitleSearch.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				Intent intent = new Intent(AnalyzeActivity.this, SearchActivity.class);
-				startActivity(intent);
+				key = etTitleKey.getText().toString().trim();
+				key = key.replace("%", "");
+				key = key.replace("'", "");
+				if(key.equals("")) {
+					etTitleKey.setText("");
+					Toast.makeText(AnalyzeActivity.this, getString(R.string.txt_search_keyempty), Toast.LENGTH_SHORT).show();
+					return;
+				}
+				
+				setSearchData(key);
 			}			
 		});
 		
@@ -231,6 +305,9 @@ public class AnalyzeActivity extends Activity {
 				tvNavRecommend.setTextColor(AnalyzeActivity.this.getResources().getColor(android.R.color.black));
 				tvNavRecommend.setBackgroundResource(R.drawable.nav_border_sub);
 				tvNavRecommend.setPadding(0, pad, 0, pad);
+				tvNavSearch.setTextColor(AnalyzeActivity.this.getResources().getColor(android.R.color.black));
+				tvNavSearch.setBackgroundResource(R.drawable.nav_border_sub);
+				tvNavSearch.setPadding(0, pad, 0, pad);
 				switch(arg0) {
 				case 0:
 					tvNavCompare.setTextColor(AnalyzeActivity.this.getResources().getColor(R.color.color_back_main));
@@ -240,6 +317,9 @@ public class AnalyzeActivity extends Activity {
 					tvTitleAnalyze.setText(getString(R.string.txt_tab_analyzecompare) + "(" + UtilityHelper.formatDate(curDate, "ys-m") + ")");
 										
 					btnTitleDate.setVisibility(View.VISIBLE);
+					btnTitleAdd.setVisibility(View.GONE);
+					tvTitleAnalyze.setVisibility(View.VISIBLE);
+					etTitleKey.setVisibility(View.GONE);
 					btnTitleSearch.setVisibility(View.GONE);
 					
 					break;
@@ -251,6 +331,23 @@ public class AnalyzeActivity extends Activity {
 					tvTitleAnalyze.setText(getString(R.string.txt_tab_analyzerecommend));
 					
 					btnTitleDate.setVisibility(View.GONE);
+					btnTitleAdd.setVisibility(View.VISIBLE);
+					tvTitleAnalyze.setVisibility(View.VISIBLE);
+					etTitleKey.setVisibility(View.GONE);
+					btnTitleSearch.setVisibility(View.GONE);
+					
+					break;
+				case 2:
+					tvNavSearch.setTextColor(AnalyzeActivity.this.getResources().getColor(R.color.color_back_main));
+					tvNavSearch.setBackgroundResource(R.drawable.nav_border_cur);
+					tvNavSearch.setPadding(0, pad, 0, pad);
+					
+					tvTitleAnalyze.setText(getString(R.string.txt_tab_analyzesearch));
+					
+					btnTitleDate.setVisibility(View.GONE);
+					btnTitleAdd.setVisibility(View.GONE);
+					tvTitleAnalyze.setVisibility(View.GONE);
+					etTitleKey.setVisibility(View.VISIBLE);
 					btnTitleSearch.setVisibility(View.VISIBLE);
 					
 					break;
@@ -259,12 +356,13 @@ public class AnalyzeActivity extends Activity {
 		});
 		
 		setListData(curDate);
+		//setSearchData(key);
 	}
 	
 	//设置ListView	
 	protected void setListData(String date) {
 		curDate = date;
-		tvTitleAnalyze.setText(getString(R.string.txt_tab_analyzecompare) + "(" + UtilityHelper.formatDate(date, "ys-m") + ")");
+		tvTitleAnalyze.setText(getString(R.string.txt_tab_analyzecompare) + "(" + UtilityHelper.formatDate(curDate, "ys-m") + ")");
 		itemAccess = new ItemTableAccess(sqlHelper.getReadableDatabase());
 		
 		//比较
@@ -288,12 +386,29 @@ public class AnalyzeActivity extends Activity {
 		itemAccess.close();
 	}
 	
+	//设置搜索Data	
+	protected void setSearchData(String key) {		
+		itemAccess = new ItemTableAccess(sqlHelper.getReadableDatabase());
+		list = itemAccess.findItemByKey(key);
+		itemAccess.close();
+		adapter = new SimpleAdapter(this, list, R.layout.list_rankprice, new String[] { "itemname", "itembuydate", "itemprice" }, new int[] { R.id.tv_rank_itemname, R.id.tv_rank_itembuydate, R.id.tv_rank_itemprice });
+		listAnalyzeSearch.setAdapter(adapter);
+
+		//设置empty
+		if(list.size() == 0)
+			layNoItemSearch.setVisibility(View.VISIBLE);
+		else
+			layNoItemSearch.setVisibility(View.GONE);
+	}
+		
 	//返回处理
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		if(requestCode == FIRST_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
 			setListData(curDate);
+		} else if(requestCode == SECOND_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+			setSearchData(key);
 		}
 	}
 	

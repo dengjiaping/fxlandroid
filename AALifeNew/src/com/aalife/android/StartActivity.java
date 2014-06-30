@@ -64,8 +64,8 @@ public class StartActivity extends Activity {
 		if(!sharedHelper.getRestore()) {
 			int result = UtilityHelper.startRestore(this);
 			if(result == 1) {
-				//sharedHelper.setLocalSync(true);
-				//sharedHelper.setSyncStatus(getString(R.string.txt_home_hassync));
+				sharedHelper.setLocalSync(true);
+				sharedHelper.setSyncStatus(getString(R.string.txt_home_loginsync));
 			}
 			sharedHelper.setRestore(true);
 		}

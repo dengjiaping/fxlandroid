@@ -36,6 +36,7 @@ public class RankActivity extends Activity {
 	private View layRankCount = null;
 	private View layRankPrice = null;
 	private View layRankDate = null;
+	private String strTitle = "";
 	
 	private ListView listRankCat = null;
 	private ListView listRankCount = null;
@@ -125,6 +126,7 @@ public class RankActivity extends Activity {
         //初始化
 		curDate = UtilityHelper.getCurDate();
 		tvTitleRank = (TextView) super.findViewById(R.id.tv_title_rank);
+		strTitle = getString(R.string.txt_tab_rankcat);
 		layNoItemCat = (LinearLayout) layRankCat.findViewById(R.id.lay_noitem);
 		layNoItemCount = (LinearLayout) layRankCount.findViewById(R.id.lay_noitem);
 		layNoItemPrice = (LinearLayout) layRankPrice.findViewById(R.id.lay_noitem);
@@ -141,7 +143,6 @@ public class RankActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				ListView lv = (ListView) parent;
-		        @SuppressWarnings("unchecked")
 				Map<String, String> map = (Map<String, String>) lv.getItemAtPosition(position);
 		        int catId = Integer.parseInt(map.get("catid"));
 		        
@@ -166,7 +167,6 @@ public class RankActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				ListView lv = (ListView) parent;
-		        @SuppressWarnings("unchecked")
 				Map<String, String> map = (Map<String, String>) lv.getItemAtPosition(position);
 		        String itemName = map.get("itemname");
 		        
@@ -191,7 +191,6 @@ public class RankActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				ListView lv = (ListView) parent;
-		        @SuppressWarnings("unchecked")
 				Map<String, String> map = (Map<String, String>) lv.getItemAtPosition(position);
 		        String date = map.get("datevalue");
 		        
@@ -215,7 +214,6 @@ public class RankActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				ListView lv = (ListView) parent;
-		        @SuppressWarnings("unchecked")
 				Map<String, String> map = (Map<String, String>) lv.getItemAtPosition(position);
 		        String date = map.get("datevalue");
 		        
@@ -333,21 +331,37 @@ public class RankActivity extends Activity {
 					tvNavCat.setTextColor(RankActivity.this.getResources().getColor(R.color.color_back_main));
 					tvNavCat.setBackgroundResource(R.drawable.nav_border_cur);
 					tvNavCat.setPadding(0, pad, 0, pad);
+					
+					tvTitleRank.setText(getString(R.string.txt_tab_rankcat) + "(" + UtilityHelper.formatDate(curDate, "ys-m") + ")");
+					strTitle = getString(R.string.txt_tab_rankcat);
+					
 					break;
 				case 1:
 					tvNavCount.setTextColor(RankActivity.this.getResources().getColor(R.color.color_back_main));
 					tvNavCount.setBackgroundResource(R.drawable.nav_border_cur);
 					tvNavCount.setPadding(0, pad, 0, pad);
+
+					tvTitleRank.setText(getString(R.string.txt_tab_rankcount) + "(" + UtilityHelper.formatDate(curDate, "ys-m") + ")");
+					strTitle = getString(R.string.txt_tab_rankcount);
+					
 					break;
 				case 2:
 					tvNavPrice.setTextColor(RankActivity.this.getResources().getColor(R.color.color_back_main));
 					tvNavPrice.setBackgroundResource(R.drawable.nav_border_cur);
 					tvNavPrice.setPadding(0, pad, 0, pad);
+
+					tvTitleRank.setText(getString(R.string.txt_tab_rankprice) + "(" + UtilityHelper.formatDate(curDate, "ys-m") + ")");
+					strTitle = getString(R.string.txt_tab_rankprice);
+					
 					break;
 				case 3:
 					tvNavDate.setTextColor(RankActivity.this.getResources().getColor(R.color.color_back_main));
 					tvNavDate.setBackgroundResource(R.drawable.nav_border_cur);
 					tvNavDate.setPadding(0, pad, 0, pad);
+					
+					tvTitleRank.setText(getString(R.string.txt_tab_rankdate) + "(" + UtilityHelper.formatDate(curDate, "ys-m") + ")");
+					strTitle = getString(R.string.txt_tab_rankdate);
+					
 					break;
 				}
 			}			
@@ -359,7 +373,7 @@ public class RankActivity extends Activity {
 	//设置ListView	
 	protected void setListData(String date) {
 		curDate = date;
-		tvTitleRank.setText(getString(R.string.txt_title_rank) + "(" + UtilityHelper.formatDate(date, "ys-m") + ")");
+		tvTitleRank.setText(strTitle + "(" + UtilityHelper.formatDate(curDate, "ys-m") + ")");
 		itemAccess = new ItemTableAccess(sqlHelper.getReadableDatabase());
 		
 		//分类

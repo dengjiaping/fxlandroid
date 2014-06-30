@@ -179,7 +179,7 @@ public class SyncHelper {
 		String userId = String.valueOf(sharedHelper.getUserId());
 		String userGroupId = String.valueOf(sharedHelper.getGroup());
 		Iterator<Map<String, String>> it = list.iterator();
-		while(it.hasNext()) {
+		while(it.hasNext() && sharedHelper.getSyncing()) {
 			Map<String, String> map = it.next();
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
 			params.add(new BasicNameValuePair("itemid", map.get("itemid")));
@@ -350,7 +350,7 @@ public class SyncHelper {
 		boolean syncFlag = false;
 		ItemTableAccess itemAccess = new ItemTableAccess(this.sqlHelper.getReadableDatabase());
 		Iterator<Map<String, String>> it = list.iterator();
-		while(it.hasNext()) {
+		while(it.hasNext() && sharedHelper.getSyncing()) {
 			Map<String, String> map = (Map<String, String>) it.next();
 			int itemId = Integer.parseInt(map.get("itemid"));
 			int itemAppId = Integer.parseInt(map.get("itemappid"));
@@ -366,7 +366,6 @@ public class SyncHelper {
 				continue;
 			}
 			if(!syncWebItemBack(itemId)) {
-				itemAccess.delWebItem(itemId, itemAppId);
 				syncFlag = true;
 			}
 		}

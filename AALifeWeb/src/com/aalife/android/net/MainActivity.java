@@ -1,7 +1,6 @@
 package com.aalife.android.net;
 
 import java.lang.ref.WeakReference;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -30,7 +29,6 @@ public class MainActivity extends Activity {
     private ValueCallback<Uri> mUploadMessage = null;
     private final static int FILECHOOSER_RESULTCODE = 1;
 
-	@SuppressLint("SetJavaScriptEnabled")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

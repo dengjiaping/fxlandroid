@@ -82,7 +82,7 @@ public class EditActivity extends Activity {
 		//设置默认值	
 		String[] date = items[4].split(" ");
 		curDate = date[0];
-		curTime = date[1];
+		curTime = date.length > 1 ? date[1] : UtilityHelper.getCurTime();
 		itemName = items[2];
 		etAddItemName.setText(itemName);
 		etAddItemPrice.setText(items[3]);

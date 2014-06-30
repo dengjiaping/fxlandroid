@@ -71,7 +71,6 @@ public class AnalyzeCompareDetailActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				ListView lv = (ListView) parent;
-		        @SuppressWarnings("unchecked")
 				Map<String, String> map = (Map<String, String>) lv.getItemAtPosition(position);
 		        String itemName = map.get("itemname");
 		        String countValue = map.get("countvalue");

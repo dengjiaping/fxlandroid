@@ -3,7 +3,6 @@ package com.aalife.android;
 import java.util.List;
 import java.util.Map;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -31,7 +30,6 @@ public class DayAdapter extends BaseAdapter {
 	private DayActivity activity = null;
 	private final int FIRST_REQUEST_CODE = 1;
 	
-	@SuppressLint("UseSparseArrays")
 	public DayAdapter(Context context, List<Map<String, String>> list) {
 		this.context = context;
 		this.list = list;
@@ -144,7 +142,6 @@ public class DayAdapter extends BaseAdapter {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				ListView lv = (ListView) parent;
-		        @SuppressWarnings("unchecked")
 				Map<String, String> map = (Map<String, String>) lv.getItemAtPosition(position);
 		        final String[] items = new String[5];
 		        items[0] = map.get("itemid");

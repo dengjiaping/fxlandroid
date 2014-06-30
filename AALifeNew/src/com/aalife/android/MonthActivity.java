@@ -53,6 +53,7 @@ public class MonthActivity extends Activity {
 	private List<Map<String, String>> list = null;
 	private SimpleAdapter adapter = null;
 	private SQLiteOpenHelper sqlHelper = null;
+	private SharedHelper sharedHelper = null;
 	private ItemTableAccess itemAccess = null;
 	private String curDate = "";
 	private int pagerPosition = 0;
@@ -90,7 +91,10 @@ public class MonthActivity extends Activity {
         });
 		
 		//初始化
-		curDate = UtilityHelper.getCurDate();
+		sharedHelper = new SharedHelper(this);	
+		if(curDate.equals("")) {
+			curDate = UtilityHelper.getCurDate();
+		}
 		pbMonth = (ProgressBar) super.findViewById(R.id.pb_month);
 		pbMonth.setVisibility(View.VISIBLE);
 		layMonthTotal = (LinearLayout) super.findViewById(R.id.lay_month_total);
@@ -152,6 +156,7 @@ public class MonthActivity extends Activity {
 				String date = map.get("datevalue");
 				tvTotalPrice.setText(price);
 				curDate = date;
+				sharedHelper.setCurDate(date);
 				
 				pagerPosition = viewPager.getCurrentItem();
 
@@ -325,7 +330,6 @@ public class MonthActivity extends Activity {
 						@Override
 						public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 							ListView lv = (ListView) parent;
-					        @SuppressWarnings("unchecked")
 							Map<String, String> map = (Map<String, String>) lv.getItemAtPosition(position);
 					        String date = map.get("datevalue");
 					        
@@ -378,6 +382,7 @@ public class MonthActivity extends Activity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		if(requestCode == FIRST_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+			curDate = sharedHelper.getCurDate();
 			this.onCreate(null);
 		}
 	}

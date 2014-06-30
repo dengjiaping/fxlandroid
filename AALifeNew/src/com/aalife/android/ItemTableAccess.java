@@ -437,9 +437,9 @@ public class ItemTableAccess {
 	}
 
 	//添加消费
-	public boolean addItem(String itemName, String itemPrice, String itemBuyDate, int catId) {
-		String sql = "INSERT INTO " + ITEMTABNAME + "(ItemName, ItemPrice, ItemBuyDate, CategoryID, Synchronize) "
-			   	   + "VALUES ('" + itemName + "', '" + itemPrice + "', '" + itemBuyDate + "', '" + catId + "', '1')";
+	public boolean addItem(String itemName, String itemPrice, String itemBuyDate, int catId, int recommend) {
+		String sql = "INSERT INTO " + ITEMTABNAME + "(ItemName, ItemPrice, ItemBuyDate, CategoryID, Synchronize, Recommend) "
+			   	   + "VALUES ('" + itemName + "', '" + itemPrice + "', '" + itemBuyDate + "', '" + catId + "', '1', '" + recommend + "')";
 		try {
 		    this.db.execSQL(sql);
 		} catch (Exception e) {
@@ -487,7 +487,7 @@ public class ItemTableAccess {
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
-	}
+	}	
 	
 	//删除网络消费
 	public void clearDelTable() {
@@ -925,17 +925,18 @@ public class ItemTableAccess {
 	//备份数据
 	public List<CharSequence> bakDataBase() {
 		List<CharSequence> list = new ArrayList<CharSequence>();
-		String sql = "SELECT ItemName, ItemPrice, ItemBuyDate, CategoryID, Recommend FROM " + ITEMTABNAME;
+		String sql = "SELECT ItemID, ItemName, ItemPrice, ItemBuyDate, CategoryID, Recommend FROM " + ITEMTABNAME;
 		Cursor result = null;
 		try {
 			result = this.db.rawQuery(sql, null);
 			while (result.moveToNext()) {
-				list.add("INSERT INTO " + ITEMTABNAME + "(ItemName, ItemPrice, ItemBuyDate, CategoryID, Recommend) VALUES('" 
+				list.add("INSERT INTO " + ITEMTABNAME + "(ItemID, ItemName, ItemPrice, ItemBuyDate, CategoryID, Recommend) VALUES('" 
 			             + result.getString(0)+ "', '" 
 						 + result.getString(1) + "', '"
 					     + result.getString(2) + "', '" 
 						 + result.getString(3) + "', '" 
-					     + result.getString(4) + "');");
+						 + result.getString(4) + "', '" 
+					     + result.getString(5) + "');");
 			}
 			
 			sql = "SELECT CategoryID, CategoryName, CategoryRank, CategoryDisplay, CategoryLive FROM " + CATTABNAME
