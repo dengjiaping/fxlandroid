@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -34,7 +33,7 @@ public class CategoryEditActivity extends Activity {
 	private SharedHelper sharedHelper = null;
 	private LinearLayout layNoItem = null;
 	private int position = 0;
-	private boolean clicked = false;
+	private boolean isClick = false;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -48,9 +47,6 @@ public class CategoryEditActivity extends Activity {
 		textPaint.setFakeBoldText(true);
 		TextView tvTitleCatName = (TextView) super.findViewById(R.id.tv_title_catname);
 		textPaint = tvTitleCatName.getPaint();
-		textPaint.setFakeBoldText(true);
-		TextView tvTitleDisplay = (TextView) super.findViewById(R.id.tv_title_display);
-		textPaint = tvTitleDisplay.getPaint();
 		textPaint.setFakeBoldText(true);
 		TextView tvTitleOperate = (TextView) super.findViewById(R.id.tv_title_operate);
 		textPaint = tvTitleOperate.getPaint();
@@ -84,7 +80,7 @@ public class CategoryEditActivity extends Activity {
 		}
 		
 		//列表数据源
-		adapter = new SimpleAdapter(this, list, R.layout.list_category, new String[] { "id", "catname", "", "delete", "catid", "catdisplay" }, new int[] { R.id.tv_cat_id, R.id.tv_cat_name, R.id.cb_cat_display, R.id.tv_cat_delete, R.id.tv_cat_catid, R.id.tv_cat_display }) {
+		adapter = new SimpleAdapter(this, list, R.layout.list_category, new String[] { "id", "catname", "delete", "catid" }, new int[] { R.id.tv_cat_id, R.id.tv_cat_name, R.id.tv_cat_delete, R.id.tv_cat_catid }) {
 			@Override
 			public View getView(final int position, View convertView, ViewGroup parent) {
 				View view = super.getView(position, convertView, parent);
@@ -110,40 +106,17 @@ public class CategoryEditActivity extends Activity {
 			        	sharedHelper.setSyncStatus(getString(R.string.txt_home_hassync));
 					}					
 				});
-				//选择CheckBox
-				final CheckBox sel = (CheckBox) view.findViewById(R.id.cb_cat_display);
-				sel.setChecked(listCheck[position]);
-				sel.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						categoryAccess = new CategoryTableAccess(sqlHelper.getReadableDatabase());
-						if(sel.isChecked()) {
-							categoryAccess.updateCatDisplay(catId, 1);
-							listCheck[position] = true;
-						} else {
-							categoryAccess.updateCatDisplay(catId, 0);
-							listCheck[position] = false;
-						}
-						categoryAccess.close();
-						
-						sharedHelper.setLocalSync(true);
-			        	sharedHelper.setSyncStatus(getString(R.string.txt_home_hassync));
-					}					
-				});
 
 		        TextView tvId = (TextView) view.findViewById(R.id.tv_cat_id);
 		        TextView tvCatName = (TextView) view.findViewById(R.id.tv_cat_name);
-		        LinearLayout layDisplay = (LinearLayout) view.findViewById(R.id.lay_cat_display);
 		        LinearLayout layOperate = (LinearLayout) view.findViewById(R.id.lay_cat_operate);
-				if(clicked && CategoryEditActivity.this.position == position) {
+				if(isClick && CategoryEditActivity.this.position == position) {
 			        tvId.setBackgroundColor(CategoryEditActivity.this.getResources().getColor(R.color.color_tran_main));
 			        tvCatName.setBackgroundColor(CategoryEditActivity.this.getResources().getColor(R.color.color_tran_main));
-			        layDisplay.setBackgroundColor(CategoryEditActivity.this.getResources().getColor(R.color.color_tran_main));
 			        layOperate.setBackgroundColor(CategoryEditActivity.this.getResources().getColor(R.color.color_tran_main));
 				} else {
 					tvId.setBackgroundColor(CategoryEditActivity.this.getResources().getColor(R.color.color_item_bg));
 			        tvCatName.setBackgroundColor(CategoryEditActivity.this.getResources().getColor(R.color.color_item_bg));
-			        layDisplay.setBackgroundColor(CategoryEditActivity.this.getResources().getColor(R.color.color_item_bg));
 			        layOperate.setBackgroundColor(CategoryEditActivity.this.getResources().getColor(R.color.color_item_bg));
 				}
 
@@ -162,7 +135,7 @@ public class CategoryEditActivity extends Activity {
 		        String catName = map.get("catname");
 		        CategoryEditActivity.this.etCatName.setText(catName);
 		        
-		        clicked = true;
+		        isClick = true;
 		        CategoryEditActivity.this.position = position;
 		        adapter.notifyDataSetChanged();		        
 			}			

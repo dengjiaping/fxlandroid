@@ -369,19 +369,21 @@ public class AnalyzeActivity extends Activity {
 		list = itemAccess.findCompareCatByDate(date);
 		adapter = new SimpleAdapter(this, list, R.layout.list_analyzecompare, new String[] { "catid", "catname", "pricecur", "priceprev" }, new int[] { R.id.tv_analyze_catid, R.id.tv_analyze_catname, R.id.tv_analyze_pricecur, R.id.tv_analyze_priceprev });
 		listAnalyzeCompare.setAdapter(adapter);
-		if(list.size() <= 0)
+		if(list.size() <= 0) {
 			layNoItemCompare.setVisibility(View.VISIBLE);
-		else
+		} else {
 			layNoItemCompare.setVisibility(View.GONE);
+		}
 		
 		//推荐
 		list = itemAccess.findAnalyzeRecommend();
 		adapter = new SimpleAdapter(this, list, R.layout.list_rankprice, new String[] { "itemname", "itembuydate", "itemprice" }, new int[] { R.id.tv_rank_itemname, R.id.tv_rank_itembuydate, R.id.tv_rank_itemprice });
 		listAnalyzeRecommend.setAdapter(adapter);
-		if(list.size() <= 0)
+		if(list.size() <= 0) {
 			layNoItemRecommend.setVisibility(View.VISIBLE);
-		else
+		} else {
 			layNoItemRecommend.setVisibility(View.GONE);
+		}
 		
 		itemAccess.close();
 	}
@@ -395,10 +397,11 @@ public class AnalyzeActivity extends Activity {
 		listAnalyzeSearch.setAdapter(adapter);
 
 		//设置empty
-		if(list.size() == 0)
+		if(list.size() == 0) {
 			layNoItemSearch.setVisibility(View.VISIBLE);
-		else
+		} else {
 			layNoItemSearch.setVisibility(View.GONE);
+		}
 	}
 		
 	//返回处理

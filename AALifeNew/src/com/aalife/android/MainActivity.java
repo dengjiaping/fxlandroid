@@ -33,7 +33,7 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity {
 	private TextView tvLabUserName = null;
-	private TextView tvLabGroup = null;
+	private TextView tvLabNickName = null;
 	private TextView tvLabStatus = null;
 	private SQLiteOpenHelper sqlHelper = null;
 	private ProgressBar pbHomeSync = null;
@@ -78,7 +78,42 @@ public class MainActivity extends Activity {
 				
 		//数据库
 		sqlHelper = new DatabaseHelper(this);
-		
+
+		//恢复备份数据
+		if(!sharedHelper.getRestore()) {
+			Dialog dialog = new AlertDialog.Builder(this)
+			    .setCancelable(false)
+				.setTitle(R.string.txt_tips)
+				.setMessage(R.string.txt_restore)
+				.setPositiveButton(R.string.txt_yes, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int whichButton) {
+						int result = UtilityHelper.startRestore(MainActivity.this);
+						if(result == 1) {
+							itemAccess = new ItemTableAccess(sqlHelper.getReadableDatabase());
+							boolean bool = itemAccess.hasSyncItem();
+							itemAccess.close();
+							if(bool) {
+								sharedHelper.setLocalSync(true);
+								sharedHelper.setSyncStatus(getString(R.string.txt_home_loginsync));
+							}
+
+							sharedHelper.setHasRestore(true);
+							MainActivity.this.onResume();
+						}
+					}
+				}).setNegativeButton(R.string.txt_no, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int whichButton) {
+						sharedHelper.setHasRestore(false);
+						sharedHelper.setSyncStatus(getString(R.string.txt_home_loginsyncweb));
+						
+						dialog.cancel();
+					}
+				}).create();
+			dialog.show();			
+
+			sharedHelper.setRestore(true);
+		}
+				
 		//检查网络同步
 		if(sharedHelper.getLogin() && !sharedHelper.getSyncing()) {
 			new Thread(new Runnable(){
@@ -171,12 +206,12 @@ public class MainActivity extends Activity {
 		
 		//设置用户文本
 		tvLabUserName = (TextView) super.findViewById(R.id.tv_lab_username);
-		tvLabGroup = (TextView) super.findViewById(R.id.tv_lab_group);
-		String userName = sharedHelper.getUserName();
+		tvLabNickName = (TextView) super.findViewById(R.id.tv_lab_nickname);
+		/*String userName = sharedHelper.getUserName();
 		if(userName.equals("")) {
 			userName = getString(R.string.txt_home_nouser);
 			sharedHelper.setUserName(userName);
-		}
+		}*/
 		
 		//设置同步文本
 		String syncStatus = sharedHelper.getSyncStatus();
@@ -197,8 +232,10 @@ public class MainActivity extends Activity {
 					new Thread(new Runnable(){
 						@Override
 						public void run() {
-							try {				
-								myHandler.postDelayed(runnable, DELAY_TIME);
+							try {
+								if(sharedHelper.getWebSync()) {
+								    myHandler.postDelayed(runnable, DELAY_TIME);
+								}
 								
 								sharedHelper.setSyncing(true);
 								syncHelper.Start();
@@ -265,12 +302,13 @@ public class MainActivity extends Activity {
 	//设置ListView	
 	protected void setListData(String date) {
 		fromDate = date;
+		sharedHelper.setCurDate(date);
 		tvDateChoose.setText(UtilityHelper.formatDate(date, "y-m-d-w2"));
 		
 		itemAccess = new ItemTableAccess(sqlHelper.getReadableDatabase());
 		list = itemAccess.findHomeTotalByDate(date);
 		itemAccess.close();
-		adapter = new SimpleAdapter(this, list, R.layout.list_total, new String[] { "curlabel", "curprice", "prevlabel", "prevprice" }, new int[] { R.id.tv_curdate_label, R.id.tv_curdate_price, R.id.tv_prevdate_label, R.id.tv_prevdate_price });
+		adapter = new SimpleAdapter(this, list, R.layout.list_home_total, new String[] { "curlabel", "curprice", "prevlabel", "prevprice" }, new int[] { R.id.tv_curdate_label, R.id.tv_curdate_price, R.id.tv_prevdate_label, R.id.tv_prevdate_price });
 		listTotal.setAdapter(adapter);
 	}
 	
@@ -303,6 +341,7 @@ public class MainActivity extends Activity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+		Intent intent = null;
 		switch (item.getItemId()) {
 		case R.id.action_exits:
 			if(UtilityHelper.startBackup(this)) {
@@ -312,26 +351,31 @@ public class MainActivity extends Activity {
 			
 			break;
 		case R.id.action_settings:
-			Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+			intent = new Intent(MainActivity.this, SettingsActivity.class);
 			startActivity(intent);
 			
 			break;
 		case R.id.action_abouts:
-			Dialog dialog = new AlertDialog.Builder(this)
+			/*Dialog dialog = new AlertDialog.Builder(this)
 					.setTitle(R.string.txt_about)
-					.setMessage(R.string.txt_abouttext)
+					.setMessage(getString(R.string.app_name) + " " + getString(R.string.app_version) + getString(R.string.txt_abouttext))
 					.setNegativeButton(R.string.txt_sure, new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int whichButton) {
 							dialog.cancel();
 						}
 					}).create();
-			dialog.show();
+			dialog.show();*/
+			
+			intent = new Intent(MainActivity.this, AboutsActivity.class);
+			startActivity(intent);
+			
 			break;
 		}
 		
 		return false;
 	}
 	
+	//页面返回
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
@@ -341,8 +385,8 @@ public class MainActivity extends Activity {
 		
 		String userName = sharedHelper.getUserName();
 		String userNickName = sharedHelper.getUserNickName();
-		tvLabUserName.setText(getString(R.string.txt_lab_username) + (userNickName.equals("") ? userName : userNickName));
-		tvLabGroup.setText(getString(R.string.txt_lab_group) + sharedHelper.getGroup());
+		tvLabUserName.setText(getString(R.string.txt_lab_username) + userName);
+		tvLabNickName.setText(getString(R.string.txt_lab_nickname) + userNickName);
 		
 		//隐藏登录显示修改
 		if(sharedHelper.getLogin()) {
@@ -401,10 +445,10 @@ public class MainActivity extends Activity {
 				
 				String userName = activity.sharedHelper.getUserName();
 				String userNickName = activity.sharedHelper.getUserNickName();
-				activity.tvLabUserName.setText(activity.getString(R.string.txt_lab_username) + (userNickName.equals("") ? userName : userNickName));
+				activity.tvLabUserName.setText(activity.getString(R.string.txt_lab_username) + userName);
 			
-				int group = activity.sharedHelper.getGroup();
-				activity.tvLabGroup.setText(activity.getString(R.string.txt_lab_group) + String.valueOf(group));
+				//int group = activity.sharedHelper.getGroup();
+				activity.tvLabNickName.setText(activity.getString(R.string.txt_lab_nickname) + userNickName);
 				
 				if(activity.sharedHelper.getLogin()) {
 					activity.tvTitleLogin.setVisibility(View.GONE);
@@ -436,8 +480,11 @@ public class MainActivity extends Activity {
 							
 				break;
 			case 3:
-				activity.curDate = activity.fromDate;
-				activity.setListData(activity.curDate);
+				String date = activity.sharedHelper.getCurDate();
+				if(!date.equals("")) {
+				    activity.curDate = date;
+				    activity.setListData(activity.curDate);
+				}
 				break;
 			}
 		}

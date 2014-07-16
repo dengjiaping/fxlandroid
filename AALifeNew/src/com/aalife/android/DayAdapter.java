@@ -117,10 +117,11 @@ public class DayAdapter extends BaseAdapter {
 					@Override
 					public void onClick(View v) {
 						itemAccess = new ItemTableAccess(sqlHelper.getReadableDatabase());
-						if(re.isChecked())
+						if(re.isChecked()) {
 						    itemAccess.updateItemRecommend(itemId, 1);
-						else
+						} else {
 							itemAccess.updateItemRecommend(itemId, 0);
+						}
 						itemAccess.close();
 						
 						sharedHelper.setLocalSync(true);
@@ -143,12 +144,13 @@ public class DayAdapter extends BaseAdapter {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				ListView lv = (ListView) parent;
 				Map<String, String> map = (Map<String, String>) lv.getItemAtPosition(position);
-		        final String[] items = new String[5];
+		        final String[] items = new String[6];
 		        items[0] = map.get("itemid");
 		        items[1] = map.get("catid");
-		        items[2] = map.get("itemname");
+		        items[2] = map.get("itemnamevalue");
 		        items[3] = UtilityHelper.formatDouble(Double.parseDouble(map.get("pricevalue")), "0.###");
 		        items[4] = map.get("itembuydate");
+		        items[5] = map.get("regionid");
 		        
 		        tvItemName = (TextView) view.findViewById(R.id.tv_day_itemname);
 		        tvItemName.setTextColor(activity.getResources().getColor(R.color.color_back_main));

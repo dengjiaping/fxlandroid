@@ -28,6 +28,22 @@
 
 
 应用更新：
+v3.1.6
+-新增添加区间消费；
+-优化一些页面布局；
+-重新设计关于页面；
+-更新设置页面；
+-彩蛋猛撮关于页面版本号；
+-其它BUG修复。
+
+v3.1.4
+-修复同步删除重要BUG；
+-优化数据恢复；
+-优化网络数据同步；
+-优化用户头像显示；
+-添加彩蛋一枚。（猛撮用户名）
+
+
 v3.1.3
 -修复同步后显示用户名；
 -新增退出后同步停止；
@@ -184,3 +200,10 @@ v1.8.3
 C:\Java\jdk1.7.0_51\bin>jarsigner -verbose -keystore D:\fxldoc\Android\aalifenet
  -signedjar D:\fxlandroid\document\aalifeweb\sign.apk D:\fxlandroid\document\aal
 ifeweb\tap_unsign.apk aalifenet
+
+
+myapp logo
+http://pp.myapp.com/ma_icon/0/icon_1039615_18337382_1404884868/72
+qzone
+http://i.gtimg.cn/open/app_icon/00/65/13/51//100651351_100.png
+http://i.gtimg.cn/open/app_icon/00/65/13/51/100651351_64.png

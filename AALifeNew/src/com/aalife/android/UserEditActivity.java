@@ -1,7 +1,5 @@
 package com.aalife.android;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.lang.ref.WeakReference;
 
 import android.app.Activity;
@@ -242,19 +240,26 @@ public class UserEditActivity extends Activity {
 			Uri originalUri = data.getData();
 			ContentResolver resolver = getContentResolver();
 			
-			Cursor cursor = resolver.query(originalUri, null, null, null, null); 
-			cursor.moveToFirst(); 
-			String imgName = cursor.getString(3);
-			String imgExtName = UtilityHelper.getFileExtName(imgName);
-			cursor.close(); 
+			Cursor cursor = null;
+			String imgExtName = "";
+			try {
+				cursor = resolver.query(originalUri, null, null, null, null); 
+				cursor.moveToFirst(); 
+				String imgName = cursor.getString(3);
+				imgExtName = UtilityHelper.getFileExtName(imgName);
+			} catch (Exception e) {
+				e.printStackTrace();
+				return;
+			} finally {
+				cursor.close(); 
+			}
 					
 			Bitmap bitmap = null;
 			try {
 				bitmap = MediaStore.Images.Media.getBitmap(resolver, originalUri);
-			} catch (FileNotFoundException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
+				return;
 			}
 			
 			bitmap = UtilityHelper.resizeBitmap(bitmap, userImageSize);			

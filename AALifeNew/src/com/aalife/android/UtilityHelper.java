@@ -13,6 +13,7 @@ import java.io.PrintStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -41,6 +42,7 @@ import android.telephony.TelephonyManager;
 
 
 public class UtilityHelper {
+	//private static final String WEBURL = "http://192.168.1.105:81";
 	//private static final String WEBURL = "http://10.0.2.2:81";
 	private static final String WEBURL = "http://www.fxlweb.com";
 	
@@ -211,10 +213,11 @@ public class UtilityHelper {
 				ItemTableAccess itemAccess = new ItemTableAccess(new DatabaseHelper(context).getReadableDatabase());
 				Boolean flag = itemAccess.restoreDataBase(list);
 				itemAccess.close();
-				if(flag) 
+				if(flag) {
 					result = 1;
-				else 
+				} else { 
 					result = 0;
+				}
 			} else {
 				result = 2;
 			}
@@ -418,7 +421,7 @@ public class UtilityHelper {
 	//登录用户
 	public static String[] loginUser(String userName, String userPass) {
 		String[] result = new String[] { "0", "0", "0", "0", "", "", "", "" };
-		String url = WEBURL +  "/AALifeWeb/SyncLogin.aspx";
+		String url = WEBURL +  "/AALifeWeb/SyncLoginNew.aspx";
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("username", userName));
 		params.add(new BasicNameValuePair("userpass", userPass));
@@ -468,7 +471,26 @@ public class UtilityHelper {
 		
 		return result;
 	}
-
+	
+	//发送邮件
+	public static boolean sendEmail(String name, String userImage, String content) {
+		String result = "";
+		String url = WEBURL +  "/AALifeWeb/SyncSendEmail.aspx";
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("usernickname", name));
+		params.add(new BasicNameValuePair("userimage", userImage));
+		params.add(new BasicNameValuePair("content", content));
+		try {
+			JSONObject jsonObject = new JSONObject(HttpHelper.post(url, params));
+			if(jsonObject.length() > 0) {
+				result = jsonObject.getString("result");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}	
+		
+		return result.equals("");
+	}
 	
 	//登录同步消费
 	public static void syncItemLogin(List<Map<String, String>> list, String userId, String userGroupId) {
@@ -490,6 +512,25 @@ public class UtilityHelper {
 				continue;
 			}
 		}
+	}
+	
+	//删除同步修复
+	public static boolean DeleteSyncFix(int userGroupId) {
+		String result = "";
+		String url = WEBURL +  "/AALifeWeb/DelSyncFix.aspx";
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("usergroupid", String.valueOf(userGroupId)));
+	
+		try {
+			JSONObject jsonObject = new JSONObject(HttpHelper.post(url, params));
+			if(jsonObject.length() > 0) {
+				result = jsonObject.getString("result");
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result.equals("ok");
 	}
 	
 	//登录后保存头像
@@ -544,8 +585,9 @@ public class UtilityHelper {
 				output = context.openFileOutput(fileName, Activity.MODE_PRIVATE);
 			}
 			
-			if(bitmap.compress(Bitmap.CompressFormat.PNG, 100, output))
+			if(bitmap.compress(Bitmap.CompressFormat.PNG, 80, output)) {
 				output.flush();
+			}
 
 			output.close();
 		} catch (Exception e) {
@@ -581,7 +623,11 @@ public class UtilityHelper {
 		Matrix matrix = new Matrix();
 		float scaleWidth = (float)newSize / width;
 		float scaleHeight = (float)newSize / height;
-		matrix.postScale(scaleWidth, scaleHeight);
+		if(width >= height) {
+		    matrix.postScale(scaleWidth, scaleWidth);
+		} else {
+			matrix.postScale(scaleHeight, scaleHeight);
+		}
 		return Bitmap.createBitmap(bitmap, 0, 0, (int)width, (int)height, matrix, true);
 	}
 	
@@ -671,14 +717,18 @@ public class UtilityHelper {
 	}
 
 	//检查网络
-	public static boolean checkInternet(Context context) {
+	public static boolean checkInternet(Context context, boolean update) {
 		ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo info = cm.getActiveNetworkInfo();
 		if(info != null && info.isConnected()) {
-			if(info.getSubtype() == TelephonyManager.NETWORK_TYPE_EDGE || info.getSubtype() == TelephonyManager.NETWORK_TYPE_GPRS || info.getSubtype() == TelephonyManager.NETWORK_TYPE_CDMA)
-				return false;
-			else
+			if(update) {
 				return info.isAvailable();
+			}
+			if(info.getSubtype() == TelephonyManager.NETWORK_TYPE_EDGE || info.getSubtype() == TelephonyManager.NETWORK_TYPE_GPRS || info.getSubtype() == TelephonyManager.NETWORK_TYPE_CDMA) {
+				return false;
+			} else if(update) {
+				return info.isAvailable();
+			}
 		}
 		
 		return false;
@@ -700,13 +750,15 @@ public class UtilityHelper {
 		String versionWeb = getVersionFromWeb();
 		String versionApp = getVersionFromApp(context);
 
-		if(versionWeb.equals("") || versionApp.equals(""))
+		if(versionWeb.equals("") || versionApp.equals("")) {
 			return false;
+		}
 		
-		if(Integer.parseInt(versionWeb.replace(".", "")) > Integer.parseInt(versionApp.replace(".", "")))
+		if(Integer.parseInt(versionWeb.replace(".", "")) > Integer.parseInt(versionApp.replace(".", ""))) {
 			return true;
-		else
+		} else {
 			return false;
+		}
 	}
 	
 	//取APP版本
@@ -773,5 +825,42 @@ public class UtilityHelper {
 		}
 		
 		return file;
+	}
+	
+	//取月区间
+	public static int getMonthRegion(String date1, String date2) {
+		int result = 0;
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);
+		Calendar c1 = Calendar.getInstance();
+		Calendar c2 = Calendar.getInstance();
+		try {
+			c1.setTime(sdf.parse(date1));
+			c2.setTime(sdf.parse(date2));
+			
+			result = (c2.get(Calendar.YEAR)-c1.get(Calendar.YEAR)) * 12 + (c2.get(Calendar.MONTH)-c1.get(Calendar.MONTH));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}		
+		
+		return result;
+	}
+	
+	//取最大RegionID
+	public static int getMaxRegionID(String userGroupId) {
+		int result = 0;
+		String url = WEBURL +  "/AALifeWeb/GetMaxRegionID.aspx";
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("usergroupid", userGroupId));
+	
+		try {
+			JSONObject jsonObject = new JSONObject(HttpHelper.post(url, params));
+			if(jsonObject.length() > 0) {
+				result = Integer.parseInt(jsonObject.getString("result"));
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
 	}
 }

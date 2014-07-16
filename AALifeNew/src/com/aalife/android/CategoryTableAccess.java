@@ -207,7 +207,7 @@ public class CategoryTableAccess {
 			if (result.moveToFirst()) {
 				return 2;
 			}			
-		    sql = "UPDATE " + CATTABNAME + " SET CategoryLive = '0', Synchronize = '1', IsDefault = '0' WHERE CategoryID = " + catId;
+		    sql = "DELETE FROM " + CATTABNAME + " WHERE CategoryID = " + catId;
 		    this.db.execSQL(sql);
 		} catch (Exception e) {
 			e.printStackTrace();

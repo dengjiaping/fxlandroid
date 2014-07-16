@@ -18,6 +18,7 @@ public class SyncHelper {
 	private SharedHelper sharedHelper = null;
 	private Context context = null;
 	private SQLiteOpenHelper sqlHelper = null;
+	//private static final String WEBURL = "http://192.168.1.105:81";
 	//private static final String WEBURL = "http://10.0.2.2:81";
 	private static final String WEBURL = "http://www.fxlweb.com";
 	
@@ -84,7 +85,6 @@ public class SyncHelper {
 			}
 
 			sharedHelper.setLocalSync(false);
-			sharedHelper.setFirstSync(true);
 			sharedHelper.setSyncStatus(this.context.getString(R.string.txt_home_syncat) + " " + UtilityHelper.getSyncDate());
 						
 			//检查网络同步数据
@@ -175,7 +175,7 @@ public class SyncHelper {
 		boolean syncFlag = false;
 		ItemTableAccess itemAccess = new ItemTableAccess(this.sqlHelper.getReadableDatabase());
 		String result = "";
-		String url = WEBURL +  "/AALifeWeb/SyncItem.aspx";
+		String url = WEBURL +  "/AALifeWeb/SyncItemNew2.aspx";
 		String userId = String.valueOf(sharedHelper.getUserId());
 		String userGroupId = String.valueOf(sharedHelper.getGroup());
 		Iterator<Map<String, String>> it = list.iterator();
@@ -191,6 +191,7 @@ public class SyncHelper {
 			params.add(new BasicNameValuePair("usergroupid", userGroupId));
 			params.add(new BasicNameValuePair("itemwebid", map.get("itemwebid")));
 			params.add(new BasicNameValuePair("recommend", map.get("recommend")));
+			params.add(new BasicNameValuePair("regionid", map.get("regionid")));
 	
 			try {
 				JSONObject jsonObject = new JSONObject(HttpHelper.post(url, params));
@@ -203,8 +204,10 @@ public class SyncHelper {
 			}
 
 			int itemId = Integer.parseInt(map.get("itemid"));
-			if(result.equals("ok")) {
-				itemAccess.updateSyncStatus(itemId);
+			int itemWebId = 0;
+			if(!result.equals("0") || !result.equals("no")) {
+				itemWebId = Integer.parseInt(result);
+				itemAccess.updateSyncStatus(itemId, itemWebId);
 			} else {
 				syncFlag = true;
 			}
@@ -261,13 +264,15 @@ public class SyncHelper {
 	public void delSyncItem(List<Map<String, String>> list) throws Exception {
 		boolean syncFlag = false;
 		String result = "";
-		String url = WEBURL +  "/AALifeWeb/DelSyncItem.aspx";
+		String url = WEBURL +  "/AALifeWeb/DelSyncItemNew.aspx";
+		String userGroupId = String.valueOf(sharedHelper.getGroup());
 		Iterator<Map<String, String>> it = list.iterator();
 		while(it.hasNext()) {
 			Map<String, String> map = it.next();
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
 			params.add(new BasicNameValuePair("itemid", map.get("itemid")));
 			params.add(new BasicNameValuePair("itemwebid", map.get("itemwebid")));
+			params.add(new BasicNameValuePair("usergroupid", userGroupId));
 	
 			try {
 				JSONObject jsonObject = new JSONObject(HttpHelper.post(url, params));
@@ -311,6 +316,7 @@ public class SyncHelper {
 			map.put("itemprice", jsonObject.getString("itemprice"));
 			map.put("itembuydate", jsonObject.getString("itembuydate"));
 			map.put("recommend", jsonObject.getString("recommend"));
+			map.put("regionid", jsonObject.getString("regionid"));
 			list.add(map);
 		}
 		
@@ -339,6 +345,7 @@ public class SyncHelper {
 			map.put("itemprice", jsonObject.getString("itemprice"));
 			map.put("itembuydate", jsonObject.getString("itembuydate"));
 			map.put("recommend", jsonObject.getString("recommend"));
+			map.put("regionid", jsonObject.getString("regionid"));
 			list.add(map);
 		}
 		
@@ -359,13 +366,21 @@ public class SyncHelper {
 			String itemBuyDate = map.get("itembuydate");
 			int catId = Integer.parseInt(map.get("catid"));
 			int recommend = Integer.parseInt(map.get("recommend"));
+			int regionId = Integer.parseInt(map.get("regionid"));
 			
-			boolean success = itemAccess.addWebItem(itemId, itemAppId, itemName, itemPrice, itemBuyDate, catId, recommend);
+			//用于首页实时更新
+			sharedHelper.setCurDate(UtilityHelper.formatDate(itemBuyDate, "y-m-d"));
+			
+			boolean success = itemAccess.addWebItem(itemId, itemAppId, itemName, itemPrice, itemBuyDate, catId, recommend, regionId);
 			if(!success) {
 				syncFlag = true;
 				continue;
 			}
-			if(!syncWebItemBack(itemId)) {
+			
+			//根据ItemWebID取ItemID
+			if(itemAppId == 0) itemAppId = itemAccess.getItemId(itemId);
+			
+			if(!syncWebItemBack(itemId, itemAppId)) {
 				syncFlag = true;
 			}
 		}
@@ -377,11 +392,12 @@ public class SyncHelper {
 	}
 
 	//同步网络消费返回
-	public boolean syncWebItemBack(int itemId) {
+	public boolean syncWebItemBack(int itemId, int itemAppId) {
 		String result = "";
-		String url = WEBURL +  "/AALifeWeb/SyncWebItemBack.aspx";
+		String url = WEBURL +  "/AALifeWeb/SyncWebItemBackNew.aspx";
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("itemid", String.valueOf(itemId)));
+		params.add(new BasicNameValuePair("itemappid", String.valueOf(itemAppId)));
 		
 		try {
 			JSONObject jsonObject = new JSONObject(HttpHelper.post(url, params));

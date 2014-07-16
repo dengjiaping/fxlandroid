@@ -93,12 +93,13 @@ public class DayDetailActivity extends Activity {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				ListView lv = (ListView) parent;
 				Map<String, String> map = (Map<String, String>) lv.getItemAtPosition(position);
-		        final String[] items = new String[5];
+		        final String[] items = new String[6];
 		        items[0] = map.get("itemid");
 		        items[1] = map.get("catid");
-		        items[2] = map.get("itemname");
+		        items[2] = map.get("itemnamevalue");
 		        items[3] = UtilityHelper.formatDouble(Double.parseDouble(map.get("pricevalue")), "0.###");
 		        items[4] = map.get("itembuydate");
+		        items[5] = map.get("regionid");
 		        
 		        final LinearLayout laySelect = (LinearLayout) view.findViewById(R.id.lay_day_select);
 		        laySelect.setBackgroundColor(DayDetailActivity.this.getResources().getColor(R.color.color_tran_main));
@@ -217,7 +218,7 @@ public class DayDetailActivity extends Activity {
 			Map<String, String> map = list.get(i);
 			listCheck[1][i] = map.get("recommend").toString().equals("0") ? false : true;
 		}
-		adapter = new SimpleAdapter(this, list, R.layout.list_day_detail, new String[] { "id", "itemname", "itemprice", "pricevalue", "id", "itemid", "catid" }, new int[] { R.id.cb_day_select, R.id.tv_day_itemname, R.id.tv_day_itemprice, R.id.tv_day_pricevalue, R.id.cb_day_recommend, R.id.tv_day_itemid, R.id.tv_day_catid }) {
+		adapter = new SimpleAdapter(this, list, R.layout.list_day_detail, new String[] { "", "itemnamevalue", "itemprice", "pricevalue", "", "itemid" }, new int[] { R.id.cb_day_select, R.id.tv_day_itemname, R.id.tv_day_itemprice, R.id.tv_day_pricevalue, R.id.cb_day_recommend, R.id.tv_day_itemid }) {
 			@Override
 			public View getView(final int position, View convertView, ViewGroup parent) {
 				View view = super.getView(position, convertView, parent);

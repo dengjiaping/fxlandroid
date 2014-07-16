@@ -37,58 +37,96 @@
             android:text="@string/txt_empty" />
     </LinearLayout>
 
-    <LinearLayout
+    <ScrollView
+        android:id="@+id/scrollView1"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/color_item_bg"
-        android:orientation="vertical"
-        android:padding="15dp" >
+        android:layout_height="wrap_content" >
 
-        <TextView
-            android:id="@+id/tv_set_lock"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:drawableLeft="@drawable/ic_lock_add"
-            android:gravity="center|left"
-            android:text="@string/txt_set_lock" />
-
-        <EditText
-            android:id="@+id/et_set_lock"
+        <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="numberDecimal"
-            android:maxLength="10"
-            android:textColor="@color/color_text" />
+            android:background="@color/color_item_bg"
+            android:orientation="vertical"
+            android:padding="15dp" >
 
-        <TextView
-            android:id="@+id/tv_set_welcome"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:drawableLeft="@drawable/ic_welcome_add"
-            android:gravity="center|left"
-            android:text="@string/txt_set_welcome" />
+            <TextView
+                android:id="@+id/tv_set_lock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:drawableLeft="@drawable/ic_lock_add"
+                android:gravity="center|left"
+                android:text="@string/txt_set_lock" />
 
-        <EditText
-            android:id="@+id/et_set_welcome"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textNoSuggestions"
-            android:maxLength="10"
-            android:textColor="@color/color_text" />
+            <EditText
+                android:id="@+id/et_set_lock"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="numberDecimal"
+                android:maxLength="10"
+                android:textColor="@color/color_text" />
 
-        <Button
-            android:id="@+id/btn_set_sure"
-            style="@style/btn_style"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/main_btn_selector"
-            android:text="@string/txt_lock_sure" />
+            <TextView
+                android:id="@+id/tv_set_welcome"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:drawableLeft="@drawable/ic_welcome_add"
+                android:gravity="center|left"
+                android:text="@string/txt_set_welcome" />
 
-    </LinearLayout>
+            <EditText
+                android:id="@+id/et_set_welcome"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textNoSuggestions"
+                android:maxLength="10"
+                android:textColor="@color/color_text" />
+
+            <TextView
+                android:id="@+id/tv_set_sync"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:drawableLeft="@drawable/ic_setting_sync"
+                android:gravity="center|left"
+                android:text="@string/txt_set_sync" />
+
+            <CheckBox
+                android:id="@+id/cb_set_sync"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/txt_set_synctext"
+                android:textColor="@color/color_text" />
+
+            <TextView
+                android:id="@+id/tv_set_update"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:drawableLeft="@drawable/ic_setting_update"
+                android:gravity="center|left"
+                android:text="@string/txt_set_update" />
+
+            <CheckBox
+                android:id="@+id/cb_set_update"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/txt_set_updatetext"
+                android:textColor="@color/color_text" />
+
+            <Button
+                android:id="@+id/btn_set_sure"
+                style="@style/btn_style"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/main_btn_selector"
+                android:text="@string/txt_lock_sure" />
+        </LinearLayout>
+
+    </ScrollView>
 
 </LinearLayout>

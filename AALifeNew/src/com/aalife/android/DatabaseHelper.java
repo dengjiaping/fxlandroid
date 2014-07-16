@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 	private static final String DATABASENAME = "aalife.db";
-	private static final int DATABASEVERSION = 15;
+	private static final int DATABASEVERSION = 16;
 	private static final String ITEMTABNAME = "ItemTable";
 	private static final String CATTABNAME = "CategoryTable";
 	private static final String DELTABNAME = "DeleteTable";
@@ -26,6 +26,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				+ "CategoryID     INTEGER          NOT NULL, "
 				+ "Synchronize    INTEGER          DEFAULT 1, "
 				+ "Recommend      INTEGER          DEFAULT 0, "
+				+ "RegionID       INTEGER          DEFAULT 0, "
 				+ "Remark         VARCHAR(1000))");
 		db.execSQL("CREATE TABLE " + CATTABNAME + " ("
 				+ "CategoryID       INTEGER          NOT NULL, "
@@ -54,9 +55,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		db.execSQL("DROP TABLE IF EXISTS " + CATTABNAME);
-		db.execSQL("DROP TABLE IF EXISTS " + ITEMTABNAME);
-		db.execSQL("DROP TABLE IF EXISTS " + DELTABNAME);
-		onCreate(db);
+		//db.execSQL("DROP TABLE IF EXISTS " + CATTABNAME);
+		//db.execSQL("DROP TABLE IF EXISTS " + ITEMTABNAME);
+		//db.execSQL("DROP TABLE IF EXISTS " + DELTABNAME);
+		//onCreate(db);
+		
+		if(oldVersion == 15 && newVersion == 16) {
+		    db.execSQL("ALTER TABLE " + ITEMTABNAME + " ADD RegionID INTEGER DEFAULT 0");
+		}
 	}
 }

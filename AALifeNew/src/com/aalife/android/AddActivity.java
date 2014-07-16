@@ -24,6 +24,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -54,6 +55,15 @@ public class AddActivity extends Activity {
 	private EditText etAddItemBuyDate = null;
 	private final int FIRST_REQUEST_CODE = 1;
 
+	private String curDate2 = "";
+	private CheckBox cbRegion = null;
+	private EditText etAddItemBuyDate2 = null;
+	private TextView tvRegionFrom = null;
+	private TextView tvRegionTo = null;
+	private boolean isRegion = false;
+	private int regionId = 0;
+	private int monthRegion = 0;
+	
 	private SimpleAdapter adapterSmart = null;
 	private List<Map<String, String>> listCat = null;
 	private List<Map<String, String>> listItem = null;
@@ -98,6 +108,8 @@ public class AddActivity extends Activity {
 		//sdAddSmart.animateOpen();
 		btnSmartBack = (Button) super.findViewById(R.id.btn_smart_back);
 		btnSmartBack.setVisibility(View.GONE);
+		tvRegionFrom = (TextView) super.findViewById(R.id.tv_region_from);
+		tvRegionTo = (TextView) super.findViewById(R.id.tv_region_to);
 		
 		//文本框点击关闭Smart
 		etAddItemName.setOnFocusChangeListener(new OnFocusChangeListener() {
@@ -276,13 +288,53 @@ public class AddActivity extends Activity {
 					public void onDateSet(DatePicker view, int year, int month, int day) {
 						String date = UtilityHelper.formatDate(year + "-" + (month + 1) + "-" + day, "");
 						curDate = date;
-						etAddItemBuyDate.setText(UtilityHelper.formatDate(curDate, "y-m-d-w2"));
+						etAddItemBuyDate.setText(UtilityHelper.formatDate(curDate, "y-m-d-w"));
 					}					
 				}, Integer.parseInt(array[0]), Integer.parseInt(array[1]) - 1, Integer.parseInt(array[2]));
 				dateDialog.show();
 			}
 		});
-
+		etAddItemBuyDate2 = (EditText) super.findViewById(R.id.et_add_itembuydate2);
+		etAddItemBuyDate2.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				String[] array = curDate2.split("-");
+				DatePickerDialog dateDialog = new DatePickerDialog(AddActivity.this, new DatePickerDialog.OnDateSetListener() {
+					@Override
+					public void onDateSet(DatePicker view, int year, int month, int day) {
+						String date = UtilityHelper.formatDate(year + "-" + (month + 1) + "-" + day, "");
+						curDate2 = date;
+						etAddItemBuyDate2.setText(UtilityHelper.formatDate(curDate2, "y-m-d-w"));
+					}					
+				}, Integer.parseInt(array[0]), Integer.parseInt(array[1]) - 1, Integer.parseInt(array[2]));
+				dateDialog.show();
+			}
+		});
+		
+		//选择区间
+		cbRegion = (CheckBox) super.findViewById(R.id.cb_region);
+		cbRegion.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {				
+				if(cbRegion.isChecked()) {
+					isRegion = true;
+					
+					curDate2 = UtilityHelper.getNavDate(curDate, 11, "m");
+					etAddItemBuyDate2.setText(UtilityHelper.formatDate(curDate2, "y-m-d-w"));
+					etAddItemBuyDate2.setVisibility(View.VISIBLE);
+					tvRegionFrom.setVisibility(View.VISIBLE);
+					tvRegionTo.setVisibility(View.VISIBLE);
+				} else {
+					isRegion = false;
+					
+					etAddItemBuyDate2.setVisibility(View.GONE);
+					tvRegionFrom.setVisibility(View.GONE);
+					tvRegionTo.setVisibility(View.GONE);
+				}
+			}		
+		});
+				
+				
 		//返回按钮
 		ImageButton btnTitleBack = (ImageButton) super.findViewById(R.id.btn_title_back);
 		btnTitleBack.setOnClickListener(new OnClickListener() {
@@ -367,7 +419,7 @@ public class AddActivity extends Activity {
 			int catId = categoryAccess.findCatIdByName(catType);
 			sharedHelper.setCategory(spinner.getSelectedItemPosition());
 			categoryAccess.close();	
-		
+			
 			String itemName = etAddItemName.getText().toString().trim();
 			if (itemName.equals("")) {
 				Toast.makeText(this, getString(R.string.txt_add_itemname) + getString(R.string.txt_nonull), Toast.LENGTH_SHORT).show();
@@ -380,10 +432,28 @@ public class AddActivity extends Activity {
 				return 2;
 			}
 			
-			String itemBuyDate = curDate + " " + UtilityHelper.getCurTime();
+			regionId = 0;
+			monthRegion = 0;
+			if(isRegion) {
+				itemAccess = new ItemTableAccess(sqlHelper.getReadableDatabase());
+				regionId = itemAccess.getMaxRegionId();
+				itemAccess.close();
+				monthRegion = UtilityHelper.getMonthRegion(curDate, curDate2);
+				if(monthRegion <= 0) {
+					Toast.makeText(this, getString(R.string.txt_add_regionerr), Toast.LENGTH_SHORT).show();
+					return 2;
+				}
+			}
+			
+			//String itemBuyDate = curDate + " " + UtilityHelper.getCurTime();
+			String itemBuyDate = "";
 			
 			itemAccess = new ItemTableAccess(sqlHelper.getReadableDatabase());
-			Boolean result = itemAccess.addItem(itemName, itemPrice, itemBuyDate, catId, recommend);
+			Boolean result = false;
+			for(int i=0; i<=monthRegion; i++) {
+				itemBuyDate = UtilityHelper.getNavDate(curDate, i, "m") + " " + UtilityHelper.getCurTime();
+			    result = itemAccess.addItem(itemName, itemPrice, itemBuyDate, catId, recommend, regionId);
+			}
 			itemAccess.close();
 	        if(result) {
 	        	sharedHelper.setLocalSync(true);

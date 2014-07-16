@@ -98,18 +98,4 @@
         android:text="@string/txt_day_id"
         android:visibility="gone" />
 
-    <TextView
-        android:id="@+id/tv_day_catid"
-        style="@style/tv_item"
-        android:layout_width="0dp"
-        android:layout_height="fill_parent"
-        android:layout_marginBottom="1dp"
-        android:layout_marginLeft="1dp"
-        android:layout_marginRight="1dp"
-        android:layout_weight="2"
-        android:background="@color/color_item_bg"
-        android:gravity="center"
-        android:text="@string/txt_day_id"
-        android:visibility="gone" />
-
 </LinearLayout>

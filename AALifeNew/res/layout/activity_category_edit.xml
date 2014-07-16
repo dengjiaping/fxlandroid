@@ -72,19 +72,6 @@
             android:text="@string/txt_cat_name" />
 
         <TextView
-            android:id="@+id/tv_title_display"
-            style="@style/tv_item"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="1dp"
-            android:layout_marginLeft="1dp"
-            android:layout_marginTop="1dp"
-            android:layout_weight="1"
-            android:background="@color/color_title_bg"
-            android:gravity="center"
-            android:text="@string/txt_cat_display" />
-
-        <TextView
             android:id="@+id/tv_title_operate"
             style="@style/tv_item"
             android:layout_width="0dp"

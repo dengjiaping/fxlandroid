@@ -5,6 +5,7 @@ import java.lang.ref.WeakReference;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -12,6 +13,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Vibrator;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,6 +34,8 @@ public class StartActivity extends Activity {
 	private EditText etLockText = null;
 	private ImageButton btnLockGo = null;
 	private ProgressBar pbStart = null;
+	private ItemTableAccess itemAccess = null;
+	Vibrator vibrator = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +48,7 @@ public class StartActivity extends Activity {
 		sqlHelper.close();
 		
 		//初始化
+		vibrator = (Vibrator)this.getSystemService(Context.VIBRATOR_SERVICE);
 		sharedHelper = new SharedHelper(this);
 		tvStartLabel = (TextView) super.findViewById(R.id.tv_start_lable);
 		layLock = (LinearLayout) super.findViewById(R.id.lay_lock);
@@ -52,6 +57,36 @@ public class StartActivity extends Activity {
 		pbStart = (ProgressBar) super.findViewById(R.id.pb_start);
 		pbStart.setVisibility(View.VISIBLE);
 		
+		//修复同步
+		if(!sharedHelper.getFixSync()) {
+			itemAccess = new ItemTableAccess(sqlHelper.getReadableDatabase());
+			boolean bool = itemAccess.hasItem();
+			itemAccess.close();
+			
+			if(bool) {			
+				itemAccess = new ItemTableAccess(sqlHelper.getReadableDatabase());
+				itemAccess.fixSyncStatus();
+				itemAccess.close();
+				
+				new Thread(new Runnable(){
+					@Override
+					public void run() {
+						int userGroupId = sharedHelper.getGroup();
+	                    boolean result = UtilityHelper.DeleteSyncFix(userGroupId);
+						
+						Bundle bundle = new Bundle();
+						bundle.putBoolean("result", result);
+						Message message = new Message();
+						message.what = 5;
+						message.setData(bundle);
+						myHandler.sendMessage(message);
+					}
+				}).start();
+			} else {
+				sharedHelper.setFixSync(true);
+			}
+		}
+		
 		//设置欢迎文字
 		String welcome = sharedHelper.getWelcomeText();
 		if(welcome.equals("")) {
@@ -59,19 +94,9 @@ public class StartActivity extends Activity {
 			sharedHelper.setWelcomeText(welcome);
 		}		
 		tvStartLabel.setText(welcome);
-
-		//恢复备份数据
-		if(!sharedHelper.getRestore()) {
-			int result = UtilityHelper.startRestore(this);
-			if(result == 1) {
-				sharedHelper.setLocalSync(true);
-				sharedHelper.setSyncStatus(getString(R.string.txt_home_loginsync));
-			}
-			sharedHelper.setRestore(true);
-		}
 		
 		//检查新版本
-		if(UtilityHelper.checkInternet(this)) {
+		if(UtilityHelper.checkInternet(this, sharedHelper.getUpdate())) {
 			if(!sharedHelper.getSyncing()) {
 				new Thread(new Runnable(){
 					@Override
@@ -148,6 +173,7 @@ public class StartActivity extends Activity {
 				result = msg.getData().getBoolean("result");
 				if(result) {					
 					Dialog dialog = new AlertDialog.Builder(activity)
+					        .setCancelable(false)
 							.setTitle(R.string.txt_tips)
 							.setMessage(R.string.txt_newversion)
 							.setPositiveButton(R.string.txt_sure, new DialogInterface.OnClickListener() {
@@ -182,13 +208,22 @@ public class StartActivity extends Activity {
 				
 				activity.pbStart.setVisibility(View.GONE);
 
-				break;				
+				break;
+			case 5:	
+				result = msg.getData().getBoolean("result");
+				if(result) {
+					activity.sharedHelper.setFixSync(true);
+					activity.sharedHelper.setSyncStatus(activity.getString(R.string.txt_home_hassync));
+					activity.sharedHelper.setLocalSync(true);
+				}
+				
+				break;
 			}				
 		}			
 	};
 	
 	//跳转
-	protected void jumpActivity() {
+	protected void jumpActivity() {		
 		final String lock = sharedHelper.getLockText();
 		if(!lock.equals("")) {
 			tvStartLabel.setText(R.string.txt_lock);
@@ -198,7 +233,10 @@ public class StartActivity extends Activity {
 			btnLockGo.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View view) {
-					String text = etLockText.getText().toString();
+					vibrator.vibrate(1000);
+			        vibrator.cancel();
+			        
+					String text = etLockText.getText().toString().trim();
 					if(text.equals(lock)) {
 						Intent intent = new Intent(StartActivity.this, MainActivity.class);
 						startActivity(intent);  

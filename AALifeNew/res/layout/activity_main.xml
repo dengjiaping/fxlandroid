@@ -113,11 +113,12 @@
                 android:text="@string/txt_lab_username" />
 
             <TextView
-                android:id="@+id/tv_lab_group"
+                android:id="@+id/tv_lab_nickname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingBottom="7dp"
-                android:text="@string/txt_lab_group" />
+                android:text="@string/txt_lab_nickname" />
+
         </LinearLayout>
     </RelativeLayout>
 

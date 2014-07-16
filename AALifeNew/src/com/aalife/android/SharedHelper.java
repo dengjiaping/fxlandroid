@@ -21,7 +21,7 @@ public class SharedHelper {
 
 	//用户名
 	public String getUserName() {
-		return setting.getString("username", "");
+		return setting.getString("username", "未登录");
 	}
 
 	public void setUserName(String userName) {
@@ -39,7 +39,7 @@ public class SharedHelper {
 
 	//用户昵称
 	public String getUserNickName() {
-		return setting.getString("nickname", "");
+		return setting.getString("nickname", "无");
 	}
 
 	public void setUserNickName(String userNickName) {
@@ -63,7 +63,7 @@ public class SharedHelper {
 	public void setUserImage(String userImage) {
 		setting.edit().putString("userimage", userImage).commit();
 	}
-
+	
 	//群组
 	public int getGroup() {
 		return setting.getInt("group", 0);
@@ -118,6 +118,15 @@ public class SharedHelper {
 		setting.edit().putString("welcome", text).commit();
 	}
 
+	//检查更新2g
+	public boolean getUpdate() {
+		return setting.getBoolean("update", false);
+	}
+
+	public void setUpdate(Boolean flag) {
+		setting.edit().putBoolean("update", flag).commit();
+	}
+
 	//本地同步
 	public boolean getLocalSync() {
 		return setting.getBoolean("localsync", false);
@@ -125,6 +134,15 @@ public class SharedHelper {
 
 	public void setLocalSync(Boolean flag) {
 		setting.edit().putBoolean("localsync", flag).commit();
+	}
+
+	//修复同步
+	public boolean getFixSync() {
+		return setting.getBoolean("fixsync2", false);
+	}
+
+	public void setFixSync(Boolean flag) {
+		setting.edit().putBoolean("fixsync2", flag).commit();
 	}
 	
 	//网络同步
@@ -145,6 +163,15 @@ public class SharedHelper {
 		setting.edit().putBoolean("restore2", flag).commit();
 	}
 
+	//是否备份恢复
+	public boolean getHasRestore() {
+		return setting.getBoolean("hasrestore", false);
+	}
+
+	public void setHasRestore(Boolean flag) {
+		setting.edit().putBoolean("hasrestore", flag).commit();
+	}
+	
 	//用户登录
 	public boolean getLogin() {
 		return setting.getBoolean("login", false);
@@ -170,5 +197,14 @@ public class SharedHelper {
 
 	public void setSyncing(Boolean flag) {
 		setting.edit().putBoolean("syncing", flag).commit();
+	}
+
+	//是否发送
+	public boolean getIsSend() {
+		return setting.getBoolean("issend", false);
+	}
+
+	public void setIsSend(Boolean flag) {
+		setting.edit().putBoolean("issend", flag).commit();
 	}
 }

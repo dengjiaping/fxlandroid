@@ -57,7 +57,7 @@ public class RankActivity extends Activity {
 	private LinearLayout layNoItemPrice = null;
 	private LinearLayout layNoItemDate = null;
 	private final int FIRST_REQUEST_CODE = 1;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -380,37 +380,41 @@ public class RankActivity extends Activity {
 		list = itemAccess.findRankCatByDate(date);
 		adapter = new SimpleAdapter(this, list, R.layout.list_rankcat, new String[] { "id", "catname", "price" }, new int[] { R.id.tv_rank_id, R.id.tv_rank_catname, R.id.tv_rank_price });
 		listRankCat.setAdapter(adapter);
-		if(list.size() <= 0)
+		if(list.size() <= 0) {
 			layNoItemCat.setVisibility(View.VISIBLE);
-		else
+		} else {
 			layNoItemCat.setVisibility(View.GONE);
+		}
 		
 		//次数
 		list = itemAccess.findRankCountByDate(date);
 		adapter = new SimpleAdapter(this, list, R.layout.list_rankcount, new String[] { "itemname", "count", "price" }, new int[] { R.id.tv_rank_itemname, R.id.tv_rank_count, R.id.tv_rank_price });
 		listRankCount.setAdapter(adapter);
-		if(list.size() <= 0)
+		if(list.size() <= 0) {
 			layNoItemCount.setVisibility(View.VISIBLE);
-		else
+		} else {
 			layNoItemCount.setVisibility(View.GONE);
+		}
 		
 		//单价
 		list = itemAccess.findRankPriceByDate(date);
 		adapter = new SimpleAdapter(this, list, R.layout.list_rankprice, new String[] { "itemname", "itembuydate", "itemprice" }, new int[] { R.id.tv_rank_itemname, R.id.tv_rank_itembuydate, R.id.tv_rank_itemprice });
 		listRankPrice.setAdapter(adapter);
-		if(list.size() <= 0)
+		if(list.size() <= 0) {
 			layNoItemPrice.setVisibility(View.VISIBLE);
-		else
+		} else {
 			layNoItemPrice.setVisibility(View.GONE);
+		}
 		
 		//日期
 		list = itemAccess.findRankDateByDate(date);
 		adapter = new SimpleAdapter(this, list, R.layout.list_rankdate, new String[] { "id", "itembuydate", "price" }, new int[] { R.id.tv_rank_id, R.id.tv_rank_itembuydate, R.id.tv_rank_price });
 		listRankDate.setAdapter(adapter);
-		if(list.size() <= 0)
+		if(list.size() <= 0) {
 			layNoItemDate.setVisibility(View.VISIBLE);
-		else
+		} else {
 			layNoItemDate.setVisibility(View.GONE);
+		}
 		
 		itemAccess.close();
 	}

@@ -4,7 +4,6 @@ import java.lang.ref.WeakReference;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -21,8 +20,6 @@ import android.widget.Toast;
 public class LoginActivity extends Activity {
 	private EditText etUserName = null;
 	private EditText etUserPass = null;
-	private SQLiteOpenHelper sqlHelper = null;
-	private ItemTableAccess itemAccess = null;
 	private SharedHelper sharedHelper = null;
 	private MyHandler myHandler = new MyHandler(this);
 	private String[] result = null;
@@ -41,9 +38,6 @@ public class LoginActivity extends Activity {
 		TextView tvUserPass = (TextView) super.findViewById(R.id.tv_user_pass);
 		textPaint = tvUserPass.getPaint();
 		textPaint.setFakeBoldText(true);
-				
-		//数据库
-		sqlHelper = new DatabaseHelper(this);
 		
 		//初始化
 		sharedHelper = new SharedHelper(this);
@@ -124,7 +118,7 @@ public class LoginActivity extends Activity {
 		
 		@Override
 		public void handleMessage(Message msg) {
-			LoginActivity activity = myActivity.get();
+			final LoginActivity activity = myActivity.get();
 			switch(msg.what) {
 			case 1:
 				activity.pbUserLoading.setVisibility(View.GONE);
@@ -142,18 +136,19 @@ public class LoginActivity extends Activity {
 					activity.sharedHelper.setUserPass(userPass);
 					activity.sharedHelper.setUserNickName(activity.result[4]);
 					activity.sharedHelper.setUserEmail(activity.result[5]);
-					
-					//检查同步数据
-					if(!activity.result[2].equals("0")) {
-						activity.itemAccess = new ItemTableAccess(activity.sqlHelper.getReadableDatabase());
-						activity.itemAccess.deleteAllData();
-						activity.itemAccess.close();
-						
+
+					if(!activity.sharedHelper.getHasRestore()) {
 						activity.sharedHelper.setWebSync(true);
 						activity.sharedHelper.setSyncStatus(activity.getString(R.string.txt_home_haswebsync));
+					} else {
+						if(activity.result[2].equals("1")) {
+							activity.sharedHelper.setWebSync(true);
+							activity.sharedHelper.setSyncStatus(activity.getString(R.string.txt_home_haswebsync));
+						}
+						activity.sharedHelper.setFirstSync(true);
 					}
 
-					activity.sharedHelper.setLogin(true);					
+					activity.sharedHelper.setLogin(true);
 					Toast.makeText(activity, activity.getString(R.string.txt_user_loginsuccess), Toast.LENGTH_SHORT).show();
 					activity.close();
 				}
