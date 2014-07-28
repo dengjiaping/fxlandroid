@@ -1,13 +1,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@drawable/ic_bg"
     tools:context=".AddActivity" >
 
     <LinearLayout
         android:id="@+id/LinearLayout1"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/title_bg" >
 
@@ -41,36 +41,35 @@
 
     <ScrollView
         android:id="@+id/scrollView1"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/LinearLayout1"
         android:background="@color/color_item_bg" >
 
         <LinearLayout
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="15dp" >
+            android:padding="@dimen/padding_large" >
 
             <TextView
                 android:id="@+id/tv_cattype"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="@dimen/padding_medium"
                 android:drawableLeft="@drawable/ic_add_dot"
                 android:gravity="center|left"
                 android:text="@string/txt_add_cattype" />
 
             <RelativeLayout
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content" >
 
                 <Spinner
                     android:id="@+id/sp_add_cattype"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_toLeftOf="@+id/btn_add_catedit"
-                    android:alpha="0.6" />
+                    android:layout_toLeftOf="@+id/btn_add_catedit" />
 
                 <ImageButton
                     android:id="@+id/btn_add_catedit"
@@ -87,14 +86,14 @@
                 android:id="@+id/tv_itemname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="@dimen/padding_medium"
                 android:drawableLeft="@drawable/ic_add_dot"
                 android:gravity="center|left"
                 android:text="@string/txt_add_itemname" />
 
             <AutoCompleteTextView
                 android:id="@+id/et_add_itemname"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:completionThreshold="1"
                 android:ems="10"
@@ -107,14 +106,14 @@
                 android:id="@+id/tv_itemprice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="@dimen/padding_medium"
                 android:drawableLeft="@drawable/ic_add_dot"
                 android:gravity="center|left"
                 android:text="@string/txt_add_itemprice" />
 
             <EditText
                 android:id="@+id/et_add_itemprice"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:imeOptions="actionDone"
@@ -123,9 +122,9 @@
                 android:textColor="@color/color_text" />
 
             <LinearLayout
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp" >
+                android:layout_marginTop="@dimen/padding_medium" >
 
                 <TextView
                     android:id="@+id/tv_itembuydate"
@@ -146,7 +145,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
 
@@ -197,16 +196,16 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp" >
+                android:layout_marginTop="@dimen/padding_large" >
 
                 <Button
                     android:id="@+id/btn_add_continue"
                     style="@style/btn_style_img"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dp"
+                    android:layout_marginRight="@dimen/padding_small"
                     android:layout_weight="1"
                     android:background="@drawable/main_btn_selector"
                     android:drawableLeft="@drawable/ic_add_continue"
@@ -217,7 +216,7 @@
                     style="@style/btn_style_img"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
+                    android:layout_marginLeft="@dimen/padding_small"
                     android:layout_weight="1"
                     android:background="@drawable/main_btn_selector"
                     android:drawableLeft="@drawable/ic_add_back"
@@ -231,7 +230,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentRight="true"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="@dimen/smart_padding_top"
         android:content="@+id/list_content"
         android:handle="@+id/btn_handle"
         android:orientation="horizontal" >
@@ -240,7 +239,7 @@
             android:id="@+id/btn_handle"
             style="?android:attr/buttonStyleSmall"
             android:layout_width="@dimen/smart_handle_width"
-            android:layout_height="92dp"
+            android:layout_height="@dimen/smart_handle_height"
             android:background="@drawable/smart_btn_selector"
             android:text="@string/txt_add_smart" />
 
@@ -250,23 +249,24 @@
             android:layout_height="match_parent"
             android:background="@color/color_back2_main"
             android:gravity="center|top"
-            android:paddingBottom="2dp"
-            android:paddingLeft="2dp"
-            android:paddingTop="2dp" >
+            android:paddingBottom="@dimen/smart_padding_space"
+            android:paddingLeft="@dimen/smart_padding_space"
+            android:paddingTop="@dimen/smart_padding_space" >
 
             <ListView
                 android:id="@+id/list_add_smart"
-                style="@style/catlist_style"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/cat_list_height"
                 android:background="@android:color/white" >
+
             </ListView>
 
             <Button
                 android:id="@+id/btn_smart_back"
                 style="?android:attr/buttonStyleSmall"
                 android:layout_width="match_parent"
-                android:layout_height="47dp"
+                android:layout_height="@dimen/smart_back_button"
                 android:layout_alignParentBottom="true"
                 android:background="@drawable/smart_back_selector"
                 android:text="@string/txt_add_smartback" />

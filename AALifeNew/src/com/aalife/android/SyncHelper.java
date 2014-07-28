@@ -18,8 +18,7 @@ public class SyncHelper {
 	private SharedHelper sharedHelper = null;
 	private Context context = null;
 	private SQLiteOpenHelper sqlHelper = null;
-	//private static final String WEBURL = "http://192.168.1.105:81";
-	//private static final String WEBURL = "http://10.0.2.2:81";
+	//private static final String WEBURL = "http://10.0.2.2:81";//
 	private static final String WEBURL = "http://www.fxlweb.com";
 	
 	public SyncHelper(Context context) {
@@ -118,7 +117,6 @@ public class SyncHelper {
 					syncDelWebItemBack();
 				}
 			} catch (Exception e) {
-				sharedHelper.setSyncStatus(this.context.getString(R.string.txt_home_haswebsync));
 				throw new Exception();
 			}
 			
@@ -156,6 +154,7 @@ public class SyncHelper {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("username", userName));
 		params.add(new BasicNameValuePair("userpass", userName));
+		params.add(new BasicNameValuePair("userfrom", context.getString(R.string.app_version)));
 
 		try {
 			JSONObject jsonObject = new JSONObject(HttpHelper.post(url, params));
@@ -369,7 +368,9 @@ public class SyncHelper {
 			int regionId = Integer.parseInt(map.get("regionid"));
 			
 			//用于首页实时更新
-			sharedHelper.setCurDate(UtilityHelper.formatDate(itemBuyDate, "y-m-d"));
+			if(UtilityHelper.compareDate(itemBuyDate)) {
+				sharedHelper.setCurDate(UtilityHelper.formatDate(itemBuyDate, "y-m-d"));
+			}
 			
 			boolean success = itemAccess.addWebItem(itemId, itemAppId, itemName, itemPrice, itemBuyDate, catId, recommend, regionId);
 			if(!success) {

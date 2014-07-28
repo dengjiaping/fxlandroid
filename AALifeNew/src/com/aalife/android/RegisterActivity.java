@@ -24,6 +24,7 @@ public class RegisterActivity extends Activity {
 	private MyHandler myHandler = new MyHandler(this);
 	private String[] result = null;
 	private ProgressBar pbUserLoading = null;
+	private Button btnUserAdd = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +63,7 @@ public class RegisterActivity extends Activity {
 		});
 				
 		//注册按钮
-		Button btnUserAdd = (Button) super.findViewById(R.id.btn_user_add);
+		btnUserAdd = (Button) super.findViewById(R.id.btn_user_add);
 		btnUserAdd.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -80,13 +81,15 @@ public class RegisterActivity extends Activity {
 
 				final String userNickName = etUserNickName.getText().toString().trim();
 				final String userEmail = etUserEmail.getText().toString().trim();
+				final String userFrom = getString(R.string.app_version);
 				
 				pbUserLoading.setVisibility(View.VISIBLE);
+				btnUserAdd.setEnabled(false);
 				
 				new Thread(new Runnable(){
 					@Override
 					public void run() {						
-						result = UtilityHelper.addUser(userName, userPass, userNickName, userEmail);
+						result = UtilityHelper.addUser(userName, userPass, userNickName, userEmail, userFrom);
 						
 						Message message = new Message();
 						message.what = 1;
@@ -115,6 +118,7 @@ public class RegisterActivity extends Activity {
 			switch(msg.what) {
 			case 1:
 				activity.pbUserLoading.setVisibility(View.GONE);
+				activity.btnUserAdd.setEnabled(true);
 				
 				if(activity.result[3].equals("1")) {
 					Toast.makeText(activity, activity.getString(R.string.txt_user_userrepeat), Toast.LENGTH_SHORT).show();

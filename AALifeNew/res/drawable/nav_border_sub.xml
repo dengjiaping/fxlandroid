@@ -7,7 +7,7 @@
         </shape>
     </item>
 
-    <item android:bottom="2dp">
+    <item android:bottom="@dimen/nav_main_height">
         <shape>
             <solid android:color="@android:color/white" />
         </shape>

@@ -1,13 +1,13 @@
 <RelativeLayout xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@drawable/ic_bg"
     tools:context=".MainActivity" >
 
     <LinearLayout
         android:id="@+id/LinearLayout1"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/title_bg" >
 
@@ -40,7 +40,7 @@
     <RelativeLayout
         android:id="@+id/RelativeLayout4"
         style="@style/tv_title"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/LinearLayout1"
         android:background="@drawable/nav_border_sub" >
@@ -81,20 +81,20 @@
 
     <RelativeLayout
         android:id="@+id/RelativeLayout2"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/RelativeLayout4"
         android:background="@color/color_item_bg"
-        android:padding="10dp" >
+        android:padding="@dimen/padding_medium" >
 
         <ImageView
             android:id="@+id/iv_userimage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginBottom="@dimen/padding_medium"
+            android:layout_marginLeft="@dimen/padding_large"
+            android:layout_marginRight="@dimen/padding_large"
             android:contentDescription="@string/txt_user_userimage"
             android:src="@drawable/ic_user" />
 
@@ -109,14 +109,14 @@
                 android:id="@+id/tv_lab_username"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingBottom="7dp"
+                android:paddingBottom="@dimen/padding_medium"
                 android:text="@string/txt_lab_username" />
 
             <TextView
                 android:id="@+id/tv_lab_nickname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingBottom="7dp"
+                android:paddingBottom="@dimen/padding_medium"
                 android:text="@string/txt_lab_nickname" />
 
         </LinearLayout>
@@ -124,7 +124,7 @@
 
     <RelativeLayout
         android:id="@+id/RelativeLayout1"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/RelativeLayout2"
@@ -151,8 +151,8 @@
 
         <ProgressBar
             android:id="@+id/pb_home_sync"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/height_medium"
+            android:layout_height="@dimen/height_medium"
             android:layout_toRightOf="@+id/tv_lab_status"
             android:background="@color/color_item_bg"
             android:indeterminateDrawable="@drawable/sync_bg"
@@ -162,8 +162,8 @@
 
     <LinearLayout
         android:id="@+id/LinearLayout6"
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_line_height"
         android:layout_below="@+id/RelativeLayout1"
         android:background="@color/color_title_bg"
         android:orientation="vertical" >
@@ -172,7 +172,7 @@
     <RelativeLayout
         android:id="@+id/RelativeLayout3"
         style="@style/tv_title"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/LinearLayout6"
         android:background="@drawable/nav_border_sub" >
@@ -182,7 +182,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:drawableLeft="@drawable/ic_title_total"
+            android:drawableLeft="@drawable/ic_title_home"
             android:gravity="center"
             android:text="@string/txt_title_total" />
 
@@ -201,7 +201,7 @@
 
     <ListView
         android:id="@+id/list_total"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/RelativeLayout3"
         android:background="@android:color/white"
@@ -211,7 +211,7 @@
 
     <LinearLayout
         android:id="@+id/LinearLayout2"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="@drawable/tab_bg" >

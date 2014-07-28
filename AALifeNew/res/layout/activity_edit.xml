@@ -1,13 +1,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@drawable/ic_bg"
     android:orientation="vertical"
     tools:context=".EditActivity" >
 
     <LinearLayout
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/title_bg" >
 
@@ -42,35 +42,34 @@
 
     <ScrollView
         android:id="@+id/scrollView1"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:background="@color/color_item_bg" >
 
         <LinearLayout
-            android:layout_width="fill_parent"
+            style="@style/layout_style"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="15dp" >
+            android:orientation="vertical" >
 
             <TextView
                 android:id="@+id/tv_cattype"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="@dimen/padding_medium"
                 android:drawableLeft="@drawable/ic_add_dot"
                 android:gravity="center|left"
                 android:text="@string/txt_add_cattype" />
 
             <RelativeLayout
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content" >
 
                 <Spinner
                     android:id="@+id/sp_add_cattype"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_toLeftOf="@+id/btn_add_catedit"
-                    android:alpha="0.6" />
+                    android:layout_toLeftOf="@+id/btn_add_catedit" />
 
                 <ImageButton
                     android:id="@+id/btn_add_catedit"
@@ -88,14 +87,14 @@
                 android:id="@+id/tv_itemname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="@dimen/padding_medium"
                 android:drawableLeft="@drawable/ic_add_dot"
                 android:gravity="center|left"
                 android:text="@string/txt_add_itemname" />
 
             <AutoCompleteTextView
                 android:id="@+id/et_add_itemname"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:completionThreshold="1"
                 android:ems="10"
@@ -108,14 +107,14 @@
                 android:id="@+id/tv_itemprice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="@dimen/padding_medium"
                 android:drawableLeft="@drawable/ic_add_dot"
                 android:gravity="center|left"
                 android:text="@string/txt_add_itemprice" />
 
             <EditText
                 android:id="@+id/et_add_itemprice"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:imeOptions="actionDone"
@@ -124,9 +123,9 @@
                 android:textColor="@color/color_text" />
 
             <LinearLayout
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp" >
+                android:layout_marginTop="@dimen/padding_medium" >
 
                 <TextView
                     android:id="@+id/tv_itembuydate"
@@ -147,7 +146,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
 
@@ -198,16 +197,16 @@
             </LinearLayout>
             
             <LinearLayout
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp" >
+                android:layout_marginTop="@dimen/padding_large" >
 
                 <Button
                     android:id="@+id/btn_day_delete"
                     style="@style/btn_style_img"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dp"
+                    android:layout_marginRight="@dimen/padding_small"
                     android:layout_weight="1"
                     android:background="@drawable/main_btn_selector"
                     android:drawableLeft="@drawable/ic_add_delete"
@@ -218,7 +217,7 @@
                     style="@style/btn_style_img"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
+                    android:layout_marginLeft="@dimen/padding_small"
                     android:layout_weight="1"
                     android:background="@drawable/main_btn_selector"
                     android:drawableLeft="@drawable/ic_add_continue"

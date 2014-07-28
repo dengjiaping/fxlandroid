@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:descendantFocusability="blocksDescendants"
     android:orientation="horizontal" >
 
@@ -15,7 +15,7 @@
     <LinearLayout
         android:id="@+id/lay_day_recommend"
         android:layout_width="0dp"
-        android:layout_height="fill_parent"
+        android:layout_height="match_parent"
         android:layout_weight="1"
         android:gravity="center"
         android:orientation="vertical" >
@@ -34,7 +34,7 @@
         android:id="@+id/tv_day_itemname"
         style="@style/tv_item"
         android:layout_width="0dp"
-        android:layout_height="fill_parent"
+        android:layout_height="match_parent"
         android:layout_weight="5"
         android:gravity="center|left"
         android:text="@string/txt_day_itemname" />
@@ -43,7 +43,7 @@
         android:id="@+id/tv_day_itemprice"
         style="@style/tv_item_price"
         android:layout_width="0dp"
-        android:layout_height="fill_parent"
+        android:layout_height="match_parent"
         android:layout_weight="3"
         android:gravity="center|right"
         android:text="@string/txt_day_itemprice" />
@@ -52,7 +52,7 @@
         android:id="@+id/tv_day_pricevalue"
         style="@style/tv_item_price"
         android:layout_width="0dp"
-        android:layout_height="fill_parent"
+        android:layout_height="match_parent"
         android:layout_weight="3"
         android:gravity="center|right"
         android:text="@string/txt_day_itemprice"

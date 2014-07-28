@@ -213,11 +213,14 @@ public class EditActivity extends Activity {
 			isRegion = true;
 			
 			itemAccess = new ItemTableAccess(sqlHelper.getReadableDatabase());
-			monthRegion = itemAccess.getRegionCount(regionId);
+			String[] regionDate = itemAccess.getRegionDate(regionId);
 			itemAccess.close();
 			
-			curDate2 = UtilityHelper.getNavDate(curDate, monthRegion, "m");
+			curDate = regionDate[0];
+			curDate2 = regionDate[1];
+			etAddItemBuyDate.setText(UtilityHelper.formatDate(curDate, "y-m-d-w"));
 			etAddItemBuyDate2.setText(UtilityHelper.formatDate(curDate2, "y-m-d-w"));
+			
 			etAddItemBuyDate2.setVisibility(View.VISIBLE);
 			tvRegionFrom.setVisibility(View.VISIBLE);
 			tvRegionTo.setVisibility(View.VISIBLE);

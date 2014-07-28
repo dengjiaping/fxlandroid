@@ -6,20 +6,28 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpVersion;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.params.HttpClientParams;
 import org.apache.http.conn.params.ConnManagerParams;
+import org.apache.http.conn.params.ConnPerRouteBean;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
+import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
 public class HttpHelper {
-    public static final int HTTP_CONN_TIMEOUT_MS = 5 * 1000;
-    public static final int HTTP_SO_TIMEOUT_MS = 10 * 1000;
+    public static final int DEFAULT_TIMEOUT = 1000;
+    public static final int DEFAULT_SOCKET_TIMEOUT = 20 * 1000;
+    public static final int DEFAULT_HOST_CONNECTIONS = 30;
+    public static final int DEFAULT_MAX_CONNECTIONS = 60;
+    public static final int DEFAULT_SOCKET_BUFFER_SIZE = 8192;
     
 	public static String post(String url, List<NameValuePair> params) {
 		String result = "{\"result\":\"no\"}";
@@ -54,42 +62,30 @@ public class HttpHelper {
 		return result;
 	}
 	
-	public static String post(String url, int connTimeOut, int soTimeOut) {
-		String result = "{\"result\":\"no\"}";
-		try {
-			HttpPost request = new HttpPost(url);
-			HttpResponse response = getHttpClient(connTimeOut, soTimeOut).execute(request);			
-
-			if(response.getStatusLine().getStatusCode() == 200) {
-				result = EntityUtils.toString(response.getEntity()).trim();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return result;
-	}
-	
-	public static HttpClient getHttpClient() {		
-        HttpClient httpClient = new DefaultHttpClient();
-        HttpParams params = httpClient.getParams();
-        HttpConnectionParams.setConnectionTimeout(params, HTTP_CONN_TIMEOUT_MS);
-        HttpConnectionParams.setSoTimeout(params, HTTP_SO_TIMEOUT_MS);
-        ConnManagerParams.setTimeout(params, HTTP_SO_TIMEOUT_MS);
-		
-        return httpClient;
-    }
-	
-	public static HttpClient getHttpClient(int connTimeOut, int soTimeOut) {
-        HttpClient httpClient = new DefaultHttpClient();
-        HttpParams params = httpClient.getParams();
-        HttpConnectionParams.setConnectionTimeout(params, connTimeOut);
-        HttpConnectionParams.setSoTimeout(params, soTimeOut);
-        ConnManagerParams.setTimeout(params, soTimeOut);
+	public static HttpClient getHttpClient() {	
+		HttpParams params = new BasicHttpParams();
         
+        HttpConnectionParams.setConnectionTimeout(params, DEFAULT_SOCKET_TIMEOUT);
+        HttpConnectionParams.setSoTimeout(params, DEFAULT_SOCKET_TIMEOUT);
+        ConnManagerParams.setTimeout(params, DEFAULT_TIMEOUT);
+        
+        ConnManagerParams.setMaxConnectionsPerRoute(params, new ConnPerRouteBean(DEFAULT_HOST_CONNECTIONS));  
+        ConnManagerParams.setMaxTotalConnections(params, DEFAULT_MAX_CONNECTIONS); 
+        HttpConnectionParams.setSocketBufferSize(params, DEFAULT_SOCKET_BUFFER_SIZE);
+        
+        HttpProtocolParams.setUseExpectContinue(params, true); 
+        HttpConnectionParams.setStaleCheckingEnabled(params, false);
+        HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
+        HttpProtocolParams.setContentCharset(params, HTTP.UTF_8); 
+        HttpClientParams.setRedirecting(params, false);
+        String userAgent = "Mozilla/5.0 (Windows; U; Windows NT 5.1; zh-CN; rv:1.9.2) Gecko/20100115 Firefox/3.6";  
+        HttpProtocolParams.setUserAgent(params, userAgent); 
+        HttpConnectionParams.setTcpNoDelay(params, true);
+
+        HttpClient httpClient = new DefaultHttpClient(params);
         return httpClient;
     }
-	
+		
 	public static String formatJson(List<Map<String, String>> list) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("[");

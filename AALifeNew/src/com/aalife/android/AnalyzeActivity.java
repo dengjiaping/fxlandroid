@@ -8,16 +8,20 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.TextPaint;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.DatePicker;
@@ -25,6 +29,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,11 +42,15 @@ public class AnalyzeActivity extends Activity {
 	private View layAnalyzeCompare = null;
 	private View layAnalyzeRecommend = null;
 	private View layAnalyzeSearch = null;
+	private View layAnalyzeTongji = null;
 	private ImageButton btnTitleDate = null;
 	private ImageButton btnTitleAdd = null;
 	private EditText etTitleKey = null;
 	private ImageButton btnTitleSearch = null;
 	private String key = "";
+	
+	private WebView webViewTongji = null;
+	private ProgressBar webViewLoading = null;
 	
 	private ListView listAnalyzeCompare = null;
 	private ListView listAnalyzeRecommend = null;
@@ -53,6 +62,7 @@ public class AnalyzeActivity extends Activity {
 	private String curDate = "";
 	private TextView tvNavCompare = null;
 	private TextView tvNavRecommend = null;
+	private TextView tvNavTongji = null;
 	private TextView tvNavSearch = null;
 	private TextView tvTitleAnalyze = null;
 	private LinearLayout layNoItemCompare = null;
@@ -72,12 +82,14 @@ public class AnalyzeActivity extends Activity {
 		//定义ViewPager
 		viewPagerList = new ArrayList<View>();
 		mInflater = getLayoutInflater();
-		layAnalyzeCompare = mInflater.inflate(R.layout.analyze_compare, null);
-		layAnalyzeRecommend = mInflater.inflate(R.layout.analyze_recommend, null);
-		layAnalyzeSearch = mInflater.inflate(R.layout.analyze_search, null);
-		
+		layAnalyzeCompare = mInflater.inflate(R.layout.analyze_compare, new LinearLayout(this), false);
+		layAnalyzeRecommend = mInflater.inflate(R.layout.analyze_recommend, new LinearLayout(this), false);
+		layAnalyzeTongji = mInflater.inflate(R.layout.analyze_tongji, new LinearLayout(this), false);
+		layAnalyzeSearch = mInflater.inflate(R.layout.analyze_search, new LinearLayout(this), false);
+				
         viewPagerList.add(layAnalyzeCompare);
         viewPagerList.add(layAnalyzeRecommend);
+        viewPagerList.add(layAnalyzeTongji);
         viewPagerList.add(layAnalyzeSearch);
 
 		viewPager = (ViewPager) super.findViewById(R.id.viewPager);
@@ -125,6 +137,42 @@ public class AnalyzeActivity extends Activity {
 		layNoItemSearch.setVisibility(View.GONE);
 		etTitleKey = (EditText) super.findViewById(R.id.et_title_key);
 		
+		//WebView
+		DisplayMetrics dm = getResources().getDisplayMetrics();  
+		int screenWidth = dm.widthPixels;
+		int screenDpi = dm.densityDpi;
+		int type = 0;
+		if(screenDpi <= 160 && screenWidth > 480) {
+			type = 1;
+		}
+		webViewLoading = (ProgressBar) layAnalyzeTongji.findViewById(R.id.webViewLoading);
+		webViewTongji = (WebView) layAnalyzeTongji.findViewById(R.id.webViewTongji);
+		webViewTongji.loadUrl(UtilityHelper.getTongJiURL(type));
+		webViewTongji.setWebViewClient(new WebViewClient(){
+			@Override
+			public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+				view.loadDataWithBaseURL(null, getString(R.string.txt_home_neterror), "text/html", "UTF-8", null);
+			}
+
+			@Override
+			public void onPageFinished(WebView view, String url) {
+				super.onPageFinished(view, url);
+				webViewLoading.setVisibility(ProgressBar.GONE);
+			}
+
+			@Override
+			public void onPageStarted(WebView view, String url, Bitmap favicon) {
+				super.onPageStarted(view, url, favicon);
+				webViewLoading.setVisibility(ProgressBar.VISIBLE);
+			}
+
+			@Override
+			public boolean shouldOverrideUrlLoading(WebView view, String url) {
+				view.loadUrl(url);
+				return true;
+			}	
+		});
+		
         //定义分类比较ListView
 		listAnalyzeCompare = (ListView) layAnalyzeCompare.findViewById(R.id.list_analyzecompare);
 		listAnalyzeCompare.setDivider(null);		
@@ -132,6 +180,7 @@ public class AnalyzeActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				ListView lv = (ListView) parent;
+				@SuppressWarnings("unchecked")
 				Map<String, String> map = (Map<String, String>) lv.getItemAtPosition(position);
 		        int catId = Integer.parseInt(map.get("catid"));
 		        
@@ -156,6 +205,7 @@ public class AnalyzeActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				ListView lv = (ListView) parent;
+				@SuppressWarnings("unchecked")
 				Map<String, String> map = (Map<String, String>) lv.getItemAtPosition(position);
 		        String date = map.get("datevalue");
 		        
@@ -179,6 +229,7 @@ public class AnalyzeActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				ListView lv = (ListView) parent;
+				@SuppressWarnings("unchecked")
 				Map<String, String> map = (Map<String, String>) lv.getItemAtPosition(position);
 		        String date = map.get("datevalue");
 		        
@@ -212,13 +263,22 @@ public class AnalyzeActivity extends Activity {
 				viewPager.setCurrentItem(1);
 			}
 		});
+		
+		//统计导航
+		tvNavTongji = (TextView) super.findViewById(R.id.tv_nav_tongji);
+		tvNavTongji.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				viewPager.setCurrentItem(2);
+			}
+		});
 
 		//搜索导航
 		tvNavSearch = (TextView) super.findViewById(R.id.tv_nav_search);
 		tvNavSearch.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				viewPager.setCurrentItem(2);
+				viewPager.setCurrentItem(3);
 			}
 		});
 		
@@ -305,6 +365,9 @@ public class AnalyzeActivity extends Activity {
 				tvNavRecommend.setTextColor(AnalyzeActivity.this.getResources().getColor(android.R.color.black));
 				tvNavRecommend.setBackgroundResource(R.drawable.nav_border_sub);
 				tvNavRecommend.setPadding(0, pad, 0, pad);
+				tvNavTongji.setTextColor(AnalyzeActivity.this.getResources().getColor(android.R.color.black));
+				tvNavTongji.setBackgroundResource(R.drawable.nav_border_sub);
+				tvNavTongji.setPadding(0, pad, 0, pad);
 				tvNavSearch.setTextColor(AnalyzeActivity.this.getResources().getColor(android.R.color.black));
 				tvNavSearch.setBackgroundResource(R.drawable.nav_border_sub);
 				tvNavSearch.setPadding(0, pad, 0, pad);
@@ -338,6 +401,20 @@ public class AnalyzeActivity extends Activity {
 					
 					break;
 				case 2:
+					tvNavTongji.setTextColor(AnalyzeActivity.this.getResources().getColor(R.color.color_back_main));
+					tvNavTongji.setBackgroundResource(R.drawable.nav_border_cur);
+					tvNavTongji.setPadding(0, pad, 0, pad);
+					
+					tvTitleAnalyze.setText(getString(R.string.txt_tab_analyzetongji));
+					
+					btnTitleDate.setVisibility(View.GONE);
+					btnTitleAdd.setVisibility(View.VISIBLE);
+					tvTitleAnalyze.setVisibility(View.VISIBLE);
+					etTitleKey.setVisibility(View.GONE);
+					btnTitleSearch.setVisibility(View.GONE);
+					
+					break;
+				case 3:
 					tvNavSearch.setTextColor(AnalyzeActivity.this.getResources().getColor(R.color.color_back_main));
 					tvNavSearch.setBackgroundResource(R.drawable.nav_border_cur);
 					tvNavSearch.setPadding(0, pad, 0, pad);

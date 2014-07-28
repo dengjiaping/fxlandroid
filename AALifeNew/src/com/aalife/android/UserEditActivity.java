@@ -109,14 +109,16 @@ public class UserEditActivity extends Activity {
 				final String userNickName = etUserNickName.getText().toString().trim();
 				final String userEmail = etUserEmail.getText().toString().trim();
 				final String userImage = sharedHelper.getUserImage();
+				final String userFrom = getString(R.string.app_version);
 				
 				pbUserLoading.setVisibility(View.VISIBLE);
+				btnUserEdit.setEnabled(false);
 				
 				new Thread(new Runnable(){
 					@Override
 					public void run() {						
 						int userId = sharedHelper.getUserId();
-						int result = UtilityHelper.editUser(userId, userName, userPass, userNickName, userImage, userEmail);
+						int result = UtilityHelper.editUser(userId, userName, userPass, userNickName, userImage, userEmail, userFrom);
 						
 						Bundle bundle = new Bundle();
 						bundle.putInt("result", result);
@@ -175,6 +177,8 @@ public class UserEditActivity extends Activity {
 			switch(msg.what) {
 			case 1:
 				activity.pbUserLoading.setVisibility(View.GONE);
+				activity.btnUserEdit.setEnabled(true);
+				
 				int result = msg.getData().getInt("result");
 				
 				if(result == 2) {

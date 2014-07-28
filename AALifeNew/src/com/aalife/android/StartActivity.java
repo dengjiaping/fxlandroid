@@ -5,7 +5,6 @@ import java.lang.ref.WeakReference;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -13,12 +12,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.Vibrator;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -35,20 +34,25 @@ public class StartActivity extends Activity {
 	private ImageButton btnLockGo = null;
 	private ProgressBar pbStart = null;
 	private ItemTableAccess itemAccess = null;
-	Vibrator vibrator = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_start);
 		
+		//虚拟按键菜单
+		try {
+			getWindow().addFlags(WindowManager.LayoutParams.class.getField("FLAG_NEEDS_MENU_KEY").getInt(null));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+				
 		//数据库
 		sqlHelper = new DatabaseHelper(this);
 		sqlHelper.getWritableDatabase();
 		sqlHelper.close();
 		
 		//初始化
-		vibrator = (Vibrator)this.getSystemService(Context.VIBRATOR_SERVICE);
 		sharedHelper = new SharedHelper(this);
 		tvStartLabel = (TextView) super.findViewById(R.id.tv_start_lable);
 		layLock = (LinearLayout) super.findViewById(R.id.lay_lock);
@@ -189,10 +193,6 @@ public class StartActivity extends Activity {
 							}).create();
 					dialog.show();
 				} else {
-					String lock = activity.sharedHelper.getLockText();
-					if(lock.equals("")) {
-						activity.close();
-					}
 					activity.jumpActivity();
 				}
 
@@ -232,10 +232,7 @@ public class StartActivity extends Activity {
 			
 			btnLockGo.setOnClickListener(new OnClickListener() {
 				@Override
-				public void onClick(View view) {
-					vibrator.vibrate(1000);
-			        vibrator.cancel();
-			        
+				public void onClick(View view) {			        
 					String text = etLockText.getText().toString().trim();
 					if(text.equals(lock)) {
 						Intent intent = new Intent(StartActivity.this, MainActivity.class);

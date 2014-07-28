@@ -523,14 +523,15 @@ public class ItemTableAccess {
 		return (regionId+1) % 2 == 0 ? regionId+1 : regionId+2;
 	}
 	
-	//取区间ID数量
-	public int getRegionCount(int regionId) {
+	//取区间ID日期
+	public String[] getRegionDate(int regionId) {
 		Cursor result = null;
-		int count = 0;
+		String[] date = new String[2];
 		try {
-		    result = this.db.rawQuery("SELECT COUNT(RegionID) FROM " + ITEMTABNAME + " WHERE RegionID = " + regionId, null);
+		    result = this.db.rawQuery("SELECT STRFTIME('%Y-%m-%d', MIN(ItemBuyDate)), STRFTIME('%Y-%m-%d', MAX(ItemBuyDate)) FROM " + ITEMTABNAME + " WHERE RegionID = " + regionId, null);
 		    if(result.moveToFirst()) {
-		    	count = result.getInt(0);
+		    	date[0] = result.getString(0);
+		    	date[1] = result.getString(1);
 		    }
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -540,7 +541,7 @@ public class ItemTableAccess {
 			}
 		}
 		
-		return count - 1;
+		return date;
 	}
 
 	//添加网络消费
@@ -1100,6 +1101,8 @@ public class ItemTableAccess {
 			
 			sql = "SELECT CategoryID, CategoryName, CategoryRank, CategoryDisplay, CategoryLive FROM " + CATTABNAME
 			    + " WHERE IsDefault = '0'";
+			result.close();
+			
 			result = this.db.rawQuery(sql, null);
 			while (result.moveToNext()) {
 				list.add("DELETE FROM " + CATTABNAME + " WHERE CategoryID = " + result.getString(0));

@@ -130,6 +130,7 @@ public class CategoryEditActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				ListView lv = (ListView) parent;
+				@SuppressWarnings("unchecked")
 				Map<String, String> map = (Map<String, String>) lv.getItemAtPosition(position);
 		        CategoryEditActivity.this.saveId = Integer.parseInt(map.get("catid"));
 		        String catName = map.get("catname");

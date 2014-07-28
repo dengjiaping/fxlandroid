@@ -20,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.DatePicker;
@@ -58,7 +59,14 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-	
+		
+		//虚拟按键菜单
+		try {
+			getWindow().addFlags(WindowManager.LayoutParams.class.getField("FLAG_NEEDS_MENU_KEY").getInt(null));
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		
 		//标题变粗
 		TextPaint textPaint = null;
 		TextView tvTitleWelcome = (TextView) super.findViewById(R.id.tv_title_welcome);
@@ -207,12 +215,7 @@ public class MainActivity extends Activity {
 		//设置用户文本
 		tvLabUserName = (TextView) super.findViewById(R.id.tv_lab_username);
 		tvLabNickName = (TextView) super.findViewById(R.id.tv_lab_nickname);
-		/*String userName = sharedHelper.getUserName();
-		if(userName.equals("")) {
-			userName = getString(R.string.txt_home_nouser);
-			sharedHelper.setUserName(userName);
-		}*/
-		
+
 		//设置同步文本
 		String syncStatus = sharedHelper.getSyncStatus();
 		if(syncStatus.equals("")) {
@@ -356,16 +359,6 @@ public class MainActivity extends Activity {
 			
 			break;
 		case R.id.action_abouts:
-			/*Dialog dialog = new AlertDialog.Builder(this)
-					.setTitle(R.string.txt_about)
-					.setMessage(getString(R.string.app_name) + " " + getString(R.string.app_version) + getString(R.string.txt_abouttext))
-					.setNegativeButton(R.string.txt_sure, new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int whichButton) {
-							dialog.cancel();
-						}
-					}).create();
-			dialog.show();*/
-			
 			intent = new Intent(MainActivity.this, AboutsActivity.class);
 			startActivity(intent);
 			
@@ -445,9 +438,7 @@ public class MainActivity extends Activity {
 				
 				String userName = activity.sharedHelper.getUserName();
 				String userNickName = activity.sharedHelper.getUserNickName();
-				activity.tvLabUserName.setText(activity.getString(R.string.txt_lab_username) + userName);
-			
-				//int group = activity.sharedHelper.getGroup();
+				activity.tvLabUserName.setText(activity.getString(R.string.txt_lab_username) + userName);			
 				activity.tvLabNickName.setText(activity.getString(R.string.txt_lab_nickname) + userNickName);
 				
 				if(activity.sharedHelper.getLogin()) {
@@ -455,12 +446,17 @@ public class MainActivity extends Activity {
 					activity.tvTitleUserEdit.setVisibility(View.VISIBLE);
 				}
 				
-				syncStatus = activity.sharedHelper.getSyncStatus();
-				
+				syncStatus = activity.sharedHelper.getSyncStatus();				
 				if(!syncFlag) {	
-					syncStatus = activity.getString(R.string.txt_home_syncerror);
+					if(activity.sharedHelper.getWebSync()) {
+						syncStatus = activity.getString(R.string.txt_home_haswebsync);
+					} else if(activity.sharedHelper.getWebSync()) {
+						syncStatus = activity.getString(R.string.txt_home_hassync);
+					} else {
+					    syncStatus = activity.getString(R.string.txt_home_nosync);
+					}
 					activity.sharedHelper.setSyncStatus(syncStatus);
-					Toast.makeText(activity, syncStatus, Toast.LENGTH_SHORT).show();
+					Toast.makeText(activity, activity.getString(R.string.txt_home_syncerror), Toast.LENGTH_SHORT).show();
 				} else {
                     activity.sharedHelper.setSyncing(false);
 				}

@@ -59,7 +59,7 @@ public class DayAdapter extends BaseAdapter {
 		ItemEntity itemEntity = null;
 		if (convertView == null) {
 			itemEntity = new ItemEntity();
-			convertView = layout.inflate(R.layout.list_day, null);
+			convertView = layout.inflate(R.layout.list_day, parent, false);
 			itemEntity.tvItemBuyDate = (TextView) convertView.findViewById(R.id.tv_day_itembuydate);
 			itemEntity.tvTotalPrice = (TextView) convertView.findViewById(R.id.tv_day_totalprice);
 			itemEntity.lvDayListSub = (MyListView) convertView.findViewById(R.id.list_day_sub);
@@ -107,7 +107,6 @@ public class DayAdapter extends BaseAdapter {
 				} else {
 					view = super.getView(arg0, arg1, arg2);
 				}
-				//View view = super.getView(arg0, arg1, arg2);
 				TextView tvItemId = (TextView) view.findViewById(R.id.tv_day_itemid);
 				final int itemId = Integer.parseInt(tvItemId.getText().toString());
 				//推荐CheckBox
@@ -137,12 +136,12 @@ public class DayAdapter extends BaseAdapter {
 
 		//列表点击
 		itemEntity.lvDayListSub.setOnItemClickListener(new OnItemClickListener(){
-			//Activity activity = (Activity) context;
 			TextView tvItemName = null;
 			TextView tvItemPrice = null;
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				ListView lv = (ListView) parent;
+				@SuppressWarnings("unchecked")
 				Map<String, String> map = (Map<String, String>) lv.getItemAtPosition(position);
 		        final String[] items = new String[6];
 		        items[0] = map.get("itemid");

@@ -24,6 +24,7 @@ public class LoginActivity extends Activity {
 	private MyHandler myHandler = new MyHandler(this);
 	private String[] result = null;
 	private ProgressBar pbUserLoading = null;
+	private Button btnUserLogin = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +56,7 @@ public class LoginActivity extends Activity {
 		});
 		
 		//登录按钮
-		Button btnUserLogin = (Button) super.findViewById(R.id.btn_user_login);
+		btnUserLogin = (Button) super.findViewById(R.id.btn_user_login);
 		btnUserLogin.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -72,6 +73,7 @@ public class LoginActivity extends Activity {
 				}
 
 				pbUserLoading.setVisibility(View.VISIBLE);
+				btnUserLogin.setEnabled(false);
 				
 				new Thread(new Runnable(){
 					@Override
@@ -122,6 +124,7 @@ public class LoginActivity extends Activity {
 			switch(msg.what) {
 			case 1:
 				activity.pbUserLoading.setVisibility(View.GONE);
+				activity.btnUserLogin.setEnabled(true);
 				
 				if(activity.result[3].equals("1")) {
 					Toast.makeText(activity, activity.getString(R.string.txt_user_userrepeat), Toast.LENGTH_SHORT).show();

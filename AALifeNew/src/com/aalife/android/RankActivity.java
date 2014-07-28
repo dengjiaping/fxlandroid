@@ -69,10 +69,10 @@ public class RankActivity extends Activity {
 		//定义ViewPager
 		viewPagerList = new ArrayList<View>();
 		mInflater = getLayoutInflater();
-		layRankCat = mInflater.inflate(R.layout.rank_category, null);
-		layRankCount = mInflater.inflate(R.layout.rank_count, null);
-		layRankPrice = mInflater.inflate(R.layout.rank_price, null);
-		layRankDate = mInflater.inflate(R.layout.rank_date, null);
+		layRankCat = mInflater.inflate(R.layout.rank_category, new LinearLayout(this), false);
+		layRankCount = mInflater.inflate(R.layout.rank_count, new LinearLayout(this), false);
+		layRankPrice = mInflater.inflate(R.layout.rank_price, new LinearLayout(this), false);
+		layRankDate = mInflater.inflate(R.layout.rank_date, new LinearLayout(this), false);
 		
         viewPagerList.add(layRankCat);
         viewPagerList.add(layRankCount);
@@ -143,6 +143,7 @@ public class RankActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				ListView lv = (ListView) parent;
+				@SuppressWarnings("unchecked")
 				Map<String, String> map = (Map<String, String>) lv.getItemAtPosition(position);
 		        int catId = Integer.parseInt(map.get("catid"));
 		        
@@ -167,6 +168,7 @@ public class RankActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				ListView lv = (ListView) parent;
+				@SuppressWarnings("unchecked")
 				Map<String, String> map = (Map<String, String>) lv.getItemAtPosition(position);
 		        String itemName = map.get("itemname");
 		        
@@ -191,6 +193,7 @@ public class RankActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				ListView lv = (ListView) parent;
+				@SuppressWarnings("unchecked")
 				Map<String, String> map = (Map<String, String>) lv.getItemAtPosition(position);
 		        String date = map.get("datevalue");
 		        
@@ -214,6 +217,7 @@ public class RankActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				ListView lv = (ListView) parent;
+				@SuppressWarnings("unchecked")
 				Map<String, String> map = (Map<String, String>) lv.getItemAtPosition(position);
 		        String date = map.get("datevalue");
 		        

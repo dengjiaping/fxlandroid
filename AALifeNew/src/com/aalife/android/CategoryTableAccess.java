@@ -146,6 +146,8 @@ public class CategoryTableAccess {
 			if (result.moveToFirst()) {
 				return false;
 			}
+			result.close();
+			
 			if(saveId == 0) {
 				int catId = 0;
 				sql = "SELECT MAX(CategoryID) + 1 FROM " + CATTABNAME;

@@ -1,11 +1,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical" >
 
     <LinearLayout
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/white" >
 
@@ -14,9 +14,9 @@
             style="@style/tv_item"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="1dp"
-            android:layout_marginLeft="1dp"
-            android:layout_marginTop="1dp"
+            android:layout_marginBottom="@dimen/list_border_size"
+            android:layout_marginLeft="@dimen/list_border_size"
+            android:layout_marginTop="@dimen/list_border_size"
             android:layout_weight="1"
             android:background="@color/color_title_bg"
             android:gravity="center"
@@ -27,9 +27,9 @@
             style="@style/tv_item"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="1dp"
-            android:layout_marginLeft="1dp"
-            android:layout_marginTop="1dp"
+            android:layout_marginBottom="@dimen/list_border_size"
+            android:layout_marginLeft="@dimen/list_border_size"
+            android:layout_marginTop="@dimen/list_border_size"
             android:layout_weight="1"
             android:background="@color/color_title_bg"
             android:gravity="center"
@@ -40,7 +40,7 @@
             style="@style/tv_item_price"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="1dp"
+            android:layout_margin="@dimen/list_border_size"
             android:layout_weight="1"
             android:background="@color/color_title_bg"
             android:gravity="right"
@@ -49,7 +49,7 @@
 
     <LinearLayout
         android:id="@+id/lay_noitem"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/color_item_bg"
         android:gravity="center"
@@ -67,7 +67,7 @@
 
     <ListView
         android:id="@+id/list_rankcount"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/white"
         android:descendantFocusability="blocksDescendants"

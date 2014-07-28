@@ -6,6 +6,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -28,6 +30,7 @@ public class AboutsActivity extends Activity {
 	private TextView tvAboutVersion = null;
 	private int eggCount = 0;
 	private final int EGG_CLICK = 8;
+	private Button btnSetSure = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +59,7 @@ public class AboutsActivity extends Activity {
 		});
 		
 		//发送邮件
-		Button btnSetSure = (Button) super.findViewById(R.id.btn_set_sure);
+		btnSetSure = (Button) super.findViewById(R.id.btn_set_sure);
 		btnSetSure.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -72,6 +75,7 @@ public class AboutsActivity extends Activity {
 				}
 				
 				pbAboutSending.setVisibility(View.VISIBLE);
+				btnSetSure.setEnabled(false);
 				
 				new Thread(new Runnable(){
 					@Override
@@ -125,6 +129,29 @@ public class AboutsActivity extends Activity {
 						}).create();
 					dialog.show();
 				}
+				//检查新版本
+				if(UtilityHelper.checkInternet(AboutsActivity.this, true)) {
+					new Thread(new Runnable(){
+						@Override
+						public void run() {
+							boolean result = false;
+							try {
+								result = UtilityHelper.checkNewVersion(AboutsActivity.this);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+							
+							Bundle bundle = new Bundle();
+							bundle.putBoolean("result", result);	
+							Message message = new Message();
+							message.what = 2;
+							message.setData(bundle);
+							myHandler.sendMessage(message);
+						}
+					}).start();
+				} else {
+					Toast.makeText(AboutsActivity.this, getString(R.string.txt_home_neterror), Toast.LENGTH_SHORT).show();	
+				}
 			}			
 		});
 	}
@@ -143,12 +170,14 @@ public class AboutsActivity extends Activity {
 		
 		@Override
 		public void handleMessage(Message msg) {
-			AboutsActivity activity = myActivity.get();
+			boolean result = false;
+			final AboutsActivity activity = myActivity.get();
 			switch(msg.what) {
 			case 1:
 				activity.pbAboutSending.setVisibility(View.GONE);
+				activity.btnSetSure.setEnabled(true);
 				
-				boolean result = msg.getData().getBoolean("result");
+				result = msg.getData().getBoolean("result");
 				if(result) {
 					activity.sharedHelper.setIsSend(true);
 					Toast.makeText(activity, activity.getString(R.string.txt_about_emailsuccess), Toast.LENGTH_SHORT).show();
@@ -159,7 +188,65 @@ public class AboutsActivity extends Activity {
 				}
 				
 				break;
+			case 2:
+				result = msg.getData().getBoolean("result");
+				if(result) {					
+					Dialog dialog = new AlertDialog.Builder(activity)
+							.setTitle(R.string.txt_tips)
+							.setMessage(R.string.txt_newversion)
+							.setPositiveButton(R.string.txt_sure, new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog, int whichButton) {
+									activity.tvAboutVersion.setText(R.string.txt_newdowning);
+									activity.downNewFile();
+								}
+							}).setNegativeButton(R.string.txt_cancel, new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog, int whichButton) {
+									dialog.cancel();
+								}
+							}).create();
+					dialog.show();
+				} else {
+					Toast.makeText(activity, activity.getString(R.string.txt_isnewversion), Toast.LENGTH_SHORT).show();					
+				}
+
+				break;
+			case 3:
+				result = msg.getData().getBoolean("result");
+				if(result) {
+					activity.close();
+				} else {
+					activity.tvAboutVersion.setText(R.string.txt_updateerror);
+				}
+
+				break;
 			}
 		}			
 	};	
+	
+	//升级
+	protected void downNewFile() {
+		new Thread(new Runnable(){
+			@Override
+			public void run() {
+				boolean result = false;
+				try {
+					Uri uri = Uri.fromFile(UtilityHelper.getInstallFile(AboutsActivity.this));
+					Intent intent = new Intent(Intent.ACTION_VIEW);
+					intent.setDataAndType(uri, "application/vnd.android.package-archive");
+					startActivity(intent);
+					
+					result = true;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+				Bundle bundle = new Bundle();
+				bundle.putBoolean("result", result);	
+				Message message = new Message();
+				message.what = 3;
+				message.setData(bundle);
+				myHandler.sendMessage(message);
+			}
+		}).start();
+	}
 }

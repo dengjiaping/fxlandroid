@@ -1,13 +1,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@drawable/ic_bg"
     android:orientation="vertical"
     tools:context=".SettingsActivity" >
 
     <LinearLayout
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/title_bg" >
 
@@ -39,28 +39,28 @@
 
     <ScrollView
         android:id="@+id/scrollView1"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content" >
 
         <LinearLayout
-            android:layout_width="fill_parent"
+            style="@style/layout_style"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/color_item_bg"
-            android:orientation="vertical"
-            android:padding="15dp" >
+            android:orientation="vertical" >
 
             <TextView
                 android:id="@+id/tv_set_lock"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:drawableLeft="@drawable/ic_lock_add"
+                android:layout_marginTop="@dimen/padding_medium"
+                android:drawableLeft="@drawable/ic_title_login"
                 android:gravity="center|left"
                 android:text="@string/txt_set_lock" />
 
             <EditText
                 android:id="@+id/et_set_lock"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:inputType="numberDecimal"
@@ -71,14 +71,14 @@
                 android:id="@+id/tv_set_welcome"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:drawableLeft="@drawable/ic_welcome_add"
+                android:layout_marginTop="@dimen/padding_medium"
+                android:drawableLeft="@drawable/ic_title_home"
                 android:gravity="center|left"
                 android:text="@string/txt_set_welcome" />
 
             <EditText
                 android:id="@+id/et_set_welcome"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:inputType="textNoSuggestions"
@@ -89,7 +89,7 @@
                 android:id="@+id/tv_set_sync"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="@dimen/padding_medium"
                 android:drawableLeft="@drawable/ic_setting_sync"
                 android:gravity="center|left"
                 android:text="@string/txt_set_sync" />
@@ -105,7 +105,7 @@
                 android:id="@+id/tv_set_update"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="@dimen/padding_medium"
                 android:drawableLeft="@drawable/ic_setting_update"
                 android:gravity="center|left"
                 android:text="@string/txt_set_update" />
@@ -120,9 +120,9 @@
             <Button
                 android:id="@+id/btn_set_sure"
                 style="@style/btn_style"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="@dimen/padding_large"
                 android:background="@drawable/main_btn_selector"
                 android:text="@string/txt_lock_sure" />
         </LinearLayout>

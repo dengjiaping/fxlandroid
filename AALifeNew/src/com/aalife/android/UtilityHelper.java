@@ -42,7 +42,6 @@ import android.telephony.TelephonyManager;
 
 
 public class UtilityHelper {
-	//private static final String WEBURL = "http://192.168.1.105:81";
 	//private static final String WEBURL = "http://10.0.2.2:81";
 	private static final String WEBURL = "http://www.fxlweb.com";
 	
@@ -172,7 +171,21 @@ public class UtilityHelper {
 		}
 		return s;
 	}
-
+	
+	//比较日期
+	public static boolean compareDate(String date){
+		Date now = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);		
+		Date d = null;
+		try {
+			d = sdf.parse(date);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+		return d.before(now);
+	}
+	
 	//创建随机用户名
 	public static String createUserName() {
 		Random r = new Random();
@@ -396,7 +409,7 @@ public class UtilityHelper {
 	}
 	
 	//修改资料方法
-	public static int editUser(int userId, String userName, String userPass, String userNickName, String userImage, String userEmail) {
+	public static int editUser(int userId, String userName, String userPass, String userNickName, String userImage, String userEmail, String userFrom) {
 		int result = 0;
 		String url = WEBURL +  "/AALifeWeb/SyncUserEdit.aspx";
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -406,6 +419,7 @@ public class UtilityHelper {
 		params.add(new BasicNameValuePair("userimage", userImage));
 		params.add(new BasicNameValuePair("useremail", userEmail));
 		params.add(new BasicNameValuePair("userid", String.valueOf(userId)));
+		params.add(new BasicNameValuePair("userfrom", userFrom));
 		try {
 			JSONObject jsonObject = new JSONObject(HttpHelper.post(url, params));
 			if(jsonObject.length() > 0) {
@@ -445,7 +459,7 @@ public class UtilityHelper {
 	}
 			
 	//注册用户
-	public static String[] addUser(String userName, String userPass, String userNickName, String userEmail) {
+	public static String[] addUser(String userName, String userPass, String userNickName, String userEmail, String userFrom) {
 		String[] result = new String[] { "0", "0", "0", "0", "", "", "", "" };
 		String url = WEBURL +  "/AALifeWeb/SyncNewUser.aspx";
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -453,6 +467,7 @@ public class UtilityHelper {
 		params.add(new BasicNameValuePair("userpass", userPass));
 		params.add(new BasicNameValuePair("usernickname", userNickName));
 		params.add(new BasicNameValuePair("useremail", userEmail));
+		params.add(new BasicNameValuePair("userfrom", userFrom));
 		try {
 			JSONObject jsonObject = new JSONObject(HttpHelper.post(url, params));
 			if(jsonObject.length() > 0) {
@@ -726,7 +741,7 @@ public class UtilityHelper {
 			}
 			if(info.getSubtype() == TelephonyManager.NETWORK_TYPE_EDGE || info.getSubtype() == TelephonyManager.NETWORK_TYPE_GPRS || info.getSubtype() == TelephonyManager.NETWORK_TYPE_CDMA) {
 				return false;
-			} else if(update) {
+			} else {
 				return info.isAvailable();
 			}
 		}
@@ -862,5 +877,14 @@ public class UtilityHelper {
 		}
 		
 		return result;
+	}
+	
+	//取统计URL
+	public static String getTongJiURL(int type) {
+		if(type == 0) {
+		    return WEBURL + "/shouji/QuWeiTongJi.aspx?flag=1";
+		} else {
+			return WEBURL + "/shouji/QuWeiTongJi.aspx?flag=2";
+		}
 	}
 }

@@ -6,7 +6,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import android.content.Context;
-import android.os.Vibrator;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -16,14 +15,12 @@ import android.widget.LinearLayout;
 public class MyCalcView extends LinearLayout {
 	private EditText calcText = null;
 	public String resultText = "";
-	Vibrator vibrator = null;    
 
 	public MyCalcView(Context context) {
 		super(context);
 		
-		vibrator = (Vibrator)context.getSystemService(Context.VIBRATOR_SERVICE);		
 		LayoutInflater inflater = LayoutInflater.from(context);
-		View popView = inflater.inflate(R.layout.layout_calculator, null);
+		View popView = inflater.inflate(R.layout.layout_calculator, new LinearLayout(context), false);
 		LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 		popView.setLayoutParams(params);
 
@@ -287,8 +284,7 @@ public class MyCalcView extends LinearLayout {
 
 	//设置震动
 	private void doVibrator() {
-		vibrator.vibrate(1000);
-        vibrator.cancel();
+		
 	}
 	
 	//设置光标靠右

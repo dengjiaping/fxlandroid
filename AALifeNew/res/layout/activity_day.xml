@@ -1,13 +1,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@drawable/ic_bg"
     tools:context=".DayActivity" >
 
     <LinearLayout
         android:id="@+id/LinearLayout1"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/title_bg" >
 
@@ -41,7 +41,7 @@
 
     <LinearLayout
         android:id="@+id/lay_noitem"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/LinearLayout1"
         android:background="@color/color_item_bg"
@@ -59,7 +59,7 @@
 
     <ListView
         android:id="@+id/list_day"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/LinearLayout1"
         android:background="@android:color/white"
@@ -77,21 +77,21 @@
 
     <LinearLayout
         android:id="@+id/lay_day_total"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:orientation="vertical" >
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="@dimen/layout_line_height"
             android:background="@color/color_item_bg"
             android:orientation="vertical" >
 
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/color_tran2_white" >
 

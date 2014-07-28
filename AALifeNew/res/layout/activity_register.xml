@@ -1,13 +1,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@drawable/ic_bg"
     tools:context=".RegisterActivity" >
 
     <LinearLayout
         android:id="@+id/LinearLayout1"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/title_bg" >
 
@@ -39,29 +39,29 @@
 
     <ScrollView
         android:id="@+id/scrollView1"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/LinearLayout1" >
 
         <LinearLayout
-            android:layout_width="fill_parent"
+            style="@style/layout_style"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/color_item_bg"
-            android:orientation="vertical"
-            android:padding="15dp" >
+            android:orientation="vertical" >
 
             <TextView
                 android:id="@+id/tv_user_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="@dimen/padding_medium"
                 android:drawableLeft="@drawable/ic_title_welcome"
                 android:gravity="center|left"
                 android:text="@string/txt_user_username" />
 
             <EditText
                 android:id="@+id/et_user_name"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:imeOptions="actionNext"
@@ -73,14 +73,14 @@
                 android:id="@+id/tv_user_pass"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="@dimen/padding_medium"
                 android:drawableLeft="@drawable/ic_title_login"
                 android:gravity="center|left"
                 android:text="@string/txt_user_userpass" />
 
             <EditText
                 android:id="@+id/et_user_pass"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:imeOptions="actionNext"
@@ -92,14 +92,14 @@
                 android:id="@+id/tv_user_nickname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="@dimen/padding_medium"
                 android:drawableLeft="@drawable/ic_title_nickname"
                 android:gravity="center|left"
                 android:text="@string/txt_user_nickname" />
 
             <EditText
                 android:id="@+id/et_user_nickname"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:imeOptions="actionNext"
@@ -111,14 +111,14 @@
                 android:id="@+id/tv_user_email"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="@dimen/padding_medium"
                 android:drawableLeft="@drawable/ic_title_email"
                 android:gravity="center|left"
                 android:text="@string/txt_user_email" />
 
             <EditText
                 android:id="@+id/et_user_email"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:imeOptions="actionDone"
@@ -127,14 +127,13 @@
                 android:textColor="@color/color_text" />
 
             <LinearLayout
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:layout_marginTop="20dp" >
+                android:layout_marginTop="@dimen/padding_large" >
 
                 <Button
                     android:id="@+id/btn_user_add"
-                    style="@style/btn_style_img"
+                    style="@style/btn_style"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/main_btn_selector"
@@ -148,7 +147,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:layout_marginTop="10dp"
         android:visibility="gone" />
 
 </RelativeLayout>

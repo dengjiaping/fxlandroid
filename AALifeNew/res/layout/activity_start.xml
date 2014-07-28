@@ -1,7 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@drawable/ic_bg"
     tools:context=".StartActivity" >
 
@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="72dp"
+        android:layout_marginTop="@dimen/start_logo_top"
         android:contentDescription="@string/app_name"
         android:src="@drawable/ic_logo" />
 
@@ -20,10 +20,9 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/imageView1"
         android:layout_centerHorizontal="true"
-        android:paddingBottom="5dp"
-        android:paddingTop="10dp"
+        android:layout_margin="@dimen/padding_medium"
         android:text="@string/app_name"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:textSize="@dimen/start_text_size" />
 
     <TextView
         android:id="@+id/textView2"
@@ -35,12 +34,12 @@
 
     <ScrollView
         android:id="@+id/scrollView1"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/textView2" >
 
         <LinearLayout
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="vertical" >
@@ -49,17 +48,15 @@
                 android:id="@+id/tv_start_lable"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="116dp"
+                android:layout_marginTop="@dimen/start_text_top"
                 android:text="@string/app_welcome" />
 
             <LinearLayout
                 android:id="@+id/lay_lock"
+                style="@style/start_lock_style"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="21dp"
-                android:layout_marginLeft="72dp"
-                android:layout_marginRight="72dp"
-                android:layout_marginTop="3dp" >
+                android:visibility="gone" >
 
                 <EditText
                     android:id="@+id/et_lock_text"
@@ -83,7 +80,7 @@
                     android:layout_gravity="center"
                     android:background="@drawable/lock_btn_selector"
                     android:contentDescription="@string/txt_lock_go"
-                    android:src="@drawable/ic_lock_go" />
+                    android:src="@drawable/ic_unlock" />
             </LinearLayout>
 
         </LinearLayout>

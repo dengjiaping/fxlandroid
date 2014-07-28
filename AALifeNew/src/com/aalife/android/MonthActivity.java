@@ -302,7 +302,7 @@ public class MonthActivity extends Activity {
 					String date = map.get("datevalue");
 					String price = map.get("price");
 
-					activity.layMonthPager = activity.mInflater.inflate(R.layout.month_pager, null);
+					activity.layMonthPager = activity.mInflater.inflate(R.layout.month_pager, new LinearLayout(activity), false);
 					activity.viewPagerList.add(activity.layMonthPager);
 			        
 					//标题变粗
@@ -330,6 +330,7 @@ public class MonthActivity extends Activity {
 						@Override
 						public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 							ListView lv = (ListView) parent;
+							@SuppressWarnings("unchecked")
 							Map<String, String> map = (Map<String, String>) lv.getItemAtPosition(position);
 					        String date = map.get("datevalue");
 					        

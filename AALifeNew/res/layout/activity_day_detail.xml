@@ -1,13 +1,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@drawable/ic_bg"
     tools:context=".DayDetailActivity" >
 
     <LinearLayout
         android:id="@+id/LinearLayout1"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/title_bg" >
 
@@ -41,7 +41,7 @@
 
     <LinearLayout
         android:id="@+id/LinearLayout2"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/LinearLayout1" >
 
@@ -86,7 +86,7 @@
 
     <LinearLayout
         android:id="@+id/LinearLayout3"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/LinearLayout2"
         android:background="@android:color/white" >
@@ -96,9 +96,9 @@
             style="@style/tv_item"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="1dp"
-            android:layout_marginLeft="1dp"
-            android:layout_marginTop="1dp"
+            android:layout_marginBottom="@dimen/list_border_size"
+            android:layout_marginLeft="@dimen/list_border_size"
+            android:layout_marginTop="@dimen/list_border_size"
             android:layout_weight="2"
             android:background="@color/color_title_bg"
             android:gravity="center"
@@ -109,9 +109,9 @@
             style="@style/tv_item"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="1dp"
-            android:layout_marginLeft="1dp"
-            android:layout_marginTop="1dp"
+            android:layout_marginBottom="@dimen/list_border_size"
+            android:layout_marginLeft="@dimen/list_border_size"
+            android:layout_marginTop="@dimen/list_border_size"
             android:layout_weight="3"
             android:background="@color/color_title_bg"
             android:gravity="center"
@@ -122,9 +122,9 @@
             style="@style/tv_item_price"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="1dp"
-            android:layout_marginLeft="1dp"
-            android:layout_marginTop="1dp"
+            android:layout_marginBottom="@dimen/list_border_size"
+            android:layout_marginLeft="@dimen/list_border_size"
+            android:layout_marginTop="@dimen/list_border_size"
             android:layout_weight="3"
             android:background="@color/color_title_bg"
             android:gravity="right"
@@ -135,7 +135,7 @@
             style="@style/tv_item"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="1dp"
+            android:layout_margin="@dimen/list_border_size"
             android:layout_weight="2"
             android:background="@color/color_title_bg"
             android:gravity="center"
@@ -145,7 +145,7 @@
 
     <LinearLayout
         android:id="@+id/lay_noitem"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/LinearLayout3"
         android:background="@color/color_item_bg"
@@ -165,7 +165,7 @@
     <ListView
         android:id="@+id/list_day_detail"
         style="@style/list_style"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/LinearLayout3"
         android:background="@android:color/white"
@@ -177,20 +177,20 @@
 
     <LinearLayout
         android:id="@+id/lay_day_total"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:orientation="vertical" >
 
         <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/layout_line_height"
             android:background="@color/color_title_bg"
             android:orientation="vertical" >
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/white" >
 
@@ -199,8 +199,8 @@
                 style="@style/tv_item"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="1dp"
-                android:layout_marginLeft="1dp"
+                android:layout_marginBottom="@dimen/list_border_size"
+                android:layout_marginLeft="@dimen/list_border_size"
                 android:layout_weight="2"
                 android:background="@color/color_item_bg"
                 android:gravity="center"
@@ -209,8 +209,8 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="1dp"
-                android:layout_marginLeft="1dp"
+                android:layout_marginBottom="@dimen/list_border_size"
+                android:layout_marginLeft="@dimen/list_border_size"
                 android:layout_weight="3"
                 android:background="@color/color_item_bg"
                 android:gravity="center"
@@ -221,8 +221,8 @@
                 style="@style/tv_item_price"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="1dp"
-                android:layout_marginLeft="1dp"
+                android:layout_marginBottom="@dimen/list_border_size"
+                android:layout_marginLeft="@dimen/list_border_size"
                 android:layout_weight="3"
                 android:background="@color/color_item_bg"
                 android:gravity="center|right"
@@ -231,9 +231,9 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="1dp"
-                android:layout_marginLeft="1dp"
-                android:layout_marginRight="1dp"
+                android:layout_marginBottom="@dimen/list_border_size"
+                android:layout_marginLeft="@dimen/list_border_size"
+                android:layout_marginRight="@dimen/list_border_size"
                 android:layout_weight="2"
                 android:background="@color/color_item_bg"
                 android:gravity="center"
