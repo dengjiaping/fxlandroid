@@ -103,6 +103,7 @@ public class MainActivity extends Activity {
 							if(bool) {
 								sharedHelper.setLocalSync(true);
 								sharedHelper.setSyncStatus(getString(R.string.txt_home_loginsync));
+								tvLabStatus.setText(getString(R.string.txt_home_loginsync));
 							}
 
 							sharedHelper.setHasRestore(true);
@@ -113,6 +114,7 @@ public class MainActivity extends Activity {
 					public void onClick(DialogInterface dialog, int whichButton) {
 						sharedHelper.setHasRestore(false);
 						sharedHelper.setSyncStatus(getString(R.string.txt_home_loginsyncweb));
+						tvLabStatus.setText(getString(R.string.txt_home_loginsyncweb));
 						
 						dialog.cancel();
 					}
@@ -447,15 +449,7 @@ public class MainActivity extends Activity {
 				}
 				
 				syncStatus = activity.sharedHelper.getSyncStatus();				
-				if(!syncFlag) {	
-					if(activity.sharedHelper.getWebSync()) {
-						syncStatus = activity.getString(R.string.txt_home_haswebsync);
-					} else if(activity.sharedHelper.getWebSync()) {
-						syncStatus = activity.getString(R.string.txt_home_hassync);
-					} else {
-					    syncStatus = activity.getString(R.string.txt_home_nosync);
-					}
-					activity.sharedHelper.setSyncStatus(syncStatus);
+				if(!syncFlag) {
 					Toast.makeText(activity, activity.getString(R.string.txt_home_syncerror), Toast.LENGTH_SHORT).show();
 				} else {
                     activity.sharedHelper.setSyncing(false);

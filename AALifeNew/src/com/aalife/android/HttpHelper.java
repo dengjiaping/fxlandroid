@@ -45,6 +45,23 @@ public class HttpHelper {
 		
 		return result;
 	}
+    
+	public static String post2(String url, List<NameValuePair> params) {
+		String result = "{\"result\":\"no\"}";
+		try {
+			HttpPost request = new HttpPost(url);
+			request.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
+			HttpResponse response = getHttpClient2().execute(request);			
+
+			if(response.getStatusLine().getStatusCode() == 200) {
+				result = EntityUtils.toString(response.getEntity()).trim();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
 	
 	public static String post(String url) {
 		String result = "{\"result\":\"no\"}";
@@ -85,7 +102,17 @@ public class HttpHelper {
         HttpClient httpClient = new DefaultHttpClient(params);
         return httpClient;
     }
+	
+	public static HttpClient getHttpClient2() {		
+        HttpClient httpClient = new DefaultHttpClient();
+        HttpParams params = httpClient.getParams();
+        HttpConnectionParams.setConnectionTimeout(params, DEFAULT_SOCKET_TIMEOUT);
+        HttpConnectionParams.setSoTimeout(params, DEFAULT_SOCKET_TIMEOUT);
+        ConnManagerParams.setTimeout(params, DEFAULT_TIMEOUT);
 		
+        return httpClient;
+    }
+	
 	public static String formatJson(List<Map<String, String>> list) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("[");

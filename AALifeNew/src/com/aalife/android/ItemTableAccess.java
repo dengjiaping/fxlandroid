@@ -91,7 +91,7 @@ public class ItemTableAccess {
 	//根据日期查消费
 	public List<Map<String, String>> findItemByDate(String date) {
 		List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-		String sql = "SELECT ItemID, ItemName, ItemPrice, ItemBuyDate, CategoryID, Recommend, RegionID FROM " + ITEMTABNAME + " WHERE STRFTIME('%Y-%m-%d', ItemBuyDate) = '" + date + "'";
+		String sql = "SELECT ItemID, ItemName, ItemPrice, ItemBuyDate, CategoryID, Recommend, RegionID, CASE WHEN RegionID<>0 AND IFNULL(RegionType,'')='' THEN 'm' ELSE IFNULL(RegionType,'') END FROM " + ITEMTABNAME + " WHERE STRFTIME('%Y-%m-%d', ItemBuyDate) = '" + date + "'";
 		Cursor result = null;
 		try {
 			result = this.db.rawQuery(sql, null);
@@ -99,7 +99,7 @@ public class ItemTableAccess {
 				Map<String, String> map = new HashMap<String, String>();
 				//map.put("id", String.valueOf(result.getPosition() + 1));
 				map.put("itemid", result.getString(0));
-				map.put("itemname", result.getString(1) + (result.getInt(6)>0 ? "（区间）" : ""));
+				map.put("itemname", UtilityHelper.getItemNameByRegion(result.getString(1), result.getString(7)));
 				map.put("itemnamevalue", result.getString(1));
 				map.put("itemprice", "￥ " + UtilityHelper.formatDouble(result.getDouble(2), "0.0##"));
 				map.put("pricevalue", UtilityHelper.formatDouble(result.getDouble(2), "0.0##"));
@@ -107,6 +107,7 @@ public class ItemTableAccess {
 				map.put("catid", result.getString(4));
 				map.put("recommend", result.getString(5));
 				map.put("regionid", result.getString(6));
+				map.put("regiontype", result.getString(7));
 				list.add(map);
 			}
 		} catch(Exception e) {
@@ -179,7 +180,9 @@ public class ItemTableAccess {
 	public Map<String, String> findAllMonth(String curDate) {
 		Map<String, String> map = new HashMap<String, String>();
 		String sql = "SELECT SUM(ItemPrice), ItemBuyDate FROM " + ITEMTABNAME
-				   + " GROUP BY STRFTIME('%Y-%m', ItemBuyDate) HAVING STRFTIME('%Y-%m', ItemBuyDate) = STRFTIME('%Y-%m', '" + curDate + "')";
+				   + " WHERE STRFTIME('%Y-%m-%d', ItemBuyDate) <= STRFTIME('%Y-%m-%d', datetime('now'))"
+				   + " AND STRFTIME('%Y-%m', ItemBuyDate) = STRFTIME('%Y-%m', '" + curDate + "')"
+				   + " GROUP BY STRFTIME('%Y-%m', ItemBuyDate)";
 		Cursor result = null;
 		try {
 			result = this.db.rawQuery(sql, null);
@@ -204,7 +207,8 @@ public class ItemTableAccess {
 	//查下一个有数据日期
 	public String findLastDate() {
 		String value = "";
-		String sql = "SELECT ItemBuyDate FROM " + ITEMTABNAME + " WHERE STRFTIME('%Y-%m', ItemBuyDate) <= STRFTIME('%Y-%m', datetime('now')) ORDER BY ItemBuyDate DESC LIMIT 30";
+		String sql = "SELECT ItemBuyDate FROM " + ITEMTABNAME 
+				   + " WHERE STRFTIME('%Y-%m-%d', ItemBuyDate) <= STRFTIME('%Y-%m-%d', datetime('now')) ORDER BY ItemBuyDate DESC LIMIT 30";
 		Cursor result = null;
 		try {
 			result = this.db.rawQuery(sql, null);
@@ -226,7 +230,8 @@ public class ItemTableAccess {
 	public List<Map<String, String>> findAllDayBuyDate(String date) {
 		List<Map<String, String>> list = new ArrayList<Map<String, String>>();
 		String sql = "SELECT SUM(ItemPrice), ItemBuyDate FROM " + ITEMTABNAME
-				   + " GROUP BY STRFTIME('%Y-%m-%d', ItemBuyDate) HAVING STRFTIME('%Y-%m', ItemBuyDate) = STRFTIME('%Y-%m', '" + date + "') ORDER BY ItemBuyDate DESC";
+				   + " GROUP BY STRFTIME('%Y-%m-%d', ItemBuyDate)"
+				   + " HAVING STRFTIME('%Y-%m', ItemBuyDate) = STRFTIME('%Y-%m', '" + date + "') ORDER BY ItemBuyDate DESC";
 		Cursor result = null;
 		try {
 			result = this.db.rawQuery(sql, null);
@@ -251,7 +256,9 @@ public class ItemTableAccess {
 	public List<Map<String, String>> findAllDayFirstBuyDate(String date) {
 		List<Map<String, String>> list = new ArrayList<Map<String, String>>();
 		String sql = "SELECT SUM(ItemPrice), ItemBuyDate FROM " + ITEMTABNAME
-				   + " GROUP BY STRFTIME('%Y-%m-%d', ItemBuyDate) HAVING STRFTIME('%Y-%m', ItemBuyDate) <= STRFTIME('%Y-%m', datetime('now')) AND STRFTIME('%Y-%m', ItemBuyDate) >= STRFTIME('%Y-%m', '" + date + "') ORDER BY ItemBuyDate DESC";
+				   + " GROUP BY STRFTIME('%Y-%m-%d', ItemBuyDate)"
+				   + " HAVING STRFTIME('%Y-%m-%d', ItemBuyDate) <= STRFTIME('%Y-%m-%d', datetime('now'))"
+				   + " AND STRFTIME('%Y-%m', ItemBuyDate) >= STRFTIME('%Y-%m', '" + date + "') ORDER BY ItemBuyDate DESC";
 		Cursor result = null;
 		try {
 			result = this.db.rawQuery(sql, null);
@@ -276,7 +283,8 @@ public class ItemTableAccess {
 	public String findNextDate(String date) {
 		String value = "";
 		String sql = "SELECT ItemBuyDate FROM " + ITEMTABNAME
-				   + " GROUP BY STRFTIME('%Y-%m-%d', ItemBuyDate) HAVING STRFTIME('%Y-%m', ItemBuyDate) < STRFTIME('%Y-%m', '" + date + "') ORDER BY ItemBuyDate DESC";
+				   + " GROUP BY STRFTIME('%Y-%m-%d', ItemBuyDate)"
+				   + " HAVING STRFTIME('%Y-%m', ItemBuyDate) < STRFTIME('%Y-%m', '" + date + "') ORDER BY ItemBuyDate DESC";
 		Cursor result = null;
 		try {
 			result = this.db.rawQuery(sql, null);
@@ -340,27 +348,33 @@ public class ItemTableAccess {
 	public List<Map<String, String>> findHomeTotalByDate(String curDate) {
 		List<Map<String, String>> list = new ArrayList<Map<String, String>>();
 		String sql = "SELECT a.*, b.* FROM "
-				   + "(SELECT 1 AS Rank, SUM(ItemPrice) AS Price, '今日' AS Label, 1 AS Flag FROM " + ITEMTABNAME
-				   + " WHERE STRFTIME('%Y-%m', ItemBuyDate) <= STRFTIME('%Y-%m', datetime('now')) AND STRFTIME('%Y-%m-%d', ItemBuyDate) = STRFTIME('%Y-%m-%d', '" + curDate + "')) AS a"
+				   + "(SELECT 1 AS Rank, SUM(ItemPrice) AS Price, '今天' AS Label, 1 AS Flag FROM " + ITEMTABNAME
+				   + " WHERE STRFTIME('%Y-%m-%d', ItemBuyDate) <= STRFTIME('%Y-%m-%d', datetime('now'))"
+				   + " AND STRFTIME('%Y-%m-%d', ItemBuyDate) = STRFTIME('%Y-%m-%d', '" + curDate + "')) AS a"
 				   + " INNER JOIN "
-				   + "(SELECT 1 AS Rank, SUM(ItemPrice) AS Price, '昨日' AS Label, 1 AS Flag FROM " + ITEMTABNAME
-				   + " WHERE STRFTIME('%Y-%m', ItemBuyDate) <= STRFTIME('%Y-%m', datetime('now')) AND STRFTIME('%Y-%m-%d', ItemBuyDate) = STRFTIME('%Y-%m-%d', DATE('" + curDate + "','start of day','-1 day'))) AS b"
+				   + "(SELECT 1 AS Rank, SUM(ItemPrice) AS Price, '昨天' AS Label, 1 AS Flag FROM " + ITEMTABNAME
+				   + " WHERE STRFTIME('%Y-%m-%d', ItemBuyDate) <= STRFTIME('%Y-%m-%d', datetime('now'))"
+				   + " AND STRFTIME('%Y-%m-%d', ItemBuyDate) = STRFTIME('%Y-%m-%d', DATE('" + curDate + "','start of day','-1 day'))) AS b"
 				   + " ON a.Flag = b.Flag"
 				   + " UNION "
 				   + "SELECT a.*, b.* FROM "
 				   + "(SELECT 2 AS Rank, SUM(ItemPrice) AS Price, '本月' AS Label, 1 AS Flag FROM " + ITEMTABNAME
-				   + " WHERE STRFTIME('%Y-%m', ItemBuyDate) <= STRFTIME('%Y-%m', datetime('now')) AND STRFTIME('%Y-%m', ItemBuyDate) = STRFTIME('%Y-%m', '" + curDate + "')) AS a"
+				   + " WHERE STRFTIME('%Y-%m-%d', ItemBuyDate) <= STRFTIME('%Y-%m-%d', datetime('now'))"
+				   + " AND STRFTIME('%Y-%m', ItemBuyDate) = STRFTIME('%Y-%m', '" + curDate + "')) AS a"
 				   + " INNER JOIN "
 				   + "(SELECT 2 AS Rank, SUM(ItemPrice) AS Price, '上月' AS Label, 1 AS Flag FROM " + ITEMTABNAME
-				   + " WHERE STRFTIME('%Y-%m', ItemBuyDate) <= STRFTIME('%Y-%m', datetime('now')) AND STRFTIME('%Y-%m', ItemBuyDate) = STRFTIME('%Y-%m', DATE('" + curDate + "','start of month','-1 month'))) AS b"
+				   + " WHERE STRFTIME('%Y-%m-%d', ItemBuyDate) <= STRFTIME('%Y-%m-%d', datetime('now'))"
+				   + " AND STRFTIME('%Y-%m', ItemBuyDate) = STRFTIME('%Y-%m', DATE('" + curDate + "','start of month','-1 month'))) AS b"
 				   + " ON a.Flag = b.Flag"		
 				   + " UNION "
 				   + "SELECT a.*, b.* FROM "
 				   + "(SELECT 3 AS Rank, SUM(ItemPrice) AS Price, '今年' AS Label, 1 AS Flag FROM " + ITEMTABNAME
-				   + " WHERE STRFTIME('%Y-%m', ItemBuyDate) <= STRFTIME('%Y-%m', datetime('now')) AND STRFTIME('%Y', ItemBuyDate) = STRFTIME('%Y', '" + curDate + "')) AS a"
+				   + " WHERE STRFTIME('%Y-%m-%d', ItemBuyDate) <= STRFTIME('%Y-%m-%d', datetime('now'))"
+				   + " AND STRFTIME('%Y', ItemBuyDate) = STRFTIME('%Y', '" + curDate + "')) AS a"
 				   + " INNER JOIN "
 				   + "(SELECT 3 AS Rank, SUM(ItemPrice) AS Price, '去年' AS Label, 1 AS Flag FROM " + ITEMTABNAME
-				   + " WHERE STRFTIME('%Y-%m', ItemBuyDate) <= STRFTIME('%Y-%m', datetime('now')) AND STRFTIME('%Y', ItemBuyDate) = STRFTIME('%Y', DATE('" + curDate + "','start of year','-1 year'))) AS b"
+				   + " WHERE STRFTIME('%Y-%m-%d', ItemBuyDate) <= STRFTIME('%Y-%m-%d', datetime('now'))"
+				   + " AND STRFTIME('%Y', ItemBuyDate) = STRFTIME('%Y', DATE('" + curDate + "','start of year','-1 year'))) AS b"
 				   + " ON a.Flag = b.Flag";
 		Cursor result = null;
 		try {
@@ -387,7 +401,8 @@ public class ItemTableAccess {
 	//查同步消费
 	public List<Map<String, String>> findSyncItem() {
 		List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-		String sql = "SELECT ItemID, ItemName, ItemPrice, ItemBuyDate, CategoryID, ItemWebID, Recommend, RegionID FROM " + ITEMTABNAME + " WHERE Synchronize = '1'";
+		String sql = "SELECT ItemID, ItemName, ItemPrice, ItemBuyDate, CategoryID, ItemWebID, Recommend, RegionID, RegionType FROM " + ITEMTABNAME 
+				   + " WHERE Synchronize = '1'";
 		Cursor result = null;
 		try {
 			result = this.db.rawQuery(sql, null);
@@ -402,6 +417,7 @@ public class ItemTableAccess {
 				map.put("itemwebid", result.getString(5));
 				map.put("recommend", result.getString(6));
 				map.put("regionid", result.getString(7));
+				map.put("regiontype", result.getString(8));
 				list.add(map);
 			}
 		} catch(Exception e) {
@@ -490,9 +506,9 @@ public class ItemTableAccess {
 	}
 
 	//添加消费
-	public boolean addItem(String itemName, String itemPrice, String itemBuyDate, int catId, int recommend, int regionId) {
-		String sql = "INSERT INTO " + ITEMTABNAME + "(ItemName, ItemPrice, ItemBuyDate, CategoryID, Synchronize, Recommend, regionId) "
-			   	   + "VALUES ('" + itemName + "', '" + itemPrice + "', '" + itemBuyDate + "', '" + catId + "', '1', '" + recommend + "', '" + regionId + "')";
+	public boolean addItem(String itemName, String itemPrice, String itemBuyDate, int catId, int recommend, int regionId, String regionType) {
+		String sql = "INSERT INTO " + ITEMTABNAME + "(ItemName, ItemPrice, ItemBuyDate, CategoryID, Synchronize, Recommend, RegionId, RegionType) "
+			   	   + "VALUES ('" + itemName + "', '" + itemPrice + "', '" + itemBuyDate + "', '" + catId + "', '1', '" + recommend + "', '" + regionId + "', '" + regionType + "')";
 		try {
 		    this.db.execSQL(sql);
 		} catch (Exception e) {
@@ -545,20 +561,20 @@ public class ItemTableAccess {
 	}
 
 	//添加网络消费
-	public boolean addWebItem(int itemId, int itemAppId, String itemName, String itemPrice, String itemBuyDate, int catId, int recommend, int regionId) {
+	public boolean addWebItem(int itemId, int itemAppId, String itemName, String itemPrice, String itemBuyDate, int catId, int recommend, int regionId, String regionType) {
 		String sql = "SELECT ItemID FROM " + ITEMTABNAME + " WHERE ItemWebID = " + itemId;
 		Cursor result = null;
 		try {
 			result = this.db.rawQuery(sql, null);
 			if(result.moveToFirst()) {
-				sql = "UPDATE " + ITEMTABNAME + " SET ItemName = '" + itemName + "', ItemPrice = '" + itemPrice + "', ItemBuyDate = '" + itemBuyDate + "', CategoryID = '" + catId + "', Synchronize = '0', Recommend = '" + recommend + "', RegionID = '" + regionId + "'"
+				sql = "UPDATE " + ITEMTABNAME + " SET ItemName = '" + itemName + "', ItemPrice = '" + itemPrice + "', ItemBuyDate = '" + itemBuyDate + "', CategoryID = '" + catId + "', Synchronize = '0', Recommend = '" + recommend + "', RegionID = '" + regionId + "', RegionType = '" + regionType + "'"
 				    + " WHERE ItemID = " + result.getString(0);
 			} else if(itemAppId > 0) {
-				sql = "UPDATE " + ITEMTABNAME + " SET ItemName = '" + itemName + "', ItemPrice = '" + itemPrice + "', ItemBuyDate = '" + itemBuyDate + "', CategoryID = '" + catId + "', Synchronize = '0', Recommend = '" + recommend + "', RegionID = '" + regionId + "'"
+				sql = "UPDATE " + ITEMTABNAME + " SET ItemName = '" + itemName + "', ItemPrice = '" + itemPrice + "', ItemBuyDate = '" + itemBuyDate + "', CategoryID = '" + catId + "', Synchronize = '0', Recommend = '" + recommend + "', RegionID = '" + regionId + "', RegionType = '" + regionType + "'"
 					+ " WHERE ItemID = " + itemAppId;
 			} else {
-				sql = "INSERT INTO " + ITEMTABNAME + "(ItemWebID, ItemName, ItemPrice, ItemBuyDate, CategoryID, Synchronize, Recommend, RegionID) "
-					+ "VALUES ('" + itemId + "', '" + itemName + "', '" + itemPrice + "', '" + itemBuyDate + "', '" + catId + "', '0', '" + recommend + "', '" + regionId + "')";
+				sql = "INSERT INTO " + ITEMTABNAME + "(ItemWebID, ItemName, ItemPrice, ItemBuyDate, CategoryID, Synchronize, Recommend, RegionID, RegionType) "
+					+ "VALUES ('" + itemId + "', '" + itemName + "', '" + itemPrice + "', '" + itemBuyDate + "', '" + catId + "', '0', '" + recommend + "', '" + regionId + "', '" + regionType + "')";
 			}
 		    this.db.execSQL(sql);
 		} catch (Exception e) {
@@ -769,7 +785,8 @@ public class ItemTableAccess {
 	public List<Map<String, String>> findRankCatByDate(String date) {
 		List<Map<String, String>> list = new ArrayList<Map<String, String>>();
 		String sql = "SELECT ct.CategoryID, ct.CategoryName, SUM(ItemPrice) AS ItemPrice FROM " + CATTABNAME + " AS ct "
-				   + "LEFT JOIN (SELECT * FROM " + ITEMTABNAME + " WHERE STRFTIME('%Y-%m', ItemBuyDate) <= STRFTIME('%Y-%m', datetime('now')) AND STRFTIME('%Y%m', ItemBuyDate) = STRFTIME('%Y%m', '" + date + "')) AS it "
+				   + "LEFT JOIN (SELECT * FROM " + ITEMTABNAME + " WHERE STRFTIME('%Y-%m-%d', ItemBuyDate) <= STRFTIME('%Y-%m-%d', datetime('now'))"
+				   + " AND STRFTIME('%Y%m', ItemBuyDate) = STRFTIME('%Y%m', '" + date + "')) AS it "
 				   + "ON ct.CategoryID = it.CategoryID WHERE ct.CategoryLive = '1' AND ct.CategoryDisplay = '1' "
 				   + "GROUP BY ct.CategoryID, ct.CategoryName ORDER BY ItemPrice DESC, ct.CategoryID ASC";
 		Cursor result = null;
@@ -799,11 +816,13 @@ public class ItemTableAccess {
 		List<Map<String, String>> list = new ArrayList<Map<String, String>>();
 		String sql = "SELECT a.CategoryID, a.CategoryName, a.ItemPrice AS PriceCur, b.ItemPrice AS PricePrev FROM ("
 				   + "SELECT ct.CategoryID, ct.CategoryName, SUM(ItemPrice) AS ItemPrice FROM " + CATTABNAME + " AS ct "
-				   + "LEFT JOIN (SELECT * FROM " + ITEMTABNAME + " WHERE STRFTIME('%Y-%m', ItemBuyDate) <= STRFTIME('%Y-%m', datetime('now')) AND STRFTIME('%Y%m', ItemBuyDate) = STRFTIME('%Y%m', '" + date + "')) AS it "
+				   + "LEFT JOIN (SELECT * FROM " + ITEMTABNAME + " WHERE STRFTIME('%Y-%m-%d', ItemBuyDate) <= STRFTIME('%Y-%m-%d', datetime('now'))"
+				   + " AND STRFTIME('%Y%m', ItemBuyDate) = STRFTIME('%Y%m', '" + date + "')) AS it "
 				   + "ON ct.CategoryID = it.CategoryID WHERE ct.CategoryLive = '1' AND ct.CategoryDisplay = '1' "
 				   + "GROUP BY ct.CategoryID, ct.CategoryName ORDER BY ItemPrice DESC, ct.CategoryID ASC) AS a INNER JOIN ("
 		           + "SELECT ct.CategoryID, ct.CategoryName, SUM(ItemPrice) AS ItemPrice FROM " + CATTABNAME + " AS ct "
-				   + "LEFT JOIN (SELECT * FROM " + ITEMTABNAME + " WHERE STRFTIME('%Y-%m', ItemBuyDate) <= STRFTIME('%Y-%m', datetime('now')) AND STRFTIME('%Y%m', ItemBuyDate) = STRFTIME('%Y%m', DATETIME('" + date + "', '-1 MONTH'))) AS it "
+				   + "LEFT JOIN (SELECT * FROM " + ITEMTABNAME + " WHERE STRFTIME('%Y-%m-%d', ItemBuyDate) <= STRFTIME('%Y-%m-%d', datetime('now'))"
+		           + " AND STRFTIME('%Y%m', ItemBuyDate) = STRFTIME('%Y%m', DATETIME('" + date + "', 'START OF MONTH', '-1 MONTH'))) AS it "
 				   + "ON ct.CategoryID = it.CategoryID WHERE ct.CategoryLive = '1' AND ct.CategoryDisplay = '1' "
 				   + "GROUP BY ct.CategoryID, ct.CategoryName ORDER BY ItemPrice DESC, ct.CategoryID ASC) AS b ON a.CategoryID = b.CategoryID "
 				   + "ORDER BY PriceCur DESC, PricePrev DESC";
@@ -833,7 +852,9 @@ public class ItemTableAccess {
 	public List<Map<String, String>> findRankCountByDate(String date) {
 		List<Map<String, String>> list = new ArrayList<Map<String, String>>();
 		String sql = "SELECT ItemName, COUNT(ItemName) AS Count, SUM(ItemPrice) AS Price FROM " + ITEMTABNAME
-				   + " WHERE STRFTIME('%Y-%m', ItemBuyDate) <= STRFTIME('%Y-%m', datetime('now')) AND STRFTIME('%Y-%m', ItemBuyDate) = STRFTIME('%Y-%m', '" + date + "') GROUP BY ItemName ORDER BY Count DESC, Price DESC";
+				   + " WHERE STRFTIME('%Y-%m-%d', ItemBuyDate) <= STRFTIME('%Y-%m-%d', datetime('now'))"
+				   + " AND STRFTIME('%Y-%m', ItemBuyDate) = STRFTIME('%Y-%m', '" + date + "') GROUP BY ItemName"
+				   + " ORDER BY Count DESC, Price DESC, ItemBuyDate ASC";
 		Cursor result = null;
 		try {
 			result = this.db.rawQuery(sql, null);
@@ -859,7 +880,8 @@ public class ItemTableAccess {
 	public List<Map<String, String>> findRankCountByDate(String date, int catId) {
 		List<Map<String, String>> list = new ArrayList<Map<String, String>>();
 		String sql = "SELECT ItemName, COUNT(ItemName) AS Count, SUM(ItemPrice) AS Price FROM " + ITEMTABNAME
-				   + " WHERE STRFTIME('%Y-%m', ItemBuyDate) = STRFTIME('%Y-%m', '" + date + "') AND CategoryID = '" + catId + "'"
+				   + " WHERE STRFTIME('%Y-%m-%d', ItemBuyDate) <= STRFTIME('%Y-%m-%d', datetime('now'))"
+				   + " AND STRFTIME('%Y-%m', ItemBuyDate) = STRFTIME('%Y-%m', '" + date + "') AND CategoryID = '" + catId + "'"
 				   + " GROUP BY ItemName ORDER BY Count DESC, Price DESC";
 		Cursor result = null;
 		try {
@@ -888,18 +910,22 @@ public class ItemTableAccess {
 		String sql = "SELECT ItemName, CountCur, PriceCur, CountPrev, PricePrev FROM ("
 				   + "SELECT a.ItemName, IFNULL(a.Count, 0) AS CountCur, a.Price AS PriceCur, IFNULL(b.Count, 0) AS CountPrev, b.Price AS PricePrev FROM ("
 				   + "SELECT ItemName, COUNT(ItemName) AS Count, SUM(ItemPrice) AS Price FROM " + ITEMTABNAME
-				   + " WHERE STRFTIME('%Y-%m', ItemBuyDate) = STRFTIME('%Y-%m', '" + date + "') AND CategoryID = '" + catId + "'"
+				   + " WHERE STRFTIME('%Y-%m-%d', ItemBuyDate) <= STRFTIME('%Y-%m-%d', datetime('now'))"
+				   + " AND STRFTIME('%Y-%m', ItemBuyDate) = STRFTIME('%Y-%m', '" + date + "') AND CategoryID = '" + catId + "'"
 				   + " GROUP BY ItemName ORDER BY Count DESC, Price DESC) AS a LEFT JOIN ("
 				   + "SELECT ItemName, COUNT(ItemName) AS Count, SUM(ItemPrice) AS Price FROM " + ITEMTABNAME
-				   + " WHERE STRFTIME('%Y-%m', ItemBuyDate) = STRFTIME('%Y-%m', DATETIME('" + date + "', '-1 MONTH')) AND CategoryID = '" + catId + "'"
+				   + " WHERE STRFTIME('%Y-%m-%d', ItemBuyDate) <= STRFTIME('%Y-%m-%d', datetime('now'))"
+				   + " AND STRFTIME('%Y-%m', ItemBuyDate) = STRFTIME('%Y-%m', DATETIME('" + date + "', 'START OF MONTH', '-1 MONTH')) AND CategoryID = '" + catId + "'"
 				   + " GROUP BY ItemName ORDER BY Count DESC, Price DESC) AS b ON a.ItemName = b.ItemName"
 				   + " UNION ALL "
 				   + "SELECT b.ItemName, IFNULL(a.Count, 0) AS CountCur, a.Price AS PriceCur, IFNULL(b.Count, 0) AS CountPrev, b.Price AS PricePrev FROM ("
 				   + "SELECT ItemName, COUNT(ItemName) AS Count, SUM(ItemPrice) AS Price FROM " + ITEMTABNAME
-				   + " WHERE STRFTIME('%Y-%m', ItemBuyDate) = STRFTIME('%Y-%m', DATETIME('" + date + "', '-1 MONTH')) AND CategoryID = '" + catId + "'"
+				   + " WHERE STRFTIME('%Y-%m-%d', ItemBuyDate) <= STRFTIME('%Y-%m-%d', datetime('now'))"
+				   + " AND STRFTIME('%Y-%m', ItemBuyDate) = STRFTIME('%Y-%m', DATETIME('" + date + "', 'START OF MONTH', '-1 MONTH')) AND CategoryID = '" + catId + "'"
 				   + " GROUP BY ItemName ORDER BY Count DESC, Price DESC) AS b LEFT JOIN ("
 				   + "SELECT ItemName, COUNT(ItemName) AS Count, SUM(ItemPrice) AS Price FROM " + ITEMTABNAME
-				   + " WHERE STRFTIME('%Y-%m', ItemBuyDate) = STRFTIME('%Y-%m', '" + date + "') AND CategoryID = '" + catId + "'"
+				   + " WHERE STRFTIME('%Y-%m-%d', ItemBuyDate) <= STRFTIME('%Y-%m-%d', datetime('now'))"
+				   + " AND STRFTIME('%Y-%m', ItemBuyDate) = STRFTIME('%Y-%m', '" + date + "') AND CategoryID = '" + catId + "'"
 				   + " GROUP BY ItemName ORDER BY Count DESC, Price DESC) AS a ON a.ItemName = b.ItemName) c"
 				   + " GROUP BY ItemName, CountCur, PriceCur, CountPrev, PricePrev ORDER BY CountCur DESC, PriceCur DESC, CountPrev DESC, PricePrev DESC";
 		Cursor result = null;
@@ -930,7 +956,8 @@ public class ItemTableAccess {
 	public List<Map<String, String>> findRankPriceByDate(String date) {
 		List<Map<String, String>> list = new ArrayList<Map<String, String>>();
 		String sql = "SELECT ItemName, ItemBuyDate, ItemPrice FROM " + ITEMTABNAME
-				   + " WHERE STRFTIME('%Y-%m', ItemBuyDate) <= STRFTIME('%Y-%m', datetime('now')) AND STRFTIME('%Y-%m', ItemBuyDate) = STRFTIME('%Y-%m', '" + date + "') ORDER BY ItemPrice DESC, ItemBuyDate DESC";
+				   + " WHERE STRFTIME('%Y-%m-%d', ItemBuyDate) <= STRFTIME('%Y-%m-%d', datetime('now'))"
+				   + " AND STRFTIME('%Y-%m', ItemBuyDate) = STRFTIME('%Y-%m', '" + date + "') ORDER BY ItemPrice DESC, ItemBuyDate DESC";
 		Cursor result = null;
 		try {
 			result = this.db.rawQuery(sql, null);
@@ -956,7 +983,8 @@ public class ItemTableAccess {
 	//查消费推荐分析
 	public List<Map<String, String>> findAnalyzeRecommend() {
 		List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-		String sql = "SELECT ItemName, ItemBuyDate, ItemPrice FROM " + ITEMTABNAME + " WHERE STRFTIME('%Y-%m', ItemBuyDate) <= STRFTIME('%Y-%m', datetime('now')) AND Recommend = '1' ORDER BY ItemBuyDate DESC";
+		String sql = "SELECT ItemName, ItemBuyDate, ItemPrice FROM " + ITEMTABNAME 
+				   + " WHERE STRFTIME('%Y-%m-%d', ItemBuyDate) <= STRFTIME('%Y-%m-%d', datetime('now')) AND Recommend = '1' ORDER BY ItemBuyDate DESC";
 		Cursor result = null;
 		try {
 			result = this.db.rawQuery(sql, null);
@@ -982,7 +1010,9 @@ public class ItemTableAccess {
 	//根据关键字查消费
 	public List<Map<String, String>> findItemByKey(String key) {
 		List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-		String sql = "SELECT ItemName, ItemBuyDate, ItemPrice FROM " + ITEMTABNAME + " WHERE STRFTIME('%Y-%m', ItemBuyDate) <= STRFTIME('%Y-%m', datetime('now')) AND ItemName LIKE '%" + key + "%' ORDER BY ItemBuyDate DESC";
+		String sql = "SELECT ItemName, ItemBuyDate, ItemPrice FROM " + ITEMTABNAME 
+				   + " WHERE STRFTIME('%Y-%m-%d', ItemBuyDate) <= STRFTIME('%Y-%m-%d', datetime('now'))"
+				   + " AND ItemName LIKE '%" + key + "%' ORDER BY ItemBuyDate DESC";
 		Cursor result = null;
 		try {
 			result = this.db.rawQuery(sql, null);
@@ -1009,7 +1039,8 @@ public class ItemTableAccess {
 	public List<Map<String, String>> findRankPriceByDate(String date, String itemName) {
 		List<Map<String, String>> list = new ArrayList<Map<String, String>>();
 		String sql = "SELECT ItemName, ItemBuyDate, ItemPrice FROM " + ITEMTABNAME
-				   + " WHERE STRFTIME('%Y-%m', ItemBuyDate) = STRFTIME('%Y-%m', '" + date + "') AND ItemName = '" + itemName + "'"
+				   + " WHERE STRFTIME('%Y-%m-%d', ItemBuyDate) <= STRFTIME('%Y-%m-%d', datetime('now'))"
+				   + " AND STRFTIME('%Y-%m', ItemBuyDate) = STRFTIME('%Y-%m', '" + date + "') AND ItemName = '" + itemName + "'"
 				   + " ORDER BY ItemPrice DESC, ItemBuyDate DESC";
 		Cursor result = null;
 		try {
@@ -1037,7 +1068,8 @@ public class ItemTableAccess {
 	public List<Map<String, String>> findRankDateByDate(String date) {
 		List<Map<String, String>> list = new ArrayList<Map<String, String>>();
 		String sql = "SELECT ItemBuyDate, SUM(ItemPrice) AS Price FROM " + ITEMTABNAME
-				   + " WHERE STRFTIME('%Y-%m', ItemBuyDate) <= STRFTIME('%Y-%m', datetime('now')) AND STRFTIME('%Y-%m', ItemBuyDate) = STRFTIME('%Y-%m', '" + date + "')" 
+				   + " WHERE STRFTIME('%Y-%m-%d', ItemBuyDate) <= STRFTIME('%Y-%m-%d', datetime('now'))"
+				   + " AND STRFTIME('%Y-%m', ItemBuyDate) = STRFTIME('%Y-%m', '" + date + "')" 
 				   + " GROUP BY STRFTIME('%Y-%m-%d', ItemBuyDate) ORDER BY Price DESC, ItemBuyDate DESC";
 		Cursor result = null;
 		try {
@@ -1083,12 +1115,12 @@ public class ItemTableAccess {
 	//备份数据
 	public List<CharSequence> bakDataBase() {
 		List<CharSequence> list = new ArrayList<CharSequence>();
-		String sql = "SELECT ItemID, ItemName, ItemPrice, ItemBuyDate, CategoryID, Recommend, Synchronize, RegionID FROM " + ITEMTABNAME;
+		String sql = "SELECT ItemID, ItemName, ItemPrice, ItemBuyDate, CategoryID, Recommend, Synchronize, RegionID, RegionType FROM " + ITEMTABNAME;
 		Cursor result = null;
 		try {
 			result = this.db.rawQuery(sql, null);
 			while (result.moveToNext()) {
-				list.add("INSERT INTO " + ITEMTABNAME + "(ItemID, ItemName, ItemPrice, ItemBuyDate, CategoryID, Recommend, Synchronize, RegionID) VALUES('" 
+				list.add("INSERT INTO " + ITEMTABNAME + "(ItemID, ItemName, ItemPrice, ItemBuyDate, CategoryID, Recommend, Synchronize, RegionID, RegionType) VALUES('" 
 			             + result.getString(0)+ "', '" 
 						 + result.getString(1) + "', '"
 					     + result.getString(2) + "', '" 
@@ -1096,7 +1128,8 @@ public class ItemTableAccess {
 					     + result.getString(4) + "', '" 
 						 + result.getString(5) + "', '" 
 						 + result.getString(6) + "', '" 
-					     + result.getString(7) + "');");
+						 + result.getString(7) + "', '" 
+					     + result.getString(8) + "');");
 			}
 			
 			sql = "SELECT CategoryID, CategoryName, CategoryRank, CategoryDisplay, CategoryLive FROM " + CATTABNAME

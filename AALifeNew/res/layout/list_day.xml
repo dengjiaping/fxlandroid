@@ -26,7 +26,9 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@color/color_tran_main"
+            android:ellipsize="marquee"
             android:gravity="center|right"
+            android:singleLine="true"
             android:text="@string/txt_day_totalprice" />
 
     </LinearLayout>

@@ -12,6 +12,7 @@
     <color name="color_back2_main">#8F0099CC</color>
     <color name="color_back3_main">#BF0099CC</color>
     <color name="color_border">#FFDEDEDE</color>
-    <color name="color_text">#FF777777</color>
+    <color name="color_text">#FF999999</color>
+    <color name="color_text_hint">#FFCCCCCC</color>
     
 </resources>

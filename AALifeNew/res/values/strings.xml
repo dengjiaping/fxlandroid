@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">AA生活记账</string>
-    <string name="app_version">3.1.9</string>
+    <string name="app_version">3.2.0</string>
     <string name="app_welcome">爱生活，爱记账</string>
     <string name="action_abouts">关于</string>
     <string name="action_settings">设置</string>
@@ -33,6 +33,7 @@
     <string name="txt_title_back">返回</string>
     <string name="txt_title_date">日期</string>
     <string name="txt_title_search">搜索</string>
+    <string name="txt_title_refresh">刷新</string>
     <string name="txt_tab_day">每日消费</string>
     <string name="txt_tab_day_detail">消费明细</string>
     <string name="txt_tab_month">每月消费</string>
@@ -118,10 +119,10 @@
     <string name="txt_nocategory">没有类别记录。</string>
     <string name="txt_add_id">编号</string>
     <string name="txt_add_name">名称</string>
-    <string name="txt_add_region">是否区间</string>
+    <string name="txt_add_region">固定</string>
     <string name="txt_add_reg_from">从</string>
     <string name="txt_add_reg_to">到</string>
-    <string name="txt_add_regionerr">区间设置不合理。</string>
+    <string name="txt_add_regionerr">区间日期设置不合理，或太大了！</string>
     <string name="txt_add_cattype">商品类别</string>
     <string name="txt_add_itemname">商品名称</string>
     <string name="txt_add_itemprice">商品价格</string>
@@ -160,24 +161,29 @@
     <string name="txt_user_userimage">头像</string>
     <string name="txt_user_imagesuccess">头像更新成功。</string>
     <string name="txt_user_imageerror">头像更新失败！</string>
+    <string name="txt_user_emailerror">邮箱格式错误！</string>
     <string name="txt_tips">提示</string>
     <string name="txt_sure">确定</string>
     <string name="txt_cancel">取消</string>
     <string name="txt_yes">是</string>
     <string name="txt_no">否</string>
     <string name="txt_about_email">写给作者</string>
-    <string name="txt_about_text">爱生活，爱记账，AA生活记账\n\nwww.fxlweb.com\n\n冯湘灵</string>
-    <string name="txt_about_emailtxt">如果您喜欢AA生活记账，请在此写上您的鼓励和祝福。\n（内容将发送到作者的QQ空间上。）</string>
+    <string name="txt_about_text">爱生活，爱记账，AA生活记账\n\nwww.fxlweb.com\n\n个人开发者</string>
+    <string name="txt_about_emailtxt">如果您喜欢AA生活记账，请在此写上您的鼓励和祝福，谢谢！内容将发送到作者的QQ空间上。</string>
     <string name="txt_about_emailsuccess">谢谢支持，祝您愉快。</string>
     <string name="txt_about_emailerror">出错了！请重试。</string>
     <string name="txt_about_notlogin">请您先登录！</string>
-    <string name="txt_about_empty">内容不能少于五个字！</string>
+    <string name="txt_about_empty">内容不能少于十个字！</string>
+    <string name="txt_about_texthint">请填写十字以上文明用词</string>
     <string name="txt_set_lock">登录密锁</string>
     <string name="txt_set_welcome">欢迎文字</string>
     <string name="txt_set_sync">数据同步</string>
     <string name="txt_set_synctext">启动时同步所有数据？</string>
     <string name="txt_set_update">更新版本</string>
     <string name="txt_set_updatetext">允许2g网络下更新版本？</string>
+    <string name="txt_set_clock">闹钟提醒</string>
+    <string name="txt_set_clocktext">点击设置提醒记账的闹钟。</string>
+    <string name="txt_set_clockerror">打开系统闹钟失败，请手动设置！</string>
     <string name="txt_restore">是否恢复备份数据？\n</string>
     <string name="txt_lock">请输入密匙</string>
     <string name="txt_lock_error">密匙不正确</string>

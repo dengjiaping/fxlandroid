@@ -75,15 +75,17 @@ public class DayActivity extends Activity {
 				itemAccess = new ItemTableAccess(sqlHelper.getReadableDatabase());
 				String lastDate = itemAccess.findLastDate();
 				list = itemAccess.findAllDayFirstBuyDate(lastDate);
-				if(lastDate.equals(""))
+				if(lastDate.equals("")) {
 					curDate = UtilityHelper.getCurDate();
-				else
+				} else {
 					curDate = lastDate;
+				}
 				itemAccess.close();
 
 				boolean result = false;
-				if(list.size() > 0)
+				if(list.size() > 0) {
 					result = true;
+				}
 				
 				Bundle bundle = new Bundle();
 				bundle.putBoolean("result", result);	
@@ -174,10 +176,11 @@ public class DayActivity extends Activity {
 			switch(msg.what) {
 			case 1:
 				boolean result = msg.getData().getBoolean("result");
-				if(!result)
+				if(!result) {
 					activity.layNoItem.setVisibility(View.VISIBLE);
-				else
+				} else {
 					activity.layDayTotal.setVisibility(View.VISIBLE);
+				}
 				
 				activity.pbDay.setVisibility(View.GONE);
 				
@@ -196,7 +199,7 @@ public class DayActivity extends Activity {
 				activity.loading = false;
 				
 				break;
-			case 3:
+			case 3:				
 				activity.pbDay.setVisibility(View.GONE);
 				
 				break;

@@ -21,7 +21,9 @@
         android:layout_height="match_parent"
         android:layout_weight="3"
         android:background="@color/color_item_bg"
+        android:ellipsize="marquee"
         android:gravity="center|right"
+        android:singleLine="true"
         android:text="@string/txt_total_price" />
 
     <TextView
@@ -41,7 +43,9 @@
         android:layout_height="match_parent"
         android:layout_weight="3"
         android:background="@color/color_item_bg"
+        android:ellipsize="marquee"
         android:gravity="center|right"
+        android:singleLine="true"
         android:text="@string/txt_total_price" />
 
 </LinearLayout>

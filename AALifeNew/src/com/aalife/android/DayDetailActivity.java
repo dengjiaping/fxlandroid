@@ -94,13 +94,14 @@ public class DayDetailActivity extends Activity {
 				ListView lv = (ListView) parent;
 				@SuppressWarnings("unchecked")
 				Map<String, String> map = (Map<String, String>) lv.getItemAtPosition(position);
-		        final String[] items = new String[6];
+		        final String[] items = new String[7];
 		        items[0] = map.get("itemid");
 		        items[1] = map.get("catid");
 		        items[2] = map.get("itemnamevalue");
 		        items[3] = UtilityHelper.formatDouble(Double.parseDouble(map.get("pricevalue")), "0.###");
 		        items[4] = map.get("itembuydate");
 		        items[5] = map.get("regionid");
+		        items[6] = map.get("regiontype");
 		        
 		        final LinearLayout laySelect = (LinearLayout) view.findViewById(R.id.lay_day_select);
 		        laySelect.setBackgroundColor(DayDetailActivity.this.getResources().getColor(R.color.color_tran_main));

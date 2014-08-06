@@ -60,7 +60,7 @@
     <ListView
         android:id="@+id/list_day"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_below="@+id/LinearLayout1"
         android:background="@android:color/white"
         android:divider="@android:color/transparent"

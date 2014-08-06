@@ -14,16 +14,17 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemSelectedListener;
 
 public class EditActivity extends Activity {
 	private ArrayAdapter<CharSequence> adapter = null;
@@ -36,7 +37,7 @@ public class EditActivity extends Activity {
 	private String curDate = "";
 	private String curTime = "";
 	private String itemName = "";
-	private String[] items = new String[6];
+	private String[] items = new String[7];
 	
 	private AutoCompleteTextView etAddItemName = null;
 	private ArrayAdapter<CharSequence> nameAdapter = null;
@@ -46,13 +47,16 @@ public class EditActivity extends Activity {
 	private final int FIRST_REQUEST_CODE = 1;
 
 	private String curDate2 = "";
-	private CheckBox cbRegion = null;
+	private String curDate0 = "";
+	private Spinner spRegionType = null;
+	private ArrayAdapter<CharSequence> regionAdapter = null;
 	private EditText etAddItemBuyDate2 = null;
 	private TextView tvRegionFrom = null;
 	private TextView tvRegionTo = null;
-	private boolean isRegion = false;
 	private int regionId = 0;
 	private int monthRegion = 0;
+	private String regionType = "";
+	private String regionFirst = "";
 	
 	private int screenWidth = 0;
 	
@@ -75,6 +79,9 @@ public class EditActivity extends Activity {
 		TextView tvItemBuyDate = (TextView) super.findViewById(R.id.tv_itembuydate);
 		textPaint = tvItemBuyDate.getPaint();
 		textPaint.setFakeBoldText(true);
+		TextView tvRegion = (TextView) super.findViewById(R.id.tv_region);
+		textPaint = tvRegion.getPaint();
+		textPaint.setFakeBoldText(true);
 				
 		//数据库
 		sqlHelper = new DatabaseHelper(this);
@@ -88,8 +95,15 @@ public class EditActivity extends Activity {
 		spinner = (Spinner) super.findViewById(R.id.sp_add_cattype);
 		etAddItemName = (AutoCompleteTextView) super.findViewById(R.id.et_add_itemname);
 		etAddItemPrice = (EditText) super.findViewById(R.id.et_add_itemprice);
+		
+		//固定消费
+		String[] regionTypeArr = getResources().getStringArray(R.array.regiontype);
 		tvRegionFrom = (TextView) super.findViewById(R.id.tv_region_from);
 		tvRegionTo = (TextView) super.findViewById(R.id.tv_region_to);
+		spRegionType = (Spinner) super.findViewById(R.id.sp_regiontype);
+		regionAdapter = new ArrayAdapter<CharSequence>(this, R.layout.list_spinner, regionTypeArr);
+		regionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		spRegionType.setAdapter(regionAdapter);
 		
 		//设置默认值	
 		String[] date = items[4].split(" ");
@@ -99,6 +113,7 @@ public class EditActivity extends Activity {
 		etAddItemName.setText(itemName);
 		etAddItemPrice.setText(items[3]);
 		regionId = Integer.parseInt(items[5]);
+		regionType = regionFirst = items[6];
 		
 		//商品名称List
 		itemAccess = new ItemTableAccess(sqlHelper.getReadableDatabase());
@@ -203,29 +218,76 @@ public class EditActivity extends Activity {
 			}
 		});
 		
-		//选择区间
-		cbRegion = (CheckBox) super.findViewById(R.id.cb_region);
-		cbRegion.setEnabled(false);
+		//区间选择
+		spRegionType.setOnItemSelectedListener(new OnItemSelectedListener(){
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+				if(position == 0) {
+					etAddItemBuyDate2.setVisibility(View.GONE);
+					tvRegionFrom.setVisibility(View.GONE);
+					tvRegionTo.setVisibility(View.GONE);
+					regionType = "";
+				} else {
+					etAddItemBuyDate2.setVisibility(View.VISIBLE);
+					tvRegionFrom.setVisibility(View.VISIBLE);
+					tvRegionTo.setVisibility(View.VISIBLE);
+					switch(position) {
+						case 1:
+							regionType = "d";
+							break;
+						case 2:
+							regionType = "w";
+							break;
+						case 3:
+							regionType = "m";
+							break;
+						case 4:
+							regionType = "y";
+							break;
+					}
+					if(regionFirst.equals(regionType)) {
+						curDate2 = curDate0;
+					} else {
+					    curDate2 = UtilityHelper.getRegionDate(curDate, regionType);
+					}
+					etAddItemBuyDate2.setText(UtilityHelper.formatDate(curDate2, "y-m-d-w"));
+				}
+			}
 
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {
+				
+			}			
+		});		
+		
 		//初始区间
-		if(regionId > 0) {
-			cbRegion.setChecked(true);
-			isRegion = true;
-			
+		if(!regionType.equals("")) {			
 			itemAccess = new ItemTableAccess(sqlHelper.getReadableDatabase());
 			String[] regionDate = itemAccess.getRegionDate(regionId);
 			itemAccess.close();
 			
 			curDate = regionDate[0];
-			curDate2 = regionDate[1];
+			curDate2 = curDate0 = regionDate[1];
 			etAddItemBuyDate.setText(UtilityHelper.formatDate(curDate, "y-m-d-w"));
 			etAddItemBuyDate2.setText(UtilityHelper.formatDate(curDate2, "y-m-d-w"));
 			
 			etAddItemBuyDate2.setVisibility(View.VISIBLE);
 			tvRegionFrom.setVisibility(View.VISIBLE);
 			tvRegionTo.setVisibility(View.VISIBLE);
+			
+			if(regionType.equals("d")) {
+				spRegionType.setSelection(1);
+			} else if(regionType.equals("w")) {
+				spRegionType.setSelection(2);
+			} else if(regionType.equals("m")) {
+				spRegionType.setSelection(3);
+			} else if(regionType.equals("y")) {
+				spRegionType.setSelection(4);
+			} else {
+				spRegionType.setSelection(0);
+			}
 		}
-		
+						
 		//计算器按钮
 		ImageButton btnTitleCalc = (ImageButton) super.findViewById(R.id.btn_title_calc);
 		btnTitleCalc.setOnClickListener(new OnClickListener() {
@@ -311,25 +373,49 @@ public class EditActivity extends Activity {
 				return 2;
 			}
 			
-			if(isRegion) {
-				monthRegion = UtilityHelper.getMonthRegion(curDate, curDate2);
-				if(monthRegion <= 0) {
+			if(!regionType.equals("")) {
+				monthRegion = UtilityHelper.getMonthRegion(curDate, curDate2, regionType);
+				
+				int maxRegion = 0;
+	            if (regionType.equals("d")) {
+	                maxRegion = 92;
+	            } else if (regionType.equals("w")) {
+	                maxRegion = (int)Math.floor((double)92 / 7);
+	            } else if (regionType.equals("m")) {
+	                maxRegion = 36;
+	            } else if (regionType.equals("y")) {
+	                maxRegion = 12;
+	            }
+	            
+				if(monthRegion <= 0 || monthRegion >= maxRegion) {
 					Toast.makeText(this, getString(R.string.txt_add_regionerr), Toast.LENGTH_SHORT).show();
 					return 2;
 				}
+			} else {
+				monthRegion = 0;
 			}
 			
-			//String itemBuyDate = curDate + " " + curTime;
-			String itemBuyDate = "";
-			
+			String itemBuyDate = "";			
 			itemAccess = new ItemTableAccess(sqlHelper.getReadableDatabase());
 			Boolean result = false;
-			if(monthRegion > 0) {
+			if(regionId > 0 || monthRegion > 0) {
 				result = itemAccess.deleteRegion(regionId);
 				for(int i=0; i<=monthRegion; i++) {
-					itemBuyDate = UtilityHelper.getNavDate(curDate, i, "m") + " " + curTime;
-				    result = itemAccess.addItem(itemName, itemPrice, itemBuyDate, catId, 0, regionId);
+					if(regionType.equals("d")) {
+					    itemBuyDate = UtilityHelper.getNavDate(curDate, i, "d") + " " + curTime;
+					} else if(regionType.equals("w")) {
+					    itemBuyDate = UtilityHelper.getNavDate(curDate, i*7, "d") + " " + curTime;
+					} else if(regionType.equals("m")) {
+					    itemBuyDate = UtilityHelper.getNavDate(curDate, i, "m") + " " + curTime;
+					} else if(regionType.equals("y")) {
+					    itemBuyDate = UtilityHelper.getNavDate(curDate, i, "y") + " " + curTime;
+					} else {
+						itemBuyDate = curDate + " " + curTime;
+						regionId = 0;
+					}
+				    result = itemAccess.addItem(itemName, itemPrice, itemBuyDate, catId, 0, regionId, regionType);
 				}
+				//删除DeleteTable记录
 				result = itemAccess.deleteRegionBack(regionId);
 			} else {
 				itemBuyDate = curDate + " " + curTime;
@@ -354,7 +440,7 @@ public class EditActivity extends Activity {
 	protected void setListData() {
 		categoryAccess = new CategoryTableAccess(sqlHelper.getReadableDatabase());
 		list = categoryAccess.findAllCategory();
-		adapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item, list);
+		adapter = new ArrayAdapter<CharSequence>(this, R.layout.list_spinner, list);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spinner.setAdapter(adapter);
 

@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 	private static final String DATABASENAME = "aalife.db";
-	private static final int DATABASEVERSION = 16;
+	private static final int DATABASEVERSION = 17;
 	private static final String ITEMTABNAME = "ItemTable";
 	private static final String CATTABNAME = "CategoryTable";
 	private static final String DELTABNAME = "DeleteTable";
@@ -27,6 +27,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				+ "Synchronize    INTEGER          DEFAULT 1, "
 				+ "Recommend      INTEGER          DEFAULT 0, "
 				+ "RegionID       INTEGER          DEFAULT 0, "
+				+ "RegionType     VARCHAR(10), "
 				+ "Remark         VARCHAR(1000))");
 		db.execSQL("CREATE TABLE " + CATTABNAME + " ("
 				+ "CategoryID       INTEGER          NOT NULL, "
@@ -62,6 +63,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		
 		if(oldVersion == 15 && newVersion == 16) {
 		    db.execSQL("ALTER TABLE " + ITEMTABNAME + " ADD RegionID INTEGER DEFAULT 0");
+		    db.execSQL("ALTER TABLE " + ITEMTABNAME + " ADD RegionType VARCHAR(10)");
+		} else if(oldVersion == 16 && newVersion == 17) {
+			db.execSQL("ALTER TABLE " + ITEMTABNAME + " ADD RegionType VARCHAR(10)");
 		}
 	}
 }

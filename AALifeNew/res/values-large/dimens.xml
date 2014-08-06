@@ -15,6 +15,7 @@
     <dimen name="padding_large">23dp</dimen>    
     
     <dimen name="start_text_size">27sp</dimen>
+    <dimen name="start_logo_size">108dp</dimen>
     <dimen name="start_logo_top">108dp</dimen>
     <dimen name="start_text_top">288dp</dimen>
     

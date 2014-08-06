@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -82,10 +84,13 @@ public class UtilityHelper {
 		
 		Calendar c = Calendar.getInstance();
 		c.setTime(d);
-		if(type.equals("d"))
+		if(type.equals("d")) {
 			c.add(Calendar.DATE, value);
-		else if(type.equals("m"))
+		} else if(type.equals("m")) {
 			c.add(Calendar.MONTH, value);
+		} else if(type.equals("y")) {
+			c.add(Calendar.YEAR, value);
+		}
 		
 		return sdf.format(c.getTime());
 	}
@@ -281,7 +286,7 @@ public class UtilityHelper {
 			return false;
 		}	
 
-		backupUser(context);
+		//backupUser(context);
 		
 		return true;
 	}
@@ -496,7 +501,7 @@ public class UtilityHelper {
 		params.add(new BasicNameValuePair("userimage", userImage));
 		params.add(new BasicNameValuePair("content", content));
 		try {
-			JSONObject jsonObject = new JSONObject(HttpHelper.post(url, params));
+			JSONObject jsonObject = new JSONObject(HttpHelper.post2(url, params));
 			if(jsonObject.length() > 0) {
 				result = jsonObject.getString("result");
 			}
@@ -841,7 +846,7 @@ public class UtilityHelper {
 		
 		return file;
 	}
-	
+
 	//取月区间
 	public static int getMonthRegion(String date1, String date2) {
 		int result = 0;
@@ -853,6 +858,32 @@ public class UtilityHelper {
 			c2.setTime(sdf.parse(date2));
 			
 			result = (c2.get(Calendar.YEAR)-c1.get(Calendar.YEAR)) * 12 + (c2.get(Calendar.MONTH)-c1.get(Calendar.MONTH));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}		
+		
+		return result;
+	}
+	
+	//取月区间
+	public static int getMonthRegion(String date1, String date2, String regionType) {
+		int result = 0;
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);
+		Calendar c1 = Calendar.getInstance();
+		Calendar c2 = Calendar.getInstance();
+		try {
+			c1.setTime(sdf.parse(date1));
+			c2.setTime(sdf.parse(date2));
+			
+			if(regionType.equals("d")) {
+				result = (int) ((c2.getTimeInMillis()-c1.getTimeInMillis())/(1000*60*60*24));
+			} else if(regionType.equals("w")) {
+				result = (int) Math.floor((double)((c2.getTimeInMillis()-c1.getTimeInMillis())/(1000*60*60*24)/7));
+			} else if(regionType.equals("m")) {
+				result = (c2.get(Calendar.YEAR)-c1.get(Calendar.YEAR)) * 12 + (c2.get(Calendar.MONTH)-c1.get(Calendar.MONTH));
+			} else if(regionType.equals("y")) {
+				result = (c2.get(Calendar.YEAR)-c1.get(Calendar.YEAR));
+			}
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}		
@@ -886,5 +917,74 @@ public class UtilityHelper {
 		} else {
 			return WEBURL + "/shouji/QuWeiTongJi.aspx?flag=2";
 		}
+	}
+	
+	//取每日消费导航日期
+	public static String getRegionDate(String date, String type) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);
+		Date d = new Date();
+		try {
+			d = sdf.parse(date);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		Calendar c = Calendar.getInstance();
+		c.setTime(d);
+		if(type.equals("d") || type.equals("w")) {
+			c.add(Calendar.MONTH, 1);
+		    c.add(Calendar.DATE, -1);
+		} else if(type.equals("m")) {
+			c.add(Calendar.MONTH, 11);
+		} else if(type.equals("y")) {
+			c.add(Calendar.YEAR, 2);
+		}
+		
+		return sdf.format(c.getTime());
+	}
+	
+	//取商品名称包括区间
+	public static String getItemNameByRegion(String itemName, String regionType) {
+		String result = "";
+		if(regionType.equals("d")) {
+			result = itemName + "（每天）";
+		} else if(regionType.equals("w")) {
+			result = itemName + "（每周）";
+		} else if(regionType.equals("m")) {
+			result = itemName + "（每月）";
+		} else if(regionType.equals("y")) {
+			result = itemName + "（每年）";
+		} else {
+			result = itemName;
+		}
+		
+		return result;
+	}
+
+	//取区间类型值
+	public static String getRegionTypeValue(String regionType) {
+		String result = "";
+		if(regionType.equals("d")) {
+			result = "天";
+		} else if(regionType.equals("w")) {
+			result = "周";
+		} else if(regionType.equals("m")) {
+			result = "月";
+		} else if(regionType.equals("y")) {
+			result = "年";
+		} else {
+			result = "";
+		}
+		
+		return result;
+	}
+	
+	//验证邮箱
+	public static boolean isEmailAddress(String email) {
+		String str = "^([A-Za-z0-9]+[_|\\-]?)*@([A-Za-z0-9]+([_|\\-]?[A-Za-z0-9]+)*)*\\.(([A-Za-z]{2,4})|([A-Za-z]{3}\\.[A-Za-z]{2}))$";
+		Pattern p = Pattern.compile(str);
+		Matcher m = p.matcher(email);
+
+		return m.matches();
 	}
 }

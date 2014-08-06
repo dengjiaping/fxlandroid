@@ -29,7 +29,7 @@ public class AboutsActivity extends Activity {
 	private ProgressBar pbAboutSending = null;
 	private TextView tvAboutVersion = null;
 	private int eggCount = 0;
-	private final int EGG_CLICK = 8;
+	private final int EGG_CLICK = 6;
 	private Button btnSetSure = null;
 
 	@Override
@@ -69,7 +69,7 @@ public class AboutsActivity extends Activity {
 				}
 				
 				final String text = etAboutText.getText().toString().trim();
-				if(text.length() < 5) {
+				if(text.length() < 10) {
 					Toast.makeText(AboutsActivity.this, getString(R.string.txt_about_empty), Toast.LENGTH_SHORT).show();
 					return;
 				}

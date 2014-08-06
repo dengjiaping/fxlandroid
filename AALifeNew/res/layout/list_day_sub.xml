@@ -36,7 +36,9 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="5"
+        android:ellipsize="marquee"
         android:gravity="center|left"
+        android:singleLine="true"
         android:text="@string/txt_day_itemname" />
 
     <TextView
@@ -45,7 +47,9 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="3"
+        android:ellipsize="marquee"
         android:gravity="center|right"
+        android:singleLine="true"
         android:text="@string/txt_day_itemprice" />
 
     <TextView

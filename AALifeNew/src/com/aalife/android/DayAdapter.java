@@ -86,6 +86,9 @@ public class DayAdapter extends BaseAdapter {
 		final List<Map<String, String>> subList = itemAccess.findItemByDate(itemBuyDate);
 		Map<String, String> totalMap = itemAccess.findAllMonth(itemBuyDate);
 		itemAccess.close();
+
+		//设置总计
+		activity.setTotalData(itemBuyDate, totalMap.get("price"));
 		
 		//设置CheckBox选中
 		final boolean[] reCheck = new boolean[subList.size()];
@@ -93,9 +96,6 @@ public class DayAdapter extends BaseAdapter {
 			Map<String, String> map = subList.get(i);
 			reCheck[i] = map.get("recommend").toString().equals("0") ? false : true;
 		}
-
-		//设置总计
-		activity.setTotalData(itemBuyDate, totalMap.get("price"));
 		
 		//子ListView数据
 		simpleAdapter = new SimpleAdapter(this.context, subList, R.layout.list_day_sub, new String[] { "itemid", "itemname", "itemprice", "pricevalue" }, new int[] { R.id.tv_day_itemid, R.id.tv_day_itemname, R.id.tv_day_itemprice, R.id.tv_day_pricevalue }) {
@@ -143,13 +143,14 @@ public class DayAdapter extends BaseAdapter {
 				ListView lv = (ListView) parent;
 				@SuppressWarnings("unchecked")
 				Map<String, String> map = (Map<String, String>) lv.getItemAtPosition(position);
-		        final String[] items = new String[6];
+		        final String[] items = new String[7];
 		        items[0] = map.get("itemid");
 		        items[1] = map.get("catid");
 		        items[2] = map.get("itemnamevalue");
 		        items[3] = UtilityHelper.formatDouble(Double.parseDouble(map.get("pricevalue")), "0.###");
 		        items[4] = map.get("itembuydate");
 		        items[5] = map.get("regionid");
+		        items[6] = map.get("regiontype");
 		        
 		        tvItemName = (TextView) view.findViewById(R.id.tv_day_itemname);
 		        tvItemName.setTextColor(activity.getResources().getColor(R.color.color_back_main));

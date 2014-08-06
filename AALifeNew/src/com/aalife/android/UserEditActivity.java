@@ -107,7 +107,13 @@ public class UserEditActivity extends Activity {
 				}
 				
 				final String userNickName = etUserNickName.getText().toString().trim();
+				
 				final String userEmail = etUserEmail.getText().toString().trim();
+				if(!userEmail.equals("") && !UtilityHelper.isEmailAddress(userEmail)) {
+					Toast.makeText(UserEditActivity.this, getString(R.string.txt_user_emailerror), Toast.LENGTH_SHORT).show();
+					return;
+				}
+				
 				final String userImage = sharedHelper.getUserImage();
 				final String userFrom = getString(R.string.app_version);
 				

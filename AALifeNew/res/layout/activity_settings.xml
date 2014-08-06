@@ -86,6 +86,23 @@
                 android:textColor="@color/color_text" />
 
             <TextView
+                android:id="@+id/tv_set_clock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding_medium"
+                android:drawableLeft="@drawable/ic_setting_clock"
+                android:gravity="center|left"
+                android:text="@string/txt_set_clock" />
+
+            <TextView
+                android:id="@+id/tv_set_clocktext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding_small"
+                android:text="@string/txt_set_clocktext"
+                android:textColor="@color/color_text" />
+
+            <TextView
                 android:id="@+id/tv_set_sync"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

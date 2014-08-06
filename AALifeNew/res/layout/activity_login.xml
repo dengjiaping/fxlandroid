@@ -64,6 +64,7 @@
 
             <EditText
                 android:id="@+id/et_user_name"
+                style="@style/edit_text_style"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
@@ -83,6 +84,7 @@
 
             <EditText
                 android:id="@+id/et_user_pass"
+                style="@style/edit_text_style"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"

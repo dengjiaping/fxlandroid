@@ -45,12 +45,14 @@ public class AnalyzeActivity extends Activity {
 	private View layAnalyzeTongji = null;
 	private ImageButton btnTitleDate = null;
 	private ImageButton btnTitleAdd = null;
+	private ImageButton btnTitleRefresh = null;
 	private EditText etTitleKey = null;
 	private ImageButton btnTitleSearch = null;
 	private String key = "";
 	
 	private WebView webViewTongji = null;
 	private ProgressBar webViewLoading = null;
+	private int viewType = 0;
 	
 	private ListView listAnalyzeCompare = null;
 	private ListView listAnalyzeRecommend = null;
@@ -141,37 +143,12 @@ public class AnalyzeActivity extends Activity {
 		DisplayMetrics dm = getResources().getDisplayMetrics();  
 		int screenWidth = dm.widthPixels;
 		int screenDpi = dm.densityDpi;
-		int type = 0;
 		if(screenDpi <= 160 && screenWidth > 480) {
-			type = 1;
+			viewType = 1;
 		}
 		webViewLoading = (ProgressBar) layAnalyzeTongji.findViewById(R.id.webViewLoading);
 		webViewTongji = (WebView) layAnalyzeTongji.findViewById(R.id.webViewTongji);
-		webViewTongji.loadUrl(UtilityHelper.getTongJiURL(type));
-		webViewTongji.setWebViewClient(new WebViewClient(){
-			@Override
-			public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-				view.loadDataWithBaseURL(null, getString(R.string.txt_home_neterror), "text/html", "UTF-8", null);
-			}
-
-			@Override
-			public void onPageFinished(WebView view, String url) {
-				super.onPageFinished(view, url);
-				webViewLoading.setVisibility(ProgressBar.GONE);
-			}
-
-			@Override
-			public void onPageStarted(WebView view, String url, Bitmap favicon) {
-				super.onPageStarted(view, url, favicon);
-				webViewLoading.setVisibility(ProgressBar.VISIBLE);
-			}
-
-			@Override
-			public boolean shouldOverrideUrlLoading(WebView view, String url) {
-				view.loadUrl(url);
-				return true;
-			}	
-		});
+		setWebView();
 		
         //定义分类比较ListView
 		listAnalyzeCompare = (ListView) layAnalyzeCompare.findViewById(R.id.list_analyzecompare);
@@ -319,6 +296,15 @@ public class AnalyzeActivity extends Activity {
 			}			
 		});
 		
+		//刷新按钮
+		btnTitleRefresh = (ImageButton) super.findViewById(R.id.btn_title_refresh);
+		btnTitleRefresh.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				setWebView();
+			}			
+		});
+		
 		//搜索按钮
 		btnTitleSearch = (ImageButton) super.findViewById(R.id.btn_title_search);
 		btnTitleSearch.setOnClickListener(new OnClickListener() {
@@ -381,6 +367,7 @@ public class AnalyzeActivity extends Activity {
 										
 					btnTitleDate.setVisibility(View.VISIBLE);
 					btnTitleAdd.setVisibility(View.GONE);
+					btnTitleRefresh.setVisibility(View.GONE);
 					tvTitleAnalyze.setVisibility(View.VISIBLE);
 					etTitleKey.setVisibility(View.GONE);
 					btnTitleSearch.setVisibility(View.GONE);
@@ -395,6 +382,7 @@ public class AnalyzeActivity extends Activity {
 					
 					btnTitleDate.setVisibility(View.GONE);
 					btnTitleAdd.setVisibility(View.VISIBLE);
+					btnTitleRefresh.setVisibility(View.GONE);
 					tvTitleAnalyze.setVisibility(View.VISIBLE);
 					etTitleKey.setVisibility(View.GONE);
 					btnTitleSearch.setVisibility(View.GONE);
@@ -408,7 +396,8 @@ public class AnalyzeActivity extends Activity {
 					tvTitleAnalyze.setText(getString(R.string.txt_tab_analyzetongji));
 					
 					btnTitleDate.setVisibility(View.GONE);
-					btnTitleAdd.setVisibility(View.VISIBLE);
+					btnTitleAdd.setVisibility(View.GONE);
+					btnTitleRefresh.setVisibility(View.VISIBLE);
 					tvTitleAnalyze.setVisibility(View.VISIBLE);
 					etTitleKey.setVisibility(View.GONE);
 					btnTitleSearch.setVisibility(View.GONE);
@@ -423,6 +412,7 @@ public class AnalyzeActivity extends Activity {
 					
 					btnTitleDate.setVisibility(View.GONE);
 					btnTitleAdd.setVisibility(View.GONE);
+					btnTitleRefresh.setVisibility(View.GONE);
 					tvTitleAnalyze.setVisibility(View.GONE);
 					etTitleKey.setVisibility(View.VISIBLE);
 					btnTitleSearch.setVisibility(View.VISIBLE);
@@ -434,6 +424,35 @@ public class AnalyzeActivity extends Activity {
 		
 		setListData(curDate);
 		//setSearchData(key);
+	}
+	
+	//加载WebView
+	protected void setWebView() {
+		webViewTongji.loadUrl(UtilityHelper.getTongJiURL(viewType));
+		webViewTongji.setWebViewClient(new WebViewClient(){
+			@Override
+			public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+				view.loadDataWithBaseURL(null, getString(R.string.txt_home_neterror), "text/html", "UTF-8", null);
+			}
+
+			@Override
+			public void onPageFinished(WebView view, String url) {
+				super.onPageFinished(view, url);
+				webViewLoading.setVisibility(ProgressBar.GONE);
+			}
+
+			@Override
+			public void onPageStarted(WebView view, String url, Bitmap favicon) {
+				super.onPageStarted(view, url, favicon);
+				webViewLoading.setVisibility(ProgressBar.VISIBLE);
+			}
+
+			@Override
+			public boolean shouldOverrideUrlLoading(WebView view, String url) {
+				view.loadUrl(url);
+				return true;
+			}	
+		});
 	}
 	
 	//设置ListView	

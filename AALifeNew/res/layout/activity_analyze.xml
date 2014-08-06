@@ -47,11 +47,21 @@
             android:contentDescription="@string/txt_title_add"
             android:src="@drawable/ic_title_add"
             android:visibility="gone" />
+
+        <ImageButton
+            android:id="@+id/btn_title_refresh"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/title_btn_selector"
+            android:contentDescription="@string/txt_title_refresh"
+            android:src="@drawable/ic_title_refresh"
+            android:visibility="gone" />
 		
 		<EditText
 		    android:id="@+id/et_title_key"
 		    android:layout_width="0dp"
-		    android:layout_height="wrap_content"
+		    android:layout_height="match_parent"
 		    android:layout_gravity="center"
 		    android:layout_weight="4"
 		    android:ems="10"

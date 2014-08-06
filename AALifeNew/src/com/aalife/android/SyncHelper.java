@@ -117,6 +117,7 @@ public class SyncHelper {
 					syncDelWebItemBack();
 				}
 			} catch (Exception e) {
+				//sharedHelper.setSyncStatus(this.context.getString(R.string.txt_home_haswebsync));
 				throw new Exception();
 			}
 			
@@ -172,13 +173,14 @@ public class SyncHelper {
 	//同步消费
 	public void syncItem(List<Map<String, String>> list) throws Exception {
 		boolean syncFlag = false;
+		boolean syncing = sharedHelper.getSyncing();
 		ItemTableAccess itemAccess = new ItemTableAccess(this.sqlHelper.getReadableDatabase());
 		String result = "";
 		String url = WEBURL +  "/AALifeWeb/SyncItemNew2.aspx";
 		String userId = String.valueOf(sharedHelper.getUserId());
 		String userGroupId = String.valueOf(sharedHelper.getGroup());
 		Iterator<Map<String, String>> it = list.iterator();
-		while(it.hasNext() && sharedHelper.getSyncing()) {
+		while(it.hasNext() && syncing) {
 			Map<String, String> map = it.next();
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
 			params.add(new BasicNameValuePair("itemid", map.get("itemid")));
@@ -191,6 +193,7 @@ public class SyncHelper {
 			params.add(new BasicNameValuePair("itemwebid", map.get("itemwebid")));
 			params.add(new BasicNameValuePair("recommend", map.get("recommend")));
 			params.add(new BasicNameValuePair("regionid", map.get("regionid")));
+			params.add(new BasicNameValuePair("regiontype", map.get("regiontype")));
 	
 			try {
 				JSONObject jsonObject = new JSONObject(HttpHelper.post(url, params));
@@ -213,7 +216,7 @@ public class SyncHelper {
 		}
 		itemAccess.close();
 		
-		if(syncFlag) {
+		if(syncFlag || !syncing) {
 			throw new Exception();
 		}
 	}
@@ -316,6 +319,7 @@ public class SyncHelper {
 			map.put("itembuydate", jsonObject.getString("itembuydate"));
 			map.put("recommend", jsonObject.getString("recommend"));
 			map.put("regionid", jsonObject.getString("regionid"));
+			map.put("regiontype", jsonObject.getString("regiontype"));
 			list.add(map);
 		}
 		
@@ -345,6 +349,7 @@ public class SyncHelper {
 			map.put("itembuydate", jsonObject.getString("itembuydate"));
 			map.put("recommend", jsonObject.getString("recommend"));
 			map.put("regionid", jsonObject.getString("regionid"));
+			map.put("regiontype", jsonObject.getString("regiontype"));
 			list.add(map);
 		}
 		
@@ -354,9 +359,10 @@ public class SyncHelper {
 	//同步网络消费
 	public void syncWebItem(List<Map<String, String>> list) throws Exception {
 		boolean syncFlag = false;
+		boolean syncing = sharedHelper.getSyncing();
 		ItemTableAccess itemAccess = new ItemTableAccess(this.sqlHelper.getReadableDatabase());
 		Iterator<Map<String, String>> it = list.iterator();
-		while(it.hasNext() && sharedHelper.getSyncing()) {
+		while(it.hasNext() && syncing) {
 			Map<String, String> map = (Map<String, String>) it.next();
 			int itemId = Integer.parseInt(map.get("itemid"));
 			int itemAppId = Integer.parseInt(map.get("itemappid"));
@@ -366,13 +372,14 @@ public class SyncHelper {
 			int catId = Integer.parseInt(map.get("catid"));
 			int recommend = Integer.parseInt(map.get("recommend"));
 			int regionId = Integer.parseInt(map.get("regionid"));
+			String regionType = map.get("regiontype");
 			
 			//用于首页实时更新
 			if(UtilityHelper.compareDate(itemBuyDate)) {
 				sharedHelper.setCurDate(UtilityHelper.formatDate(itemBuyDate, "y-m-d"));
 			}
 			
-			boolean success = itemAccess.addWebItem(itemId, itemAppId, itemName, itemPrice, itemBuyDate, catId, recommend, regionId);
+			boolean success = itemAccess.addWebItem(itemId, itemAppId, itemName, itemPrice, itemBuyDate, catId, recommend, regionId, regionType);
 			if(!success) {
 				syncFlag = true;
 				continue;
@@ -387,7 +394,7 @@ public class SyncHelper {
 		}
 		itemAccess.close();
 		
-		if(syncFlag) {
+		if(syncFlag || !syncing) {
 			throw new Exception();
 		}
 	}

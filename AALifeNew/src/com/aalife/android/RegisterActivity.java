@@ -80,7 +80,13 @@ public class RegisterActivity extends Activity {
 				}
 
 				final String userNickName = etUserNickName.getText().toString().trim();
+				
 				final String userEmail = etUserEmail.getText().toString().trim();
+				if(!userEmail.equals("") && !UtilityHelper.isEmailAddress(userEmail)) {
+					Toast.makeText(RegisterActivity.this, getString(R.string.txt_user_emailerror), Toast.LENGTH_SHORT).show();
+					return;
+				}
+				
 				final String userFrom = getString(R.string.app_version);
 				
 				pbUserLoading.setVisibility(View.VISIBLE);
