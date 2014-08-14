@@ -51,12 +51,11 @@
                 style="@style/layout_style"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/padding_medium"
                 android:background="@color/color_item_bg"
                 android:orientation="vertical" >
 
                 <TextView
-                    android:id="@+id/textView4"
+                    android:id="@+id/tv_about_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -72,13 +71,8 @@
                     android:layout_gravity="center"
                     android:drawableRight="@drawable/ic_setting_update"
                     android:gravity="center"
+                    android:paddingBottom="@dimen/padding_small"
                     android:text="@string/app_version" />
-
-                <TextView
-                    android:id="@+id/textView5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/txt_empty" />
 
                 <TextView
                     android:id="@+id/textView6"
@@ -87,6 +81,49 @@
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:text="@string/txt_about_text" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/padding_medium"
+                android:background="@color/color_item_bg"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/padding_large"
+                android:paddingRight="@dimen/padding_large" >
+
+                <TextView
+                    android:id="@+id/TextView01"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/txt_empty" />
+
+                <TextView
+                    android:id="@+id/tv_lab_qzone"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:drawableLeft="@drawable/ic_home_qzone"
+                    android:gravity="center|left"
+                    android:text="@string/txt_lab_qzone" />
+
+                <TextView
+                    android:id="@+id/tv_lab_qq"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:drawableLeft="@drawable/ic_home_qq"
+                    android:gravity="center|left"
+                    android:text="@string/txt_lab_qq" />
+
+                <TextView
+                    android:id="@+id/TextView02"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/txt_empty" />
 
             </LinearLayout>
 

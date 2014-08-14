@@ -2,6 +2,7 @@ package com.aalife.android;
 
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -259,17 +260,17 @@ public class UtilityHelper {
 			if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
 				File nomedia = new File(Environment.getExternalStorageDirectory().toString() + File.separator + "aalife" + File.separator + ".nomedia");
 				if(!nomedia.exists()) nomedia.createNewFile();
-				
+
 				File file = new File(Environment.getExternalStorageDirectory().toString() + File.separator + "aalife" + File.separator + "aalife.bak");
 				if(!file.getParentFile().exists()) {
 					file.getParentFile().mkdirs();
 				}
-				
+
 				output = new FileOutputStream(file, false);
 			} else {
 				File nomedia = context.getFileStreamPath(".nomedia");
 				if(!nomedia.exists()) nomedia.createNewFile();
-				
+
 				output = context.openFileOutput("aalife.bak", Activity.MODE_PRIVATE);
 			}
 
@@ -280,7 +281,7 @@ public class UtilityHelper {
 			}
 
 			out.close();
-			output.close();			
+			output.close();				
 		} catch(Exception e) {
 			e.printStackTrace();
 			return false;
@@ -291,6 +292,57 @@ public class UtilityHelper {
 		return true;
 	}
 	
+	//复制备份数据
+	public static void copyBackup(Context context) {
+		BufferedInputStream bis = null;
+		BufferedOutputStream bos = null;
+		try {
+			FileInputStream fis = null;
+			FileOutputStream fos = null;
+			if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+				File filein = new File(Environment.getExternalStorageDirectory().toString() + File.separator + "aalife" + File.separator + "aalife.bak");
+				if(!filein.getParentFile().exists()) {
+					filein.getParentFile().mkdirs();
+				}
+				File fileout = new File(Environment.getExternalStorageDirectory().toString() + File.separator + "aalife" + File.separator + "aalife2.bak");
+				if(!fileout.getParentFile().exists()) {
+					fileout.getParentFile().mkdirs();
+				}
+
+				fis = new FileInputStream(filein);
+				fos = new FileOutputStream(fileout, false);
+			} else {
+				fis = context.openFileInput("aalife.bak");
+				fos = context.openFileOutput("aalife2.bak", Activity.MODE_PRIVATE);
+			}
+			
+			bis = new BufferedInputStream(fis);
+			bos = new BufferedOutputStream(fos);
+			byte[] b = new byte[1024 * 2];
+			int len = 0;
+			while((len=bis.read(b)) != -1) {
+				bos.write(b, 0, len);
+			}	
+			
+			bos.flush();
+			fis.close();
+			fos.close();
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(bis != null) {
+					bis.close();
+				}
+				if(bos != null) {
+					bos.close();
+				}
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+		
 	//备份用户
 	public static void backupUser(Context context) {
 		SharedHelper sharedHelper = new SharedHelper(context);
@@ -912,11 +964,7 @@ public class UtilityHelper {
 	
 	//取统计URL
 	public static String getTongJiURL(int type) {
-		if(type == 0) {
-		    return WEBURL + "/shouji/QuWeiTongJi.aspx?flag=1";
-		} else {
-			return WEBURL + "/shouji/QuWeiTongJi.aspx?flag=2";
-		}
+		return WEBURL + "/shouji/QuWeiTongJi.aspx?flag=" + type;
 	}
 	
 	//取每日消费导航日期

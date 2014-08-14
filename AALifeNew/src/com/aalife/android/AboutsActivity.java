@@ -1,6 +1,13 @@
 package com.aalife.android;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+
+import com.tencent.connect.auth.QQAuth;
+import com.tencent.connect.share.QQShare;
+import com.tencent.connect.share.QzoneShare;
+import com.tencent.tauth.IUiListener;
+import com.tencent.tauth.UiError;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -28,10 +35,16 @@ public class AboutsActivity extends Activity {
 	private MyHandler myHandler = new MyHandler(this);
 	private ProgressBar pbAboutSending = null;
 	private TextView tvAboutVersion = null;
+	private TextView tvAboutName = null;
 	private int eggCount = 0;
 	private final int EGG_CLICK = 6;
 	private Button btnSetSure = null;
 
+	private QzoneShare mQzoneShare = null;
+	private QQShare mQQShare = null;
+	private QQAuth mQQAuth = null;  
+	private int shareType = QzoneShare.SHARE_TO_QZONE_TYPE_IMAGE_TEXT;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -48,7 +61,28 @@ public class AboutsActivity extends Activity {
 		etAboutText= (EditText) super.findViewById(R.id.et_about_text);
 		pbAboutSending = (ProgressBar) super.findViewById(R.id.pb_about_sending);
 		tvAboutVersion = (TextView) super.findViewById(R.id.tv_about_version);
+		tvAboutName = (TextView) super.findViewById(R.id.tv_about_name);
 		
+		mQQAuth = QQAuth.createInstance("100761541", this.getApplicationContext());
+	    mQzoneShare = new QzoneShare(this, mQQAuth.getQQToken());
+	    mQQShare = new QQShare(this, mQQAuth.getQQToken());
+
+		//QQ空间分享
+		TextView tvLabQzone = (TextView) super.findViewById(R.id.tv_lab_qzone);
+		tvLabQzone.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View view) {
+				shareToWeb("qzone");
+			}
+		});
+		TextView tvLabQQ = (TextView) super.findViewById(R.id.tv_lab_qq);
+		tvLabQQ.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View view) {
+				shareToWeb("qq");
+			}
+		});
+			
 		//返回按钮
 		ImageButton btnTitleBack = (ImageButton) super.findViewById(R.id.btn_title_back);
 		btnTitleBack.setOnClickListener(new OnClickListener() {
@@ -76,7 +110,7 @@ public class AboutsActivity extends Activity {
 				
 				pbAboutSending.setVisibility(View.VISIBLE);
 				btnSetSure.setEnabled(false);
-				
+                
 				new Thread(new Runnable(){
 					@Override
 					public void run() {			
@@ -96,7 +130,7 @@ public class AboutsActivity extends Activity {
 						myHandler.sendMessage(message);
 					}
 				}).start();
-			}			
+			}
 		});
 		
 		//如果已发送
@@ -109,12 +143,12 @@ public class AboutsActivity extends Activity {
 		}
 		
 		//彩蛋
-		tvAboutVersion.setOnClickListener(new OnClickListener(){
+		tvAboutName.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
 				eggCount++;
 				if(eggCount == EGG_CLICK) {
-					tvAboutVersion.setClickable(false);
+					tvAboutName.setClickable(false);
 					Dialog dialog = new AlertDialog.Builder(AboutsActivity.this)
 					    .setCancelable(false)
 						.setTitle(R.string.txt_egg)
@@ -124,11 +158,18 @@ public class AboutsActivity extends Activity {
 								dialog.cancel();
 								
 								eggCount = 0;
-								tvAboutVersion.setClickable(true);
+								tvAboutName.setClickable(true);
 							}
 						}).create();
 					dialog.show();
 				}
+			}			
+		});
+		
+		//检查新版本
+		tvAboutVersion.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
 				//检查新版本
 				if(UtilityHelper.checkInternet(AboutsActivity.this, true)) {
 					new Thread(new Runnable(){
@@ -155,12 +196,30 @@ public class AboutsActivity extends Activity {
 			}			
 		});
 	}
-
+		
 	//关闭this
 	protected void close() {
 		this.finish();
 	}
 	
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		
+		if (mQzoneShare != null) {
+            mQzoneShare.releaseResource();
+            mQzoneShare = null;
+        }
+		if (mQQShare != null) {
+            mQQShare.releaseResource();
+            mQQShare = null;
+        }
+		if (mQQAuth != null) {
+			mQQAuth = null;
+        }
+	}
+
 	//多线程处理
 	static class MyHandler extends Handler {
 		WeakReference<AboutsActivity> myActivity = null;
@@ -249,4 +308,62 @@ public class AboutsActivity extends Activity {
 			}
 		}).start();
 	}
+
+	//分享到QQ空间
+	protected void shareToWeb(String from) {
+		String logoUrl = "http://www.fxlweb.com/AALifeWeb/Logo100.png";
+		String keyType = "";
+		if(from.equals("qzone")) {
+			keyType = QzoneShare.SHARE_TO_QZONE_KEY_TYPE;
+		} else {
+			keyType = QQShare.SHARE_TO_QQ_KEY_TYPE;
+		}
+		
+    	Bundle params = new Bundle();
+    	params.putInt(keyType, shareType);
+    	params.putString(QQShare.SHARE_TO_QQ_TITLE, getString(R.string.app_name));
+    	params.putString(QQShare.SHARE_TO_QQ_SUMMARY, getString(R.string.app_description));
+    	params.putString(QQShare.SHARE_TO_QQ_TARGET_URL, "http://www.fxlweb.com/app/AALifeNew.apk");
+    	if(from.equals("qzone")) {
+	    	ArrayList<String> imageUrls = new ArrayList<String>();
+	 		imageUrls.add(logoUrl);
+	 	    params.putStringArrayList(QzoneShare.SHARE_TO_QQ_IMAGE_URL, imageUrls);
+    	} else {
+    		params.putString(QQShare.SHARE_TO_QQ_IMAGE_URL, logoUrl);
+    	}
+    	doShareToWeb(from, params);
+    }    
+    protected void doShareToWeb(final String from, final Bundle params) {
+        final Activity activity = AboutsActivity.this;
+        new Thread(new Runnable() {            
+            @Override
+            public void run() {
+            	if(from.equals("qzone")) {
+	            	mQzoneShare.shareToQzone(activity, params, new IUiListener() {
+	                    @Override
+	                    public void onCancel() {                        
+	                    }
+	                    @Override
+	                    public void onError(UiError e) {                        
+	                    }
+						@Override
+						public void onComplete(Object response) {						
+						}
+	                });
+            	} else {
+            		mQQShare.shareToQQ(activity, params, new IUiListener() {    				
+        				@Override
+        				public void onCancel() {
+        				}    				
+        				@Override
+        				public void onError(UiError e) {
+        				}    				
+        				@Override
+        				public void onComplete(Object response) {
+        				}    				
+        			});
+            	}
+            }
+        }).start();
+    }
 }

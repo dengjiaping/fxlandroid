@@ -2,7 +2,8 @@
 <resources>
 
     <string name="app_name">AA生活记账</string>
-    <string name="app_version">3.2.0</string>
+    <string name="app_version">3.2.2</string>
+    <string name="app_description">爱生活，爱记账，AA生活记账。具有每日消费、每月消费、消费分类排行、消费次数排行、消费单价排行、消费日期排行、趣味统计排行；消费比较分析、消费推荐分析、消费搜索分析；智能添加消费、固定添加消费、语音添加消费等实用功能。</string>
     <string name="app_welcome">爱生活，爱记账</string>
     <string name="action_abouts">关于</string>
     <string name="action_settings">设置</string>
@@ -61,6 +62,8 @@
     <string name="txt_lab_username">用户名：</string>
     <string name="txt_lab_nickname">昵&#160;&#160;&#160;&#160;称：</string>
     <string name="txt_lab_status">同步状态：</string>
+    <string name="txt_lab_qzone">分享到空间</string>
+    <string name="txt_lab_qq">分享到QQ</string>
     <string name="txt_home_sync">同步</string>
     <string name="txt_home_syncat">同步于</string>
     <string name="txt_home_syncing">数据同步中&#8230;</string>
@@ -169,12 +172,13 @@
     <string name="txt_no">否</string>
     <string name="txt_about_email">写给作者</string>
     <string name="txt_about_text">爱生活，爱记账，AA生活记账\n\nwww.fxlweb.com\n\n个人开发者</string>
-    <string name="txt_about_emailtxt">如果您喜欢AA生活记账，请在此写上您的鼓励和祝福，谢谢！内容将发送到作者的QQ空间上。</string>
+    <string name="txt_about_emailtxt">如果您喜欢AA生活记账，请在此写上您的鼓励和祝福，谢谢！遇到问题，请联系作者。QQ：67936108</string>
     <string name="txt_about_emailsuccess">谢谢支持，祝您愉快。</string>
     <string name="txt_about_emailerror">出错了！请重试。</string>
     <string name="txt_about_notlogin">请您先登录！</string>
     <string name="txt_about_empty">内容不能少于十个字！</string>
     <string name="txt_about_texthint">请填写十字以上文明用词</string>
+    <string name="txt_set_lockempty">未设置</string>
     <string name="txt_set_lock">登录密锁</string>
     <string name="txt_set_welcome">欢迎文字</string>
     <string name="txt_set_sync">数据同步</string>

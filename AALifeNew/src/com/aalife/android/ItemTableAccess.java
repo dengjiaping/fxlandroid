@@ -91,7 +91,8 @@ public class ItemTableAccess {
 	//根据日期查消费
 	public List<Map<String, String>> findItemByDate(String date) {
 		List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-		String sql = "SELECT ItemID, ItemName, ItemPrice, ItemBuyDate, CategoryID, Recommend, RegionID, CASE WHEN RegionID<>0 AND IFNULL(RegionType,'')='' THEN 'm' ELSE IFNULL(RegionType,'') END FROM " + ITEMTABNAME + " WHERE STRFTIME('%Y-%m-%d', ItemBuyDate) = '" + date + "'";
+		String sql = "SELECT ItemID, ItemName, ItemPrice, ItemBuyDate, CategoryID, Recommend, RegionID, CASE WHEN RegionID<>0 AND IFNULL(RegionType,'')='' THEN 'm' ELSE IFNULL(RegionType,'') END FROM " + ITEMTABNAME
+				   + " WHERE STRFTIME('%Y-%m-%d', ItemBuyDate) = '" + date + "' ORDER BY ItemID ASC";
 		Cursor result = null;
 		try {
 			result = this.db.rawQuery(sql, null);
@@ -854,7 +855,7 @@ public class ItemTableAccess {
 		String sql = "SELECT ItemName, COUNT(ItemName) AS Count, SUM(ItemPrice) AS Price FROM " + ITEMTABNAME
 				   + " WHERE STRFTIME('%Y-%m-%d', ItemBuyDate) <= STRFTIME('%Y-%m-%d', datetime('now'))"
 				   + " AND STRFTIME('%Y-%m', ItemBuyDate) = STRFTIME('%Y-%m', '" + date + "') GROUP BY ItemName"
-				   + " ORDER BY Count DESC, Price DESC, ItemBuyDate ASC";
+				   + " ORDER BY Count DESC, Price DESC, ItemBuyDate DESC";
 		Cursor result = null;
 		try {
 			result = this.db.rawQuery(sql, null);

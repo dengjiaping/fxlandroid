@@ -58,7 +58,7 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+		setContentView(R.layout.activity_main);		
 		
 		//虚拟按键菜单
 		try {
@@ -83,12 +83,14 @@ public class MainActivity extends Activity {
 		tvLabStatus = (TextView) super.findViewById(R.id.tv_lab_status);		
 		listTotal = (ListView) super.findViewById(R.id.list_total);
 		ivUserImage = (ImageView) super.findViewById(R.id.iv_userimage);
-				
+	
 		//数据库
 		sqlHelper = new DatabaseHelper(this);
 
 		//恢复备份数据
 		if(!sharedHelper.getRestore()) {
+			UtilityHelper.copyBackup(MainActivity.this);
+			
 			Dialog dialog = new AlertDialog.Builder(this)
 			    .setCancelable(false)
 				.setTitle(R.string.txt_tips)
@@ -303,7 +305,7 @@ public class MainActivity extends Activity {
 			}			
 		};
 	}
-	
+		
 	//设置ListView	
 	protected void setListData(String date) {
 		fromDate = date;
@@ -338,6 +340,7 @@ public class MainActivity extends Activity {
 		return super.onKeyDown(keyCode, event);
 	}
 
+	//菜单
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.main, menu);
@@ -479,4 +482,5 @@ public class MainActivity extends Activity {
 			}
 		}
 	}
+
 }

@@ -136,19 +136,15 @@
                 android:maxLength="100"
                 android:textColor="@color/color_text" />
 
-            <LinearLayout
+            <Button
+                android:id="@+id/btn_user_edit"
+                style="@style/btn_style"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/padding_large" >
+                android:layout_marginTop="@dimen/padding_large"
+                android:background="@drawable/main_btn_selector"
+                android:text="@string/txt_user_edit" />
 
-                <Button
-                    android:id="@+id/btn_user_edit"
-                    style="@style/btn_style"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/main_btn_selector"
-                    android:text="@string/txt_user_edit" />
-            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 

@@ -52,7 +52,7 @@ public class AnalyzeActivity extends Activity {
 	
 	private WebView webViewTongji = null;
 	private ProgressBar webViewLoading = null;
-	private int viewType = 0;
+	private int viewType = 1;
 	
 	private ListView listAnalyzeCompare = null;
 	private ListView listAnalyzeRecommend = null;
@@ -140,11 +140,13 @@ public class AnalyzeActivity extends Activity {
 		etTitleKey = (EditText) super.findViewById(R.id.et_title_key);
 		
 		//WebView
-		DisplayMetrics dm = getResources().getDisplayMetrics();  
-		int screenWidth = dm.widthPixels;
+		DisplayMetrics dm = getResources().getDisplayMetrics();
 		int screenDpi = dm.densityDpi;
-		if(screenDpi <= 160 && screenWidth > 480) {
+		int screenWidth = dm.widthPixels;		
+		if(screenDpi == 160 && screenWidth == 360) {
 			viewType = 1;
+		} else if(screenDpi <= 160 && screenWidth > 360) {
+			viewType = 2;
 		}
 		webViewLoading = (ProgressBar) layAnalyzeTongji.findViewById(R.id.webViewLoading);
 		webViewTongji = (WebView) layAnalyzeTongji.findViewById(R.id.webViewTongji);

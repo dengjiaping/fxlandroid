@@ -56,7 +56,7 @@
                 android:id="@+id/tv_cattype"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/padding_medium"
+                android:layout_marginTop="@dimen/padding_small"
                 android:drawableLeft="@drawable/ic_add_dot"
                 android:gravity="center|left"
                 android:text="@string/txt_add_cattype" />
@@ -91,16 +91,33 @@
                 android:gravity="center|left"
                 android:text="@string/txt_add_itemname" />
 
-            <AutoCompleteTextView
-                android:id="@+id/et_add_itemname"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:completionThreshold="1"
-                android:ems="10"
-                android:imeOptions="actionNext"
-                android:inputType="textAutoComplete"
-                android:maxLength="20"
-                android:textColor="@color/color_text" />
+                android:layout_height="wrap_content" >
+
+                <AutoCompleteTextView
+                    android:id="@+id/et_add_itemname"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@+id/btn_add_voice"
+                    android:completionThreshold="1"
+                    android:ems="10"
+                    android:imeOptions="actionNext"
+                    android:inputType="textAutoComplete"
+                    android:maxLength="20"
+                    android:textColor="@color/color_text" />
+
+                <ImageButton
+                    android:id="@+id/btn_add_voice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="@string/txt_add_itemname"
+                    android:src="@drawable/ic_add_voice" />
+
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/tv_itemprice"

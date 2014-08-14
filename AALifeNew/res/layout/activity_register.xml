@@ -54,7 +54,6 @@
                 android:id="@+id/tv_user_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/padding_medium"
                 android:drawableLeft="@drawable/ic_title_welcome"
                 android:gravity="center|left"
                 android:text="@string/txt_user_username" />
@@ -126,19 +125,15 @@
                 android:maxLength="100"
                 android:textColor="@color/color_text" />
 
-            <LinearLayout
+            <Button
+                android:id="@+id/btn_user_add"
+                style="@style/btn_style"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/padding_large" >
+                android:layout_marginTop="@dimen/padding_large"
+                android:background="@drawable/main_btn_selector"
+                android:text="@string/txt_user_add" />
 
-                <Button
-                    android:id="@+id/btn_user_add"
-                    style="@style/btn_style"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/main_btn_selector"
-                    android:text="@string/txt_user_add" />
-            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 

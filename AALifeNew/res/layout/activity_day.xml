@@ -46,8 +46,7 @@
         android:layout_below="@+id/LinearLayout1"
         android:background="@color/color_item_bg"
         android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="gone" >
+        android:orientation="vertical" >
 
         <TextView
             android:id="@+id/textView6"
@@ -60,7 +59,7 @@
     <ListView
         android:id="@+id/list_day"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/LinearLayout1"
         android:background="@android:color/white"
         android:divider="@android:color/transparent"

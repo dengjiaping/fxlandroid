@@ -147,6 +147,7 @@ public class StartActivity extends Activity {
 		return super.onKeyDown(keyCode, event);
 	}
 	
+	//菜单
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.start, menu);
@@ -155,9 +156,7 @@ public class StartActivity extends Activity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		if(UtilityHelper.startBackup(this)) {
-			this.close();
-		}
+		this.close();
 		return true;
 	}
 		

@@ -36,6 +36,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.baidu.voicerecognition.android.ui.BaiduASRDigitalDialog;
+import com.baidu.voicerecognition.android.ui.DialogRecognitionListener;
+
 public class AddActivity extends Activity {
 	private ArrayAdapter<CharSequence> adapter = null;
 	private List<CharSequence> list = null;
@@ -75,6 +78,12 @@ public class AddActivity extends Activity {
 	private SlidingDrawer sdAddSmart = null;
 	private Button btnSmartBack = null;
 	private int screenWidth = 0;
+	
+	//百度语音识别对话框  
+    private BaiduASRDigitalDialog mDialog=null;   
+    //应用授权信息   
+    private String API_KEY="tdW7auX1OxkPwu7BWdQ06RnY";  
+    private String SECRET_KEY="XmjVFoFxN6B3gR9lLxOc9k1iEimFms6b"; 
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -121,6 +130,41 @@ public class AddActivity extends Activity {
 		regionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spRegionType.setAdapter(regionAdapter);
 		
+		//百度语音
+		if (mDialog == null) {
+			Bundle bundle = new Bundle(); 
+			bundle.putString(BaiduASRDigitalDialog.PARAM_API_KEY, API_KEY);  
+			bundle.putString(BaiduASRDigitalDialog.PARAM_SECRET_KEY, SECRET_KEY);
+			bundle.putInt(BaiduASRDigitalDialog.PARAM_DIALOG_THEME, BaiduASRDigitalDialog.THEME_BLUE_LIGHTBG); 
+	        mDialog = new BaiduASRDigitalDialog(this, bundle); 
+	        mDialog.setDialogRecognitionListener(new DialogRecognitionListener() {  
+	            @Override  
+	            public void onResults(Bundle results) {  
+	                ArrayList<String> rs = results != null ? results.getStringArrayList(RESULTS_RECOGNITION) : null;      
+	                if (rs != null && rs.size() > 0) {  	                	
+	                	Toast.makeText(AddActivity.this, rs.get(0), Toast.LENGTH_SHORT).show();
+	                	
+	                	VoiceHelper voice = new VoiceHelper();
+	                	String[] result = voice.splitWords(rs.get(0));
+	                	
+	                	etAddItemName.setText(result[0]);
+	                	etAddItemName.dismissDropDown();
+	                	
+	                	etAddItemPrice.setText(result[1]);
+	                }
+	            }
+	        }); 
+		}
+        
+		//语音输入
+		ImageButton btnAddVoice = (ImageButton) super.findViewById(R.id.btn_add_voice);
+		btnAddVoice.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				mDialog.show();
+			}			
+		});
+				
 		//文本框点击关闭Smart
 		etAddItemName.setOnFocusChangeListener(new OnFocusChangeListener() {
 			@Override
@@ -437,6 +481,16 @@ public class AddActivity extends Activity {
 		return super.onKeyDown(keyCode, event);
 	}	
 	
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		
+		if (mDialog != null) {  
+            mDialog.dismiss();  
+        }
+	}
+
 	//保存方法
 	protected int saveItem() {
 		try {

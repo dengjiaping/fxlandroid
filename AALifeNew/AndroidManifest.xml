@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.aalife.android"
-    android:versionCode="320"
-    android:versionName="3.2.0" >
+    android:versionCode="322"
+    android:versionName="3.2.2" >
 
     <uses-sdk
         android:minSdkVersion="15"
@@ -12,6 +12,8 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
         android:allowBackup="true"
@@ -122,6 +124,22 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" >
         </activity>
+        <!-- QQ分享组件 -->
+		<activity android:name="com.tencent.connect.common.AssistActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait" />
+        <activity
+		    android:name="com.tencent.tauth.AuthActivity"
+		    android:noHistory="true"
+		    android:launchMode="singleTask" >
+		    <intent-filter>
+		        <action android:name="android.intent.action.VIEW" />
+		      	<category android:name="android.intent.category.DEFAULT" />
+		      	<category android:name="android.intent.category.BROWSABLE" />
+		        <data android:scheme="tencent100761541" />
+		    </intent-filter>
+		</activity>
     </application>
 
 </manifest>
