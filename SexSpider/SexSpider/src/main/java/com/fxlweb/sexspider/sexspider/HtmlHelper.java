@@ -11,6 +11,12 @@ public class HtmlHelper {
     public HtmlHelper() {}
 
     public static String getString(String site, String url, String str, String start, String end, String include) {
+        str = str.toLowerCase();
+        if(site.equals("http://www.aa544.com")) {
+            str = str.replaceAll("href=", "href=\"");
+            str = str.replaceAll(".html", ".html\"");
+        }
+
         StringBuilder sb = new StringBuilder();
         String result = getHtml(str, start, end);
 
@@ -52,6 +58,8 @@ public class HtmlHelper {
     }
 
     public static String getImages(String site, String str, String start, String end) {
+        str = str.toLowerCase();
+
         StringBuilder sb = new StringBuilder();
         String result = getHtml(str, start, end);
 
@@ -76,7 +84,7 @@ public class HtmlHelper {
 
     public static String getHtml(String str, String start, String end) {
         String result = "";
-        //result = str.replace(" ", "");
+        //result = str.replace("\"", "");
         result = str.replaceAll("\\s|\r\n|\n|\t", "");
         result = result.substring(result.indexOf(start), result.length());
         result = result.substring(0, result.indexOf(end));

@@ -1,0 +1,103 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/ic_bg"
+    tools:context=".RankActivity" >
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/title_bg" >
+
+        <ImageButton
+            android:id="@+id/btn_title_back"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/title_btn_selector"
+            android:contentDescription="@string/txt_title_back"
+            android:src="@drawable/ic_title_left" />
+
+        <TextView
+            android:id="@+id/tv_title_rank"
+            style="@style/title_style"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="4"
+            android:gravity="center"
+            android:text="@string/txt_tab_rank" />
+
+        <ImageButton
+            android:id="@+id/btn_title_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/title_btn_selector"
+            android:contentDescription="@string/txt_title_date"
+            android:src="@drawable/ic_title_date" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/tv_nav_cat"
+            style="@style/tv_item_nav"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/nav_border_sub"
+            android:clickable="true"
+            android:gravity="center"
+            android:text="@string/txt_tab_rankcat"
+            android:textColor="@drawable/nav_btn_selector" />
+
+        <TextView
+            android:id="@+id/tv_nav_count"
+            style="@style/tv_item_nav"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/nav_border_sub"
+            android:clickable="true"
+            android:gravity="center"
+            android:text="@string/txt_tab_rankcount"
+            android:textColor="@drawable/nav_btn_selector" />
+
+        <TextView
+            android:id="@+id/tv_nav_price"
+            style="@style/tv_item_nav"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/nav_border_sub"
+            android:clickable="true"
+            android:gravity="center"
+            android:text="@string/txt_tab_rankprice"
+            android:textColor="@drawable/nav_btn_selector" />
+
+        <TextView
+            android:id="@+id/tv_nav_date"
+            style="@style/tv_item_nav"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/nav_border_sub"
+            android:clickable="true"
+            android:gravity="center"
+            android:text="@string/txt_tab_rankdate"
+            android:textColor="@drawable/nav_btn_selector" />
+
+    </LinearLayout>
+    
+	<android.support.v4.view.ViewPager
+	    android:id="@+id/viewPager"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent" />
+    
+</LinearLayout>
+<!-- From: file:/D:/fxlandroid/AALifeNew/res/layout/activity_rank.xml -->

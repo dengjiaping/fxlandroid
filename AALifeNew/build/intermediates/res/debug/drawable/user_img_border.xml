@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android" >
+    
+    <solid android:color="@android:color/transparent" />
+    <stroke android:width="@dimen/layout_line_height" android:color="@color/color_border" />
+
+</shape>
+<!-- From: file:/D:/fxlandroid/AALifeNew/res/drawable/user_img_border.xml -->

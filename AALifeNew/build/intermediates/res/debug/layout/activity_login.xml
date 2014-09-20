@@ -1,0 +1,130 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/ic_bg"
+    tools:context=".LoginActivity" >
+
+    <LinearLayout
+        android:id="@+id/LinearLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/title_bg" >
+
+        <ImageButton
+            android:id="@+id/btn_title_back"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/title_btn_selector"
+            android:contentDescription="@string/txt_title_back"
+            android:src="@drawable/ic_title_left" />
+
+        <TextView
+            android:id="@+id/textView1"
+            style="@style/title_style"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="4"
+            android:gravity="center"
+            android:text="@string/txt_tab_login" />
+
+        <ImageButton
+            android:id="@+id/btn_user_add"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/title_btn_selector"
+            android:contentDescription="@string/txt_user_newuser"
+            android:src="@drawable/ic_title_newuser" />
+
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/scrollView1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/LinearLayout1" >
+
+        <LinearLayout
+            style="@style/layout_style"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/color_item_bg"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/tv_user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding_small"
+                android:drawableLeft="@drawable/ic_title_welcome"
+                android:gravity="center|left"
+                android:text="@string/txt_user_username" />
+
+            <EditText
+                android:id="@+id/et_user_name"
+                style="@style/edit_text_style"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:imeOptions="actionNext"
+                android:inputType="textNoSuggestions"
+                android:maxLength="12"
+                android:textColor="@color/color_text" />
+
+            <TextView
+                android:id="@+id/tv_user_pass"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding_medium"
+                android:drawableLeft="@drawable/ic_title_login"
+                android:gravity="center|left"
+                android:text="@string/txt_user_userpass" />
+
+            <EditText
+                android:id="@+id/et_user_pass"
+                style="@style/edit_text_style"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:imeOptions="actionDone"
+                android:inputType="textPassword"
+                android:maxLength="12"
+                android:textColor="@color/color_text" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/padding_medium"
+                android:layout_marginTop="@dimen/padding_large"
+                android:orientation="vertical" >
+
+                <Button
+                    android:id="@+id/btn_user_login"
+                    style="@style/btn_style"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/main_btn_selector"
+                    android:text="@string/txt_user_login" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/textView5"
+                style="@style/tv_item"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/txt_user_loginnote" />
+        </LinearLayout>
+
+    </ScrollView>
+
+    <ProgressBar
+        android:id="@+id/pb_user_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
+
+</RelativeLayout>
+<!-- From: file:/D:/fxlandroid/AALifeNew/res/layout/activity_login.xml -->

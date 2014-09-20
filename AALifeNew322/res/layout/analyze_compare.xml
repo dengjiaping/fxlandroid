@@ -1,0 +1,78 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white" >
+
+        <TextView
+            android:id="@+id/tv_title_catname"
+            style="@style/tv_item"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/list_border_size"
+            android:layout_marginLeft="@dimen/list_border_size"
+            android:layout_marginTop="@dimen/list_border_size"
+            android:layout_weight="1"
+            android:background="@color/color_title_bg"
+            android:gravity="center"
+            android:text="@string/txt_analyze_catname" />
+
+        <TextView
+            android:id="@+id/tv_title_pricecur"
+            style="@style/tv_item_price"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/list_border_size"
+            android:layout_marginLeft="@dimen/list_border_size"
+            android:layout_marginTop="@dimen/list_border_size"
+            android:layout_weight="1"
+            android:background="@color/color_title_bg"
+            android:gravity="right"
+            android:text="@string/txt_analyze_pricecur" />
+
+        <TextView
+            android:id="@+id/tv_title_priceprev"
+            style="@style/tv_item_price"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/list_border_size"
+            android:layout_weight="1"
+            android:background="@color/color_title_bg"
+            android:gravity="right"
+            android:text="@string/txt_analyze_priceprev" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lay_noitem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/color_item_bg"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone" >
+
+        <TextView
+            android:id="@+id/textView6"
+            style="@style/tv_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/txt_nocategory" />
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/list_analyzecompare"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:descendantFocusability="blocksDescendants"
+        android:divider="@android:color/transparent"
+        android:listSelector="@android:color/transparent" >
+    </ListView>
+
+</LinearLayout>

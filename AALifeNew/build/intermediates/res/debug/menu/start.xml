@@ -1,0 +1,9 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/action_exits"
+        android:orderInCategory="100"
+        android:title="@string/action_exits"/>
+
+</menu>
+<!-- From: file:/D:/fxlandroid/AALifeNew/res/menu/start.xml -->

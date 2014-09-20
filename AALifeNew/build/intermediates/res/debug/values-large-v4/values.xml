@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- From: file:/D:/fxlandroid/AALifeNew/res/values-large/dimens.xml -->
+    <eat-comment />
+
+    <dimen name="calc_text_size">27sp</dimen>
+    <dimen name="cat_list_height">72dp</dimen>
+    <dimen name="height_medium">72dp</dimen>
+    <dimen name="layout_line_height">2dp</dimen>
+    <dimen name="list_border_size">2dp</dimen>
+    <dimen name="nav_cur_height">6dp</dimen>
+    <dimen name="nav_main_height">3dp</dimen>
+    <dimen name="padding_large">23dp</dimen>
+    <dimen name="padding_medium">15dp</dimen>
+    <dimen name="padding_small">8dp</dimen>
+    <dimen name="smart_back_button">71dp</dimen>
+    <dimen name="smart_handle_height">138dp</dimen>
+    <dimen name="smart_handle_width">54dp</dimen>
+    <dimen name="smart_padding_space">3dp</dimen>
+    <dimen name="smart_padding_top">72dp</dimen>
+    <dimen name="start_logo_size">108dp</dimen>
+    <dimen name="start_logo_top">108dp</dimen>
+    <dimen name="start_text_size">27sp</dimen>
+    <dimen name="start_text_top">288dp</dimen>
+    <dimen name="text_size_medium">27sp</dimen>
+    <dimen name="title_text_padding">17dp</dimen>
+    <dimen name="user_image_size">144dp</dimen>
+    <!-- From: file:/D:/fxlandroid/AALifeNew/res/values-large/styles.xml -->
+    <eat-comment />
+
+    <style name="AppBaseTheme" parent="android:Theme.Holo.Light">
+        <!--
+            Theme customizations available in newer API levels can go in
+            res/values-vXX/styles.xml, while customizations related to
+            backward-compatibility can go here.
+        -->
+    </style>
+
+    <style name="AppTheme" parent="AppBaseTheme">
+
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:textSize">21sp</item>
+    </style>
+
+    <style name="btn_style">
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="android:textSize">27sp</item>
+    </style>
+
+    <style name="btn_style_img">
+        <item name="android:paddingTop">@dimen/padding_small</item>
+        <item name="android:paddingBottom">@dimen/padding_small</item>
+        <item name="android:textSize">27sp</item>
+    </style>
+
+    <style name="calc_btn_style">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">63dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_margin">5dp</item>
+    </style>
+
+    <style name="edit_text_style">
+        <item name="android:minHeight">60dp</item>
+    </style>
+
+    <style name="layout_style">
+        <item name="android:padding">@dimen/padding_large</item>
+    </style>
+
+    <style name="list_style">
+        <item name="android:layout_marginBottom">62dp</item>
+    </style>
+
+    <style name="start_lock_style">
+        <item name="android:layout_marginTop">5dp</item>
+        <item name="android:layout_marginLeft">108dp</item>
+        <item name="android:layout_marginRight">108dp</item>
+        <item name="android:layout_marginBottom">8dp</item>
+    </style>
+
+    <style name="title_style">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">33sp</item>
+    </style>
+
+    <style name="tv_item">
+        <item name="android:paddingTop">@dimen/padding_medium</item>
+        <item name="android:paddingBottom">@dimen/padding_medium</item>
+    </style>
+
+    <style name="tv_item_addsmart">
+        <item name="android:padding">@dimen/padding_medium</item>
+    </style>
+
+    <style name="tv_item_date" parent="tv_item">
+        <item name="android:paddingLeft">@dimen/padding_medium</item>
+    </style>
+
+    <style name="tv_item_nav">
+        <item name="android:paddingTop">@dimen/title_text_padding</item>
+        <item name="android:paddingBottom">@dimen/title_text_padding</item>
+    </style>
+
+    <style name="tv_item_price" parent="tv_item">
+        <item name="android:paddingRight">@dimen/padding_medium</item>
+    </style>
+
+    <style name="tv_title">
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingBottom">5dp</item>
+    </style>
+
+    <style name="user_img_style">
+        <item name="android:padding">@dimen/padding_medium</item>
+    </style>
+
+</resources>
